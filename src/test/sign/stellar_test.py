@@ -1,7 +1,7 @@
 import base58
-from mitum.common import bconcat
-from mitum.constant import NETWORK_ID
-from mitum.key.stellar import to_stellar_keypair
+from mitumc.common import bconcat
+from mitumc.constant import NETWORK_ID
+from mitumc.key.stellar import to_stellar_keypair
 
 EXPECTED_SIGNATURE =  "31LVjvhp3Dqn6swPjmJb9F9Dw8PZEoEZ6LnMVoJpRywYFUYvHcwS2bjBD1qRTCoDCLkex9djeRfmjeg3fMouDNrP"
 

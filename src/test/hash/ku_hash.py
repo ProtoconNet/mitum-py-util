@@ -1,7 +1,7 @@
-from mitum.common import Hint, Int
-from mitum.constant import VERSION
-from mitum.hint import *
-from mitum.key.base import Key, Keys, KeysBody, to_basekey
+from mitumc.common import Hint, Int
+from mitumc.constant import VERSION
+from mitumc.hint import *
+from mitumc.key.base import Key, Keys, KeysBody, to_basekey
 
 EXPECTED_KEYS_HASH = "HhgmNZQvabSfGSyKmXqQfTSJimjPTxsQ31B4Wd1UzFD5"
 

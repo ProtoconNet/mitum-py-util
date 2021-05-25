@@ -1,6 +1,6 @@
 import stellar_sdk as stellar
-from mitum.hint import STELLAR_PBLCKEY, STELLAR_PRIVKEY
-from mitum.key.base import BaseKey, KeyPair, to_basekey
+from mitumc.hint import STELLAR_PBLCKEY, STELLAR_PRIVKEY
+from mitumc.key.base import BaseKey, KeyPair, to_basekey
 
 
 class StellarKeyPair(KeyPair):

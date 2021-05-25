@@ -8,9 +8,9 @@ from bitcoinutils.keys import PrivateKey
 from bitcoinutils.setup import setup
 from ecdsa.curves import SECP256k1
 from ecdsa.util import sigencode_der_canonize
-from mitum.hash import sha
-from mitum.hint import BTC_PBLCKEY, BTC_PRIVKEY
-from mitum.key.base import BaseKey, KeyPair, to_basekey
+from mitumc.hash import sha
+from mitumc.hint import BTC_PBLCKEY, BTC_PRIVKEY
+from mitumc.key.base import BaseKey, KeyPair, to_basekey
 
 
 class BTCKeyPair(KeyPair):

@@ -1,47 +1,85 @@
 import base64
 import json
 
-from mitum.common import Hash, Hint, bconcat
-from mitum.hash import sha
-from mitum.key.base import Keys
-from mitum.operation import (Address, FactSign, Memo, Operation, OperationBody,
-                             OperationFact, OperationFactBody)
-from mitum.operation.base import _newFactSign
+import rlp
+from mitumc.common import Hash, Hint, bconcat
+from mitumc.hash import sha
+from mitumc.operation import (Address, Amount, FactSign, Memo, Operation,
+                             OperationBody, OperationFact, OperationFactBody)
+from mitumc.operation.base import _newFactSign
 from rlp.sedes import List, text
 
 
-class KeyUpdaterFactBody(OperationFactBody):
+class TransfersItem(rlp.Serializable):
+    fields = (
+        ('h', Hint),
+        ('receiver', Address),
+        ('amounts', List((Amount, ), False)),
+    )
+
+    def to_bytes(self):
+        d = self.as_dict()
+        amounts = d['amounts']
+
+        bamounts = bytearray()
+        for amount in amounts:
+            bamounts += bytearray(amount.to_bytes())
+
+        breceiver = d['receiver'].hinted().encode()
+        bamounts = bytes(bamounts)
+        
+        return bconcat(breceiver, bamounts)
+
+    def to_dict(self):
+        d = self.as_dict()
+        item = {}
+        item['_hint'] = d['h'].hint
+        item['receiver'] = d['receiver'].hinted()
+        
+        amounts = list()
+        _amounts = d['amounts']
+        for _amount in _amounts:
+            amounts.append(_amount.to_dict())
+        item['amounts'] = amounts
+
+        return item
+
+
+class TransfersFactBody(OperationFactBody):
     fields = (
         ('h', Hint),
         ('token', text),
-        ('target', Address),
-        ('cid', text),
-        ('ks', Keys),
+        ('sender', Address),
+        ('items', List((TransfersItem, ), False)),
     )
-    
+
     def to_bytes(self):
         d = self.as_dict()
+        items = d['items']
+
+        bitems = bytearray()
+        for i in items:
+            bitems += bytearray(i.to_bytes())
 
         btoken = d['token'].encode()
-        btarget = d['target'].hinted().encode()
-        bkeys = d['ks'].to_bytes()
-        bcid = d['cid'].encode()
-      
-        return bconcat(btoken, btarget, bkeys, bcid)
+        bsender = d['sender'].hinted().encode()
+        bitems = bytes(bitems)
+
+        return bconcat(btoken, bsender, bitems)
 
     def generate_hash(self):
         return sha.sum256(self.to_bytes())
-    
 
-class KeyUpdaterFact(OperationFact):
+
+class TransfersFact(OperationFact):
     fields = (
         ('hs', Hash),
-        ('body', KeyUpdaterFactBody),
+        ('body', TransfersFactBody),
     )
 
     def hash(self):
         return self.as_dict()['hs']
-        
+
     def newFactSign(self, net_id, priv):
         b = bconcat(self.hash().digest, net_id.encode())
         return _newFactSign(b, priv)
@@ -55,17 +93,22 @@ class KeyUpdaterFact(OperationFact):
         token = base64.b64encode(token)
         token = token.decode('ascii')
         fact['token'] = token
-        fact['target'] = d['target'].hinted()
-        fact['keys'] = d['ks'].to_dict()
-        fact['currency'] = d['cid']
+        fact['sender'] = d['sender'].hinted()
+
+        items = list()
+        _items = d['items']
+        for _item in _items:
+            items.append(_item.to_dict())
+        fact['items'] = items
+
         return fact
 
 
-class KeyUpdaterBody(OperationBody):
+class TransfersBody(OperationBody):
     fields = (
         ('memo', Memo),
         ('h', Hint),
-        ('fact', KeyUpdaterFact),
+        ('fact', TransfersFact),
         ('fact_sg', List((FactSign,), False)),
     )
 
@@ -86,10 +129,10 @@ class KeyUpdaterBody(OperationBody):
         return sha.sum256(self.to_bytes())
 
 
-class KeyUpdater(Operation):
+class Transfers(Operation):
     fields = (
         ('hs', Hash),
-        ('body', KeyUpdaterBody),
+        ('body', TransfersBody),
     )
 
     def hash(self):
@@ -101,13 +144,14 @@ class KeyUpdater(Operation):
         oper['memo'] = d['memo'].memo
         oper['_hint'] = d['h'].hint
         oper['fact'] = d['fact'].to_dict()
-        oper['hash'] = self.hash().hash
 
         fact_signs = list()
         _sgs = d['fact_sg']
         for _sg in _sgs:
             fact_signs.append(_sg.to_dict())
         oper['fact_signs'] = fact_signs
+
+        oper['hash'] = self.hash().hash
 
         return oper
 

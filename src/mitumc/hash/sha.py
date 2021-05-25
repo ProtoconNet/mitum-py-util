@@ -1,6 +1,6 @@
 import hashlib
 
-from mitum.common import Hash
+from mitumc.common import Hash
 
 # sha2 sha256 hashing
 def sha256(b):

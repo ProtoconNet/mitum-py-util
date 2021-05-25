@@ -2,19 +2,20 @@ import base64
 import json
 
 import rlp
-from mitum.common import Hash, Hint, bconcat
-from mitum.hash import sha
-from mitum.operation import (Address, Amount, FactSign, Memo, Operation,
+from mitumc.common import Hash, Hint, bconcat
+from mitumc.hash import sha
+from mitumc.key.base import Keys
+from mitumc.operation import (Address, Amount, FactSign, Memo, Operation,
                              OperationBody, OperationFact, OperationFactBody)
-from mitum.operation.base import _newFactSign
+from mitumc.operation.base import _newFactSign
 from rlp.sedes import List, text
 
 
-class TransfersItem(rlp.Serializable):
+class CreateAccountsItem(rlp.Serializable):
     fields = (
         ('h', Hint),
-        ('receiver', Address),
-        ('amounts', List((Amount, ), False)),
+        ('ks', Keys),
+        ('amounts', List((Amount,), False)),
     )
 
     def to_bytes(self):
@@ -25,19 +26,19 @@ class TransfersItem(rlp.Serializable):
         for amount in amounts:
             bamounts += bytearray(amount.to_bytes())
 
-        breceiver = d['receiver'].hinted().encode()
+        bkeys = d['ks'].to_bytes()
         bamounts = bytes(bamounts)
-        
-        return bconcat(breceiver, bamounts)
+
+        return bconcat(bkeys, bamounts)
 
     def to_dict(self):
         d = self.as_dict()
         item = {}
         item['_hint'] = d['h'].hint
-        item['receiver'] = d['receiver'].hinted()
+        item['keys'] = d['ks'].to_dict()
         
-        amounts = list()
         _amounts = d['amounts']
+        amounts = list()
         for _amount in _amounts:
             amounts.append(_amount.to_dict())
         item['amounts'] = amounts
@@ -45,12 +46,12 @@ class TransfersItem(rlp.Serializable):
         return item
 
 
-class TransfersFactBody(OperationFactBody):
+class CreateAccountsFactBody(OperationFactBody):
     fields = (
         ('h', Hint),
         ('token', text),
         ('sender', Address),
-        ('items', List((TransfersItem, ), False)),
+        ('items', List((CreateAccountsItem,), False)),
     )
 
     def to_bytes(self):
@@ -60,7 +61,7 @@ class TransfersFactBody(OperationFactBody):
         bitems = bytearray()
         for i in items:
             bitems += bytearray(i.to_bytes())
-
+        
         btoken = d['token'].encode()
         bsender = d['sender'].hinted().encode()
         bitems = bytes(bitems)
@@ -71,10 +72,10 @@ class TransfersFactBody(OperationFactBody):
         return sha.sum256(self.to_bytes())
 
 
-class TransfersFact(OperationFact):
+class CreateAccountsFact(OperationFact):
     fields = (
         ('hs', Hash),
-        ('body', TransfersFactBody),
+        ('body', CreateAccountsFactBody),
     )
 
     def hash(self):
@@ -95,20 +96,19 @@ class TransfersFact(OperationFact):
         fact['token'] = token
         fact['sender'] = d['sender'].hinted()
 
-        items = list()
         _items = d['items']
-        for _item in _items:
-            items.append(_item.to_dict())
+        items = list()
+        for item in _items:
+            items.append(item.to_dict())
         fact['items'] = items
-
         return fact
 
 
-class TransfersBody(OperationBody):
+class CreateAccountsBody(OperationBody):
     fields = (
         ('memo', Memo),
         ('h', Hint),
-        ('fact', TransfersFact),
+        ('fact', CreateAccountsFact),
         ('fact_sg', List((FactSign,), False)),
     )
 
@@ -129,10 +129,10 @@ class TransfersBody(OperationBody):
         return sha.sum256(self.to_bytes())
 
 
-class Transfers(Operation):
+class CreateAccounts(Operation):
     fields = (
         ('hs', Hash),
-        ('body', TransfersBody),
+        ('body', CreateAccountsBody),
     )
 
     def hash(self):
@@ -144,14 +144,13 @@ class Transfers(Operation):
         oper['memo'] = d['memo'].memo
         oper['_hint'] = d['h'].hint
         oper['fact'] = d['fact'].to_dict()
+        oper['hash'] = self.hash().hash
 
         fact_signs = list()
         _sgs = d['fact_sg']
         for _sg in _sgs:
             fact_signs.append(_sg.to_dict())
         oper['fact_signs'] = fact_signs
-
-        oper['hash'] = self.hash().hash
 
         return oper
 

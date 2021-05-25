@@ -1,86 +1,47 @@
 import base64
 import json
 
-import rlp
-from mitum.common import Hash, Hint, bconcat
-from mitum.hash import sha
-from mitum.key.base import Keys
-from mitum.operation import (Address, Amount, FactSign, Memo, Operation,
-                             OperationBody, OperationFact, OperationFactBody)
-from mitum.operation.base import _newFactSign
+from mitumc.common import Hash, Hint, bconcat
+from mitumc.hash import sha
+from mitumc.key.base import Keys
+from mitumc.operation import (Address, FactSign, Memo, Operation, OperationBody,
+                             OperationFact, OperationFactBody)
+from mitumc.operation.base import _newFactSign
 from rlp.sedes import List, text
 
 
-class CreateAccountsItem(rlp.Serializable):
-    fields = (
-        ('h', Hint),
-        ('ks', Keys),
-        ('amounts', List((Amount,), False)),
-    )
-
-    def to_bytes(self):
-        d = self.as_dict()
-        amounts = d['amounts']
-
-        bamounts = bytearray()
-        for amount in amounts:
-            bamounts += bytearray(amount.to_bytes())
-
-        bkeys = d['ks'].to_bytes()
-        bamounts = bytes(bamounts)
-
-        return bconcat(bkeys, bamounts)
-
-    def to_dict(self):
-        d = self.as_dict()
-        item = {}
-        item['_hint'] = d['h'].hint
-        item['keys'] = d['ks'].to_dict()
-        
-        _amounts = d['amounts']
-        amounts = list()
-        for _amount in _amounts:
-            amounts.append(_amount.to_dict())
-        item['amounts'] = amounts
-
-        return item
-
-
-class CreateAccountsFactBody(OperationFactBody):
+class KeyUpdaterFactBody(OperationFactBody):
     fields = (
         ('h', Hint),
         ('token', text),
-        ('sender', Address),
-        ('items', List((CreateAccountsItem,), False)),
+        ('target', Address),
+        ('cid', text),
+        ('ks', Keys),
     )
-
+    
     def to_bytes(self):
         d = self.as_dict()
-        items = d['items']
 
-        bitems = bytearray()
-        for i in items:
-            bitems += bytearray(i.to_bytes())
-        
         btoken = d['token'].encode()
-        bsender = d['sender'].hinted().encode()
-        bitems = bytes(bitems)
-
-        return bconcat(btoken, bsender, bitems)
+        btarget = d['target'].hinted().encode()
+        bkeys = d['ks'].to_bytes()
+        bcid = d['cid'].encode()
+      
+        return bconcat(btoken, btarget, bkeys, bcid)
 
     def generate_hash(self):
         return sha.sum256(self.to_bytes())
+    
 
-
-class CreateAccountsFact(OperationFact):
+class KeyUpdaterFact(OperationFact):
     fields = (
         ('hs', Hash),
-        ('body', CreateAccountsFactBody),
+        ('body', KeyUpdaterFactBody),
     )
 
     def hash(self):
         return self.as_dict()['hs']
-
+        
     def newFactSign(self, net_id, priv):
         b = bconcat(self.hash().digest, net_id.encode())
         return _newFactSign(b, priv)
@@ -94,21 +55,17 @@ class CreateAccountsFact(OperationFact):
         token = base64.b64encode(token)
         token = token.decode('ascii')
         fact['token'] = token
-        fact['sender'] = d['sender'].hinted()
-
-        _items = d['items']
-        items = list()
-        for item in _items:
-            items.append(item.to_dict())
-        fact['items'] = items
+        fact['target'] = d['target'].hinted()
+        fact['keys'] = d['ks'].to_dict()
+        fact['currency'] = d['cid']
         return fact
 
 
-class CreateAccountsBody(OperationBody):
+class KeyUpdaterBody(OperationBody):
     fields = (
         ('memo', Memo),
         ('h', Hint),
-        ('fact', CreateAccountsFact),
+        ('fact', KeyUpdaterFact),
         ('fact_sg', List((FactSign,), False)),
     )
 
@@ -129,10 +86,10 @@ class CreateAccountsBody(OperationBody):
         return sha.sum256(self.to_bytes())
 
 
-class CreateAccounts(Operation):
+class KeyUpdater(Operation):
     fields = (
         ('hs', Hash),
-        ('body', CreateAccountsBody),
+        ('body', KeyUpdaterBody),
     )
 
     def hash(self):
