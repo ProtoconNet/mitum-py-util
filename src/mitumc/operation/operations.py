@@ -15,7 +15,7 @@ from mitumc.key.base import Key, Keys, KeysBody, to_basekey
 from mitumc.key.btc import to_btc_keypair
 from mitumc.key.ether import to_ether_keypair
 from mitumc.key.stellar import to_stellar_keypair
-from mitumc.operation.base import Address, Amount, Memo
+from mitumc.operation.base import Address, Amount, Memo, Operation
 from mitumc.operation.create_accounts import (CreateAccounts,
                                              CreateAccountsBody,
                                              CreateAccountsFact,
@@ -28,9 +28,25 @@ from mitumc.operation.transfers import (Transfers, TransfersBody, TransfersFact,
 
 
 def to_keys(ks):
+    """ Convert a list of keys to Keys object.
+
+    Args:
+        ks (list()): list of hinted keys; [*(str, int)]
+
+    Returns:
+        Keys: Keys object for ks
+    """
+    assert ks, 'Key list is empty'
 
     key_list = list()
-    for key, w in ks:
+    for _key in ks:
+        assert len(_key) == 2, 'Invalid key in the list'
+        
+        key, w = _key
+        assert isinstance(key, str), 'Key must be provided in string format'
+        assert '-' in key, 'Key must be hinted'
+        assert isinstance(w, int), 'Invalid weight of key'
+        
         t, k = parseAddress(key)
         key_list.append(
             Key(
@@ -55,7 +71,20 @@ def to_keys(ks):
 
 
 def generate_create_accounts(net_id, pk, sender, amt, ks):
-    
+    """ Returns CreateAccounts object.
+
+    Args:
+        net_id  (str): Network ID
+        pk      (str): Private key requests this operation
+        sender  (str): Sender address
+        amt (tuple()): Tuple of amount; (int, str)
+        ks   (list()): List of keys; [*(str, int)]
+
+    Returns:
+        CreateAccounts: Generated create-accounts operation
+    """
+    assert len(amt) == 2, '[arg4] Invalid amount'
+
     keys = to_keys(ks)
     
     big, cid = amt
@@ -114,6 +143,21 @@ def generate_create_accounts(net_id, pk, sender, amt, ks):
 
 
 def generate_key_updater(net_id, pk, target, new_pubk, weight, cid):
+    """ Returns KeyUpdater object.
+
+    Args:
+        net_id   (str): Network ID
+        pk       (str): Private key requests this operation
+        target   (str): Old address
+        new_pubk (str): New address
+        weight   (int): weight
+        cid      (str): Currency ID
+
+    Returns:
+        KeyUpdater: Generated Key Updater operation
+    """
+    assert isinstance(cid, str), '[arg6] CurrencyID must be provided in string format'
+
     keys = to_keys([(new_pubk, weight)])
 
     _, k_target = parseAddress(target)
@@ -154,7 +198,20 @@ def generate_key_updater(net_id, pk, target, new_pubk, weight, cid):
 
 
 def generate_transfers(net_id, pk, sender, receiver, amt):
-    
+    """ Returns Transfers object.
+
+    Args:
+        net_id     (str): Networkd ID
+        pk         (str): Private key requests this operation
+        sender     (str): Sender address
+        receiver   (str): Receiver address
+        amount (tuple()): Tuple of amount; (int, str)
+
+    Returns:
+        Transfers: Generated Transfers operation 
+    """
+    assert len(amt) == 2, '[arg5] Invalid amount'
+
     big, cid = amt
     amounts = list()
     amounts.append(
@@ -212,6 +269,18 @@ def generate_transfers(net_id, pk, sender, receiver, amt):
     return op
 
 def generate_seal(file_name, net_id, pk, opers):
+    """ Generate a seal for operations.
+
+        This method generate seal as file_name.json file 
+    Args:
+        file_name (str): File name of seal's json file
+        net_id    (str): Network ID
+        pk        (str): Private key to sign this seal
+        opers  (list()): Included operations
+    """
+    assert '.json' == file_name[-5:], '[arg1] Invalid file name (*.json)'
+    assert opers, '[arg4] Operation list is empty'
+
     type, key = parseAddress(pk)
 
     if type == BTC_PRIVKEY:
@@ -246,6 +315,7 @@ def generate_seal(file_name, net_id, pk, opers):
 
     operations = list()
     for op in opers:
+        assert isinstance(op, Operation), '[arg4] Invalid operation in the list'
         operations.append(op.to_dict())
     seal['operations'] = operations
 

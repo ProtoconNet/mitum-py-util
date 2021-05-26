@@ -2,10 +2,18 @@ import rlp
 from mitumc.common import Hash, Hint, Int, bconcat
 from mitumc.constant import VERSION
 from mitumc.hash import sha
+from mitumc.hint import (BTC_PBLCKEY, BTC_PRIVKEY, ETHER_PBLCKEY,
+                         ETHER_PRIVKEY, STELLAR_PBLCKEY, STELLAR_PRIVKEY)
 from rlp.sedes import List, text
 
 
 class BaseKey(rlp.Serializable):
+    """ Contains a key and its type hint.
+
+    Attributes:
+        h (Hint): hint; [TYPE]_PBLCKEY, [TYPE]_PRIVKEY
+        k (text): Hintless key
+    """
     fields = (
         ('h', Hint),
         ('k', text),
@@ -13,19 +21,29 @@ class BaseKey(rlp.Serializable):
 
     @property
     def key(self):
+        # Returns hintless key
         return self.as_dict()['k']
 
     def hint(self):
         return self.as_dict()['h']
 
     def hinted(self):
+        # Returns hinted key
         return self.as_dict()['k'] + "-" + self.as_dict()['h'].hint
 
-    def to_bytes(self):
+    def to_bytes(self): 
+        # Returns hintless key in byte format
         return self.as_dict()['k'].encode()
     
 
 class Key(rlp.Serializable):
+    """ Single key with weight.
+    
+    Attributes:
+        h    (Hint): hint; MC_KEY
+        k (BaseKey): Basekey object for key
+        w     (Int): weight
+    """
     fields = (
         ('h', Hint),
         ('k', BaseKey),
@@ -33,9 +51,11 @@ class Key(rlp.Serializable):
     )
 
     def key_bytes(self):
+        # Returns hintless key in byte format
         return self.as_dict()['k'].to_bytes()
 
     def to_bytes(self):
+        # Returns concatenated [key, weight] in byte format
         d = self.as_dict()
         bkey = d['k'].hinted().encode()
         bweight = self.as_dict()['w'].to_bytes()
@@ -52,6 +72,13 @@ class Key(rlp.Serializable):
 
 
 class KeysBody(rlp.Serializable):
+    """ Body of Keys.
+
+    Attributes:
+        h              (Hint): hint; MC_KEYS
+        threshold       (Int): threshold
+        ks        (List(Key)): List of keys
+    """
     fields = (
         ('h', Hint),
         ('threshold', Int),
@@ -59,6 +86,7 @@ class KeysBody(rlp.Serializable):
     )
 
     def to_bytes(self):
+        # Returns concatenated [ks, threshold] in byte format
         d = self.as_dict()
         keys = d['ks']
 
@@ -79,6 +107,12 @@ class KeysBody(rlp.Serializable):
 
 
 class Keys(rlp.Serializable):
+    """ Contains KeysBody and a hash.
+
+    Attributes:
+        hs       (Hash): Keys Hash
+        body (KeysBody): Body object
+    """
     fields = (
         ('hs', Hash),
         ('body', KeysBody),
@@ -105,6 +139,7 @@ class Keys(rlp.Serializable):
         return keys
 
 
+# skeleton
 class KeyPair(rlp.Serializable):
     fields = (
         ('privkey', BaseKey),
@@ -116,5 +151,20 @@ class KeyPair(rlp.Serializable):
 
 
 def to_basekey(type, k):
+    """ Returns BaseKey for k
+
+    Args:
+        type (str): Type hint for key
+        k    (str): Hintless key
+
+    Returns:
+        BaseKey: BaseKey object for k
+    """
+    assert type in [
+        BTC_PRIVKEY, BTC_PBLCKEY,
+        ETHER_PRIVKEY, ETHER_PBLCKEY,
+        STELLAR_PRIVKEY, STELLAR_PBLCKEY], '[arg1] Invalid type or not a key type'
+    assert isinstance(k, str), '[arg2] Key must be provided in string format'
+    
     hint = Hint(type, VERSION)
     return BaseKey(hint, k)

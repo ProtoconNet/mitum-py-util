@@ -11,12 +11,28 @@ from mitumc.key.base import BaseKey, KeyPair, to_basekey
 
 
 class ETHKeyPair(KeyPair):
+    """ Contains ETH private key and its derived public key as a keypair.
+
+    Attributes:
+        privkey (BaseKey): ETH Private Key
+        pubkey  (BaseKey): ETH Public Key
+    """
     fields = (
         ('privkey', BaseKey),
         ('pubkey', BaseKey),
     )
 
     def sign(self, b):
+        """ Returns raw ETH-ECDSA signature for binary input.
+
+        Args:
+            b (bytes): Target to sign
+
+        Returns:
+            bytes: Signature signed with privkey
+        """
+        assert isinstance(b, bytes), 'Input must be provided in byte format'
+
         pk = self.as_dict()['privkey'].key
         sk = ecdsa.SigningKey.from_string(
             codecs.decode(pk, "hex"),
@@ -30,9 +46,7 @@ class ETHKeyPair(KeyPair):
         r = sig[4:4+rlen.value]
         s = sig[6+rlen.value:]
 
-        signature = bconcat(rlen.little4_to_bytes(), r, s)
-
-        return signature
+        return bconcat(rlen.little4_to_bytes(), r, s) 
 
     @property
     def public_key(self):
@@ -40,6 +54,17 @@ class ETHKeyPair(KeyPair):
 
 
 def to_ether_keypair(priv):
+    """ Returns ETHKeyPair for provided private key.
+
+    Args:
+        priv (str): Hintless BTC private key
+        
+    Returns:
+        ETHKeyPair: ETHKeyPair for priv
+    """
+    assert isinstance(priv, str), 'Key must be provided in string format'
+    assert '-' not in priv, 'Key must be parsed before generating KeyPair'
+
     pk = keys.PrivateKey(codecs.decode(priv, "hex"))
     pubk = pk.public_key.to_hex()[0] + '4' + pk.public_key.to_hex()[2:]
 

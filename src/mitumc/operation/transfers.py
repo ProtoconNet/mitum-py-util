@@ -11,6 +11,13 @@ from rlp.sedes import List, text
 
 
 class TransfersItem(rlp.Serializable):
+    """ Single TransfersItem.
+
+    Attributes:
+        h               (Hint): hint; MC_TRNASFERS_ITEM_SINGLE_AMOUNT
+        Receiver        (Keys): Receiver Address
+        amounts (List(Amount)): List of amounts
+    """
     fields = (
         ('h', Hint),
         ('receiver', Address),
@@ -18,6 +25,7 @@ class TransfersItem(rlp.Serializable):
     )
 
     def to_bytes(self):
+        # Returns concatenated [receiver, amounts] in byte format
         d = self.as_dict()
         amounts = d['amounts']
 
@@ -46,6 +54,14 @@ class TransfersItem(rlp.Serializable):
 
 
 class TransfersFactBody(OperationFactBody):
+    """ Body of TransfersFact.
+
+    Attributes:
+        h                    (Hint): hint; MC_TRANSFERS_OP_FACT
+        token                (text): base64 encoded fact token
+        sender            (Address): Sender address
+        items (List(TransfersItem)): List of items
+    """
     fields = (
         ('h', Hint),
         ('token', text),
@@ -54,6 +70,7 @@ class TransfersFactBody(OperationFactBody):
     )
 
     def to_bytes(self):
+        # Returns concatenated [token, sender, items] in byte format
         d = self.as_dict()
         items = d['items']
 
@@ -72,6 +89,12 @@ class TransfersFactBody(OperationFactBody):
 
 
 class TransfersFact(OperationFact):
+    """ Contains TransfersFactBody and a hash.
+
+    Attributes:
+        hs                (Hash): Fact Hash
+        body (TransfersFactbody): Fact body object
+    """
     fields = (
         ('hs', Hash),
         ('body', TransfersFactBody),
@@ -81,6 +104,9 @@ class TransfersFact(OperationFact):
         return self.as_dict()['hs']
 
     def newFactSign(self, net_id, priv):
+        # Generate a fact_sign object for provided network id and private key
+        assert isinstance(net_id, str), '[arg1] Network ID must be provided as string format'
+        
         b = bconcat(self.hash().digest, net_id.encode())
         return _newFactSign(b, priv)
 
@@ -103,8 +129,20 @@ class TransfersFact(OperationFact):
 
         return fact
 
+    def to_json(self, file_name):
+        with open(file_name, "w") as fp:
+            json.dump(self.to_dict(), fp)
+
 
 class TransfersBody(OperationBody):
+    """ Body of Transfers.
+
+    Attributes:
+        memo               (Memo): Description
+        h                  (Hint): hint; MC_TRANSFERS_OP
+        fact      (TransfersFact): Fact object
+        fact_sg  (List(FactSign)): List of FactSign
+    """    
     fields = (
         ('memo', Memo),
         ('h', Hint),
@@ -113,6 +151,7 @@ class TransfersBody(OperationBody):
     )
 
     def to_bytes(self):
+        # Returns concatenated [fact.hs, fact_sg, memo] in byte format
         d = self.as_dict()
         bfact_hs = d['fact'].hash().digest
         bmemo = d['memo'].to_bytes()
@@ -130,6 +169,12 @@ class TransfersBody(OperationBody):
 
 
 class Transfers(Operation):
+    """ Transfers operation.
+
+    Attributes:
+        hs            (Hash): Hash of operation
+        body (TransfersBody): Operation body
+    """
     fields = (
         ('hs', Hash),
         ('body', TransfersBody),

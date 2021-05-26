@@ -1,4 +1,3 @@
-# method constants
 LOG_SUM256 = 'sum256'
 LOG_SHA256 = 'sha256'
 LOG_BCONCAT = 'bconcat'

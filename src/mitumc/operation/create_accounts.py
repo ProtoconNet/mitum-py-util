@@ -12,6 +12,13 @@ from rlp.sedes import List, text
 
 
 class CreateAccountsItem(rlp.Serializable):
+    """ Single CreateAccountsItem.
+
+    Attributes:
+        h               (Hint): hint; MC_CREATE_ACCOUNTS_SINGLE_AMOUNT
+        ks              (Keys): Keys object for single item
+        amounts (List(Amount)): List of amounts
+    """
     fields = (
         ('h', Hint),
         ('ks', Keys),
@@ -19,6 +26,7 @@ class CreateAccountsItem(rlp.Serializable):
     )
 
     def to_bytes(self):
+        # Returns concatenated [ks, amounts] in byte format
         d = self.as_dict()
         amounts = d['amounts']
 
@@ -47,6 +55,14 @@ class CreateAccountsItem(rlp.Serializable):
 
 
 class CreateAccountsFactBody(OperationFactBody):
+    """ Body of CreateAccountsFact.
+
+    Attributes:
+        h                         (Hint): hint; MC_CREATE_ACCOUNTS_OP_FACT
+        token                     (text): base64 encoded fact token
+        sender                 (Address): Sender address
+        items (List(CreateAccountsItem)): List of items
+    """
     fields = (
         ('h', Hint),
         ('token', text),
@@ -55,6 +71,7 @@ class CreateAccountsFactBody(OperationFactBody):
     )
 
     def to_bytes(self):
+        # Returns concatenated [token, sender, items] in byte format
         d = self.as_dict()
         items = d['items']
 
@@ -73,6 +90,12 @@ class CreateAccountsFactBody(OperationFactBody):
 
 
 class CreateAccountsFact(OperationFact):
+    """ Contains CreateAccountsFactBody and a hash.
+
+    Attributes:
+        hs                     (Hash): Fact Hash
+        body (CreateAccountsFactBody): Fact body object
+    """
     fields = (
         ('hs', Hash),
         ('body', CreateAccountsFactBody),
@@ -82,6 +105,9 @@ class CreateAccountsFact(OperationFact):
         return self.as_dict()['hs']
 
     def newFactSign(self, net_id, priv):
+        # Generate a fact_sign object for provided network id and private key
+        assert isinstance(net_id, str), '[arg1] Network ID must be provided as string format'
+
         b = bconcat(self.hash().digest, net_id.encode())
         return _newFactSign(b, priv)
 
@@ -103,8 +129,20 @@ class CreateAccountsFact(OperationFact):
         fact['items'] = items
         return fact
 
+    def to_json(self, file_name):
+        with open(file_name, "w") as fp:
+            json.dump(self.to_dict(), fp)
+        
 
 class CreateAccountsBody(OperationBody):
+    """ Body of CreateAccounts.
+
+    Attributes:
+        memo               (Memo): Description
+        h                  (Hint): hint; MC_CREATE_ACCOUNTS_OP
+        fact (CreateAccountsFact): Fact object
+        fact_sg  (List(FactSign)): List of FactSign
+    """
     fields = (
         ('memo', Memo),
         ('h', Hint),
@@ -113,6 +151,7 @@ class CreateAccountsBody(OperationBody):
     )
 
     def to_bytes(self):
+        # Returns concatenated [fact.hs, fact_sg, memo] in byte format
         d = self.as_dict()
         bfact_hs = d['fact'].hash().digest
         bmemo = d['memo'].to_bytes()
@@ -130,6 +169,12 @@ class CreateAccountsBody(OperationBody):
 
 
 class CreateAccounts(Operation):
+    """ CreateAccounts operation.
+
+    Attributes:
+        hs                 (Hash): Hash of operation
+        body (CreateAccountsBody): Operation body
+    """
     fields = (
         ('hs', Hash),
         ('body', CreateAccountsBody),

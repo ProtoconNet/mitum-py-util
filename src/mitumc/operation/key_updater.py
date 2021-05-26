@@ -11,6 +11,15 @@ from rlp.sedes import List, text
 
 
 class KeyUpdaterFactBody(OperationFactBody):
+    """ Body of KeyUpdaterFact.
+
+    Attributes:
+        h         (Hint): hint; MC_KEYUPDATER_OP_FACT
+        tok       (text): base64 encoded fact token
+        target (Address): Target Address
+        cid       (text): CurrencyID
+        ks        (Keys): Keys object
+    """
     fields = (
         ('h', Hint),
         ('token', text),
@@ -20,6 +29,7 @@ class KeyUpdaterFactBody(OperationFactBody):
     )
     
     def to_bytes(self):
+        # Returns concatenated [token, target, ks, cid] in byte format
         d = self.as_dict()
 
         btoken = d['token'].encode()
@@ -34,6 +44,12 @@ class KeyUpdaterFactBody(OperationFactBody):
     
 
 class KeyUpdaterFact(OperationFact):
+    """ Contains KeyUpdaterFactBody and a hash.
+
+    Attributes:
+        hs                 (Hash): Fact Hash
+        body (KeyUpdaterFactBody): Fact body object
+    """
     fields = (
         ('hs', Hash),
         ('body', KeyUpdaterFactBody),
@@ -43,6 +59,9 @@ class KeyUpdaterFact(OperationFact):
         return self.as_dict()['hs']
         
     def newFactSign(self, net_id, priv):
+        # Generate a fact_sign object for provided network id and private key
+        assert isinstance(net_id, str), '[arg1] Network ID must be provided as string format'
+
         b = bconcat(self.hash().digest, net_id.encode())
         return _newFactSign(b, priv)
 
@@ -60,8 +79,20 @@ class KeyUpdaterFact(OperationFact):
         fact['currency'] = d['cid']
         return fact
 
+    def to_json(self, file_name):
+        with open(file_name, "w") as fp:
+            json.dump(self.to_dict(), fp)
+
 
 class KeyUpdaterBody(OperationBody):
+    """ Body of KeyUpdater.
+
+    Attributes:
+        memo              (Memo): Description
+        h                 (Hint): hint; MC_KEYUPDATER_OP
+        fact    (KeyUpdaterFact): Fact object
+        fact_sg (List(FactSign)): List of FactSign
+    """
     fields = (
         ('memo', Memo),
         ('h', Hint),
@@ -70,6 +101,7 @@ class KeyUpdaterBody(OperationBody):
     )
 
     def to_bytes(self):
+        # Returns concatenated [fact.hs, fact_sg, memo] in byte format
         d = self.as_dict()
         bfact_hs = d['fact'].hash().digest
         bmemo = d['memo'].to_bytes()
@@ -87,6 +119,12 @@ class KeyUpdaterBody(OperationBody):
 
 
 class KeyUpdater(Operation):
+    """ KeyUpdater operation.
+
+    Attributes:
+        hs             (Hash): Hash of operation
+        body (KeyUpdaterBody): Operation body
+    """
     fields = (
         ('hs', Hash),
         ('body', KeyUpdaterBody),

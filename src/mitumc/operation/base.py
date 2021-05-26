@@ -1,10 +1,10 @@
 import base58
 import rlp
 from mitumc.common import (Hash, Hint, Int, bconcat, iso8601TimeStamp,
-                          parseAddress, parseISOtoUTC)
+                           parseAddress, parseISOtoUTC)
 from mitumc.constant import VERSION
 from mitumc.hint import (BASE_FACT_SIGN, BTC_PRIVKEY, ETHER_PRIVKEY,
-                        STELLAR_PRIVKEY)
+                         STELLAR_PRIVKEY)
 from mitumc.key.base import BaseKey
 from mitumc.key.btc import to_btc_keypair
 from mitumc.key.ether import to_ether_keypair
@@ -13,8 +13,20 @@ from rlp.sedes import List, binary, text
 
 
 def _newFactSign(b, hinted_priv):
+    """ Signs with provided private key and returns new FactSign object.
+
+    Args:
+        b         (bytes): Target to sign
+        hinted_priv (str): Hinted private key
+
+    Returns:
+        FactSign: Generated FactSign object
+    """
+    assert isinstance(b, bytes), '[arg1] Must be provided in byte format'
+    assert isinstance(hinted_priv, str), '[arg2] Key must be provided in string format'
+    assert '-' in hinted_priv, '[arg2] Key must be hinted'
+
     stype, saddr = parseAddress(hinted_priv)
-        
     signature = None
 
     if stype == BTC_PRIVKEY:
@@ -25,7 +37,7 @@ def _newFactSign(b, hinted_priv):
         signature = kp.sign(b)
     elif stype == STELLAR_PRIVKEY:
         kp = to_stellar_keypair(saddr)
-        signature = kp.sign(bconcat(b))
+        signature = kp.sign(bconcat(b)) 
 
     vk = kp.public_key
 
@@ -38,6 +50,11 @@ def _newFactSign(b, hinted_priv):
 
 
 class Memo(rlp.Serializable):
+    """ Description for an operation.
+
+    Attributes:
+        m (text): Description
+    """
     fields = (
         ('m', text),
     )
@@ -51,6 +68,13 @@ class Memo(rlp.Serializable):
 
 
 class Amount(rlp.Serializable):
+    """ Single amount.
+
+    Attributes:
+        h   (Hint): hint; MC_AMOUNT
+        big  (Int): Amount in big endian integer
+        cid (text): CurrencyID
+    """
     fields = (
         ('h', Hint),
         ('big', Int),
@@ -58,6 +82,7 @@ class Amount(rlp.Serializable):
     )
 
     def to_bytes(self):
+        # Returns concatenated [big, cid] in byte format
         d = self.as_dict()
         bbig = d['big'].tight_bytes()
         bcid = d['cid'].encode()
@@ -74,6 +99,12 @@ class Amount(rlp.Serializable):
 
 
 class Address(rlp.Serializable):
+    """ Address with hint.
+
+    Attributes:
+        h    (Hint): hint; MC_ADDRESS
+        addr (text): address
+    """
     fields = (
         ('h', Hint),
         ('addr', text),
@@ -83,14 +114,24 @@ class Address(rlp.Serializable):
         return self.as_dict()['h'].hint
 
     def hinted(self):
+        # Returns hinted address
         d = self.as_dict()
         return d['addr'] + '-' + d['h'].hint
 
     def to_bytes(self):
+        # Returns hinted address in byte format
         return self.as_dict()['addr'].encode()
 
 
 class FactSign(rlp.Serializable):
+    """ Single fact_sign.
+
+    Attributes:
+        h         (Hint): hint; BASE_FACT_SIGN
+        signer (BaseKey): Signer's public key
+        sign    (binary): Signature signed by signer
+        t         (text): The time signature generated
+    """
     fields = (
             ('h', Hint),
             ('signer', BaseKey),
@@ -99,6 +140,7 @@ class FactSign(rlp.Serializable):
         )
 
     def to_bytes(self):
+        # Returns concatenated [signer, sign, t] in byte format
         d = self.as_dict()
         bsigner = d['signer'].hinted().encode()
         bsign = d['sign']
@@ -119,6 +161,7 @@ class FactSign(rlp.Serializable):
         return fact_sign
 
 
+# skeleton: CreateAccountsFactBody, KeyUpdaterFactBody, TransfersFactBody
 class OperationFactBody(rlp.Serializable):
     fields = (
         ('h', Hint),
@@ -132,6 +175,7 @@ class OperationFactBody(rlp.Serializable):
         pass
 
 
+# skeleton: CreateAccountsFact, KeyUpdaterFact, TransfersFact
 class OperationFact(rlp.Serializable):
     fields = (
         ('hs', Hash),
@@ -149,6 +193,7 @@ class OperationFact(rlp.Serializable):
         pass
 
 
+# skeleton: CreateAccountsBody, KeyUpdaterBody, TransfersBody
 class OperationBody(rlp.Serializable):
     fields = (
         ('h', Hint),
@@ -160,6 +205,7 @@ class OperationBody(rlp.Serializable):
         pass
 
 
+# skeleton: CreateAccounts, KeyUpdater, Transfers
 class Operation(rlp.Serializable):
     fields = (
         ('hs', Hash),
