@@ -18,7 +18,7 @@ Recommended requirements for 'mitum-py-util' are,
 * pytz v2021.1
 * datetime v4.3
 
-```
+```sh
 $ python --version
 Python 3.9.2
 
@@ -202,7 +202,7 @@ Created seal json files will be used to send seals by 'mitum-currency'.
 
 Use below command to send them to the target network. (See [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for details)
 
-```
+```sh
 $ bin/mc seal send --network-id=$NETWORK_ID $SIGNING_KEY --seal=seal.json
 ```
 
@@ -230,7 +230,7 @@ mitumc_hash.py
 
 The result will be,
 
-```
+```sh
 $ python mitumc_hash.py
 b'\xf7.\xd28\xfd\xc1+\xfc\x1d\xa9\xcdb9y\x8cF+RW4\x89)\x99\xcb\xdc\xf5\xbe\xf5\xa7J\xf2\x95'
 Hdu7PqjA1p55GAcBiULmCAfzoksdwW1oSxaMH83kw9BJ
