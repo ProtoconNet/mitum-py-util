@@ -1,0 +1,43 @@
+{
+    "memo": "",
+    "_hint": "a006:0.0.1",
+    "fact": {
+        "_hint": "a005:0.0.1",
+        "hash": "HQHU6HN9yKLpq29Wg2EcM4Lft9qzAXTMQWu9tJLGjXkA",
+        "token": "MjAyMS0wNS0yN1QwMjozNzoxNy44NTc2MjgrMDA6MDA=",
+        "sender": "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG-a000:0.0.1",
+        "items": [
+            {
+                "_hint": "a025:0.0.1",
+                "keys": {
+                    "_hint": "a004:0.0.1",
+                    "hash": "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg",
+                    "keys": [
+                        {
+                            "_hint": "a003:0.0.1",
+                            "weight": 100,
+                            "key": "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X-0113:0.0.1"
+                        }
+                    ],
+                    "threshold": 100
+                },
+                "amounts": [
+                    {
+                        "_hint": "a022:0.0.1",
+                        "amount": "100",
+                        "currency": "MCC"
+                    }
+                ]
+            }
+        ]
+    },
+    "hash": "EW8fuvRoHmXpKCuXCU5gc1kR12baZSRdXYPYkkomAd2W",
+    "fact_signs": [
+        {
+            "_hint": "0150:0.0.1",
+            "signer": "sMs6R5BF9EsVcGV6enuwVZ4hv4H4y48RNy2yPJg6F6RH-0113:0.0.1",
+            "signature": "381yXZW8oWYsqkwriNG2zPZKSc7nUAnYQytMaJi8uzk6EwD4KU5d4t3pkf7hjZjJyLskeyKhyCwVpfLfDtJUYzGtxuVry1Gy",
+            "signed_at": "2021-05-27T02:37:18.620253Z"
+        }
+    ]
+}

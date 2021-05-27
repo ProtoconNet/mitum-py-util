@@ -18,5 +18,5 @@ setup(
     ],
     packages         = find_packages('./src', exclude=['test', 'test_run']),
     keywords         = ['mitum', 'mitum-currency', 'mitumc', 'mitum-currency python util'],
-    python_requires  = '>=3', 
+    python_requires  = '>=3.9', 
 )
