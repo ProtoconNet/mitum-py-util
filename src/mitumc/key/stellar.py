@@ -1,6 +1,6 @@
 import stellar_sdk as stellar
 from mitumc.hint import STELLAR_PBLCKEY, STELLAR_PRIVKEY
-from mitumc.key.base import BaseKey, KeyPair, to_basekey
+from mitumc.key.base import KeyPair, to_basekey
 
 
 class StellarKeyPair(KeyPair):
@@ -10,10 +10,8 @@ class StellarKeyPair(KeyPair):
         privkey (BaseKey): Stellar Private Key
         pubkey  (BaseKey): Stellar Public Key
     """
-    fields = (
-        ('privkey', BaseKey),
-        ('pubkey', BaseKey),
-    )
+    def __init__(self, priv, pub):
+        super(StellarKeyPair, self).__init__(priv, pub)
 
     def sign(self, b):
         """ Returns raw Stellar signature for binary input.
@@ -26,13 +24,9 @@ class StellarKeyPair(KeyPair):
         """
         assert isinstance(b, bytes), 'Input must be provided in byte format'
 
-        kp = stellar.Keypair.from_secret(self.as_dict()['privkey'].key)
+        kp = stellar.Keypair.from_secret(self.privkey.key)
 
         return kp.sign(b)
-
-    @property
-    def public_key(self):
-        return self.as_dict()['pubkey']
 
 
 def to_stellar_keypair(priv):

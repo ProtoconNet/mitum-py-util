@@ -7,7 +7,7 @@ from ecdsa.util import sigencode_der_canonize
 from eth_keys import keys
 from mitumc.common import Int, bconcat
 from mitumc.hint import ETHER_PBLCKEY, ETHER_PRIVKEY
-from mitumc.key.base import BaseKey, KeyPair, to_basekey
+from mitumc.key.base import KeyPair, to_basekey
 
 
 class ETHKeyPair(KeyPair):
@@ -17,10 +17,8 @@ class ETHKeyPair(KeyPair):
         privkey (BaseKey): ETH Private Key
         pubkey  (BaseKey): ETH Public Key
     """
-    fields = (
-        ('privkey', BaseKey),
-        ('pubkey', BaseKey),
-    )
+    def __init__(self, priv, pub):
+        super(ETHKeyPair, self).__init__(priv, pub)
 
     def sign(self, b):
         """ Returns raw ETH-ECDSA signature for binary input.
@@ -33,7 +31,7 @@ class ETHKeyPair(KeyPair):
         """
         assert isinstance(b, bytes), 'Input must be provided in byte format'
 
-        pk = self.as_dict()['privkey'].key
+        pk = self.privkey.key
         sk = ecdsa.SigningKey.from_string(
             codecs.decode(pk, "hex"),
             curve=curves.SECP256k1,
@@ -47,10 +45,6 @@ class ETHKeyPair(KeyPair):
         s = sig[6+rlen.value:]
 
         return bconcat(rlen.little4_to_bytes(), r, s) 
-
-    @property
-    def public_key(self):
-        return self.as_dict()['pubkey']
 
 
 def to_ether_keypair(priv):

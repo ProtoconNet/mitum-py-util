@@ -1,42 +1,40 @@
-import rlp
-from mitumc.common import Hash, Hint, Int, bconcat
+from mitumc.common import Hint, bconcat
 from mitumc.constant import VERSION
 from mitumc.hash import sha
 from mitumc.hint import (BTC_PBLCKEY, BTC_PRIVKEY, ETHER_PBLCKEY,
                          ETHER_PRIVKEY, STELLAR_PBLCKEY, STELLAR_PRIVKEY)
-from rlp.sedes import List, text
 
 
-class BaseKey(rlp.Serializable):
+class BaseKey(object):
     """ Contains a key and its type hint.
 
     Attributes:
         h (Hint): hint; [TYPE]_PBLCKEY, [TYPE]_PRIVKEY
-        k (text): Hintless key
+        k (str): Hintless key
     """
-    fields = (
-        ('h', Hint),
-        ('k', text),
-    )
+
+    def __init__(self, h, k):
+        self.h = h
+        self.k = k
 
     @property
     def key(self):
         # Returns hintless key
-        return self.as_dict()['k']
+        return self.k
 
     def hint(self):
-        return self.as_dict()['h']
+        return self.h
 
     def hinted(self):
         # Returns hinted key
-        return self.as_dict()['k'] + "-" + self.as_dict()['h'].hint
+        return self.k + "-" + self.h.hint
 
     def to_bytes(self): 
         # Returns hintless key in byte format
-        return self.as_dict()['k'].encode()
+        return self.k.encode()
     
 
-class Key(rlp.Serializable):
+class Key(object):
     """ Single key with weight.
     
     Attributes:
@@ -44,34 +42,31 @@ class Key(rlp.Serializable):
         k (BaseKey): Basekey object for key
         w     (Int): weight
     """
-    fields = (
-        ('h', Hint),
-        ('k', BaseKey),
-        ('w', Int),
-    )
+    def __init__(self, h, k, w):
+        self.h = h
+        self.k = k
+        self.w = w
 
     def key_bytes(self):
         # Returns hintless key in byte format
-        return self.as_dict()['k'].to_bytes()
+        return self.k.to_bytes()
 
     def to_bytes(self):
         # Returns concatenated [key, weight] in byte format
-        d = self.as_dict()
-        bkey = d['k'].hinted().encode()
-        bweight = self.as_dict()['w'].to_bytes()
+        bkey = self.k.hinted().encode()
+        bweight = self.w.to_bytes()
 
         return bconcat(bkey, bweight)
 
     def to_dict(self):
-        d = self.as_dict()
         key = {}
-        key['_hint'] = d['h'].hint
-        key['weight'] = d['w'].value
-        key['key'] = d['k'].hinted()
+        key['_hint'] = self.h.hint
+        key['weight'] = self.w.value
+        key['key'] = self.k.hinted()
         return key
 
 
-class KeysBody(rlp.Serializable):
+class KeysBody(object):
     """ Body of Keys.
 
     Attributes:
@@ -79,16 +74,14 @@ class KeysBody(rlp.Serializable):
         threshold       (Int): threshold
         ks        (List(Key)): List of keys
     """
-    fields = (
-        ('h', Hint),
-        ('threshold', Int),
-        ('ks', List((Key,), False)),
-    )
+    def __init__(self, h, threshold, ks):
+        self.h = h
+        self.threshold = threshold
+        self.ks = ks
 
     def to_bytes(self):
         # Returns concatenated [ks, threshold] in byte format
-        d = self.as_dict()
-        keys = d['ks']
+        keys = self.ks
 
         lkeys = list(keys)
         lkeys.sort(key=lambda x: x.key_bytes())
@@ -98,7 +91,7 @@ class KeysBody(rlp.Serializable):
             bkeys += k.to_bytes()
 
         bkeys = bytes(bkeys)
-        bthreshold = d['threshold'].to_bytes()
+        bthreshold = self.threshold.to_bytes()
 
         return bconcat(bkeys, bthreshold)
 
@@ -106,48 +99,51 @@ class KeysBody(rlp.Serializable):
         return sha.sum256(self.to_bytes())
 
 
-class Keys(rlp.Serializable):
+class Keys(object):
     """ Contains KeysBody and a hash.
 
     Attributes:
         hs       (Hash): Keys Hash
         body (KeysBody): Body object
     """
-    fields = (
-        ('hs', Hash),
-        ('body', KeysBody),
-    )
+    def __init__(self, hs, body):
+        self.hs = hs
+        self.body = body
 
     def to_bytes(self):
-        return self.as_dict()['body'].to_bytes()
+        return self.body.to_bytes()
 
     def hash(self):
-        return self.as_dict()['hs']
+        return self.hs
 
     def to_dict(self):
-        d = self.as_dict()['body'].as_dict()
+        d = self.body
         keys = {}
-        keys['_hint'] = d['h'].hint
+        keys['_hint'] = d.h.hint
         keys['hash'] = self.hash().hash
 
-        _keys = d['ks']
+        _keys = d.ks
         ks = list()
         for _key in _keys:
             ks.append(_key.to_dict())
         keys['keys'] = ks
-        keys['threshold'] = d['threshold'].value
+        keys['threshold'] = d.threshold.value
         return keys
 
 
 # skeleton
-class KeyPair(rlp.Serializable):
-    fields = (
-        ('privkey', BaseKey),
-        ('pubkey', BaseKey),
-    )
+class KeyPair(object):
+    def __init__(self, priv, pub):
+        self.privkey = priv
+        self.pubkey = pub
 
-    def sign(self):
-        pass
+    @property
+    def private_key(self):
+        return self.privkey
+
+    @property
+    def public_key(self):
+        return self.pubkey
 
 
 def to_basekey(type, k):

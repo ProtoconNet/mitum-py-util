@@ -2,29 +2,28 @@ import json
 
 import base58
 from mitumc.common import (Hint, Int, bconcat, getNewToken, iso8601TimeStamp,
-                          parseAddress, parseISOtoUTC)
+                           parseAddress, parseISOtoUTC)
 from mitumc.constant import THRESHOLDS, VERSION
 from mitumc.hash import sha
 from mitumc.hint import (BTC_PRIVKEY, ETHER_PRIVKEY, MC_ADDRESS, MC_AMOUNT,
-                        MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT,
-                        MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_KEY, MC_KEYS,
-                        MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT,
-                        MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT,
-                        MC_TRNASFERS_ITEM_SINGLE_AMOUNT, SEAL, STELLAR_PRIVKEY)
+                         MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT,
+                         MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_KEY, MC_KEYS,
+                         MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT,
+                         MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT,
+                         MC_TRNASFERS_ITEM_SINGLE_AMOUNT, SEAL,
+                         STELLAR_PRIVKEY)
 from mitumc.key.base import Key, Keys, KeysBody, to_basekey
 from mitumc.key.btc import to_btc_keypair
 from mitumc.key.ether import to_ether_keypair
 from mitumc.key.stellar import to_stellar_keypair
-from mitumc.operation.base import Address, Amount, Memo, Operation
-from mitumc.operation.create_accounts import (CreateAccounts,
-                                             CreateAccountsBody,
-                                             CreateAccountsFact,
-                                             CreateAccountsFactBody,
-                                             CreateAccountsItem)
-from mitumc.operation.key_updater import (KeyUpdater, KeyUpdaterBody,
-                                         KeyUpdaterFact, KeyUpdaterFactBody)
-from mitumc.operation.transfers import (Transfers, TransfersBody, TransfersFact,
-                                       TransfersFactBody, TransfersItem)
+from mitumc.operation.base import (Address, Amount, Memo, Operation,
+                                   OperationBody)
+from mitumc.operation.create_accounts import (CreateAccountsFact,
+                                              CreateAccountsFactBody,
+                                              CreateAccountsItem)
+from mitumc.operation.key_updater import KeyUpdaterFact, KeyUpdaterFactBody
+from mitumc.operation.transfers import (TransfersFact, TransfersFactBody,
+                                        TransfersItem)
 
 
 def to_keys(ks):
@@ -127,14 +126,14 @@ def generate_create_accounts(net_id, pk, sender, amt, ks):
     fact_sign_list = list()
     fact_sign_list.append(fact_sign)
 
-    op_body = CreateAccountsBody(
+    op_body = OperationBody(
         Memo(""),
         Hint(MC_CREATE_ACCOUNTS_OP, VERSION),
         fact,
         fact_sign_list,
     )
 
-    op = CreateAccounts(
+    op = Operation(
         op_body.generate_hash(),
         op_body,
     )
@@ -182,14 +181,14 @@ def generate_key_updater(net_id, pk, target, new_pubk, weight, cid):
 
     fact_sign_list = list()
     fact_sign_list.append(fact_sign)
-    op_body = KeyUpdaterBody(
+    op_body = OperationBody(
         Memo(""),
         Hint(MC_KEYUPDATER_OP, VERSION),
         fact,
         fact_sign_list,
     )
 
-    op = KeyUpdater(
+    op = Operation(
         op_body.generate_hash(),
         op_body,
     )
@@ -254,14 +253,14 @@ def generate_transfers(net_id, pk, sender, receiver, amt):
     fact_sign_list = list()
     fact_sign_list.append(fact_sign)
 
-    op_body = TransfersBody(
+    op_body = OperationBody(
         Memo(""),
         Hint(MC_TRANSFERS_OP, VERSION),
         fact,
         fact_sign_list,
     )
 
-    op = Transfers(
+    op = Operation(
         op_body.generate_hash(),
         op_body,
     )

@@ -2,27 +2,20 @@ import datetime
 
 import base58
 import pytz
-import rlp
-from rlp.sedes import big_endian_int, binary, text
 
 
-class Int(rlp.Serializable):
+class Int(object):
     """ Contains big endian integer.
 
     Attributes:
-        int (big_endian_int): Integer by big endian byteorder
+        value (int): Integer by big endian byteorder
     """
-    fields = (
-        ('int', big_endian_int),
-    )
-
-    @property
-    def value(self):
-        return self.as_dict()['int']
+    def __init__(self, value):
+        self.value = value
     
     def tight_bytes(self):
         # Converts int to N length bytes by big endian
-        n = abs(self.as_dict()['int'])
+        n = abs(self.value)
         
         result = bytearray()
         while(n):
@@ -33,7 +26,7 @@ class Int(rlp.Serializable):
 
     def to_bytes(self):
         # Converts int to 8 length bytes by big endian 
-        n = int(self.as_dict()['int'])
+        n = int(self.value)
         count = 0
 
         result = bytearray()
@@ -47,7 +40,7 @@ class Int(rlp.Serializable):
 
     def little4_to_bytes(self):
         # Convert int to 4 length bytes by little endian
-        n = int(self.as_dict()['int'])
+        n = int(self.value)
         count = 0
 
         result = bytearray()
@@ -59,47 +52,44 @@ class Int(rlp.Serializable):
         return bytes(result)
 
 
-class Hint(rlp.Serializable):
+class Hint(object):
     """ Contains type-hint and mitum-currency version.
 
     Attributes:
-        h_type (text): type-hint
-        h_ver  (text): mitum-currency version
+        h_type (str): type-hint
+        h_ver  (str): mitum-currency version
     """
-    fields = (
-        ('h_type', text),
-        ('h_ver', text),
-    )
+    def __init__(self, type, ver):
+        self.h_type = type
+        self.h_ver = ver
     
     @property
     def type(self):
-        return self.as_dict()['h_type']
+        return self.h_type
 
     @property
     def hint(self):
-        d = self.as_dict()
-        return d['h_type'] + ":" + d['h_ver']
+        return self.h_type + ":" + self.h_ver
 
 
-class Hash(rlp.Serializable):
+class Hash(object):
     """ Contains hash digest.
 
     Attributes:
         hs (binary): Hash digest in binary format
     """
-    fields = (
-        ('hs', binary),
-    )
+    def __init__(self, hs):
+        self.hs = hs
 
     @property
     def digest(self):
         # Returns digest of hash in binary format
-        return self.as_dict()['hs']
+        return self.hs
 
     @property
     def hash(self):
         # Returns base58 encoded hash in string format
-        return base58.b58encode(self.as_dict()['hs']).decode()
+        return base58.b58encode(self.digest).decode()
 
 
 def iso8601TimeStamp():

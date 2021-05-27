@@ -1,15 +1,15 @@
+import json
+
 import base58
-import rlp
-from mitumc.common import (Hash, Hint, Int, bconcat, iso8601TimeStamp,
-                           parseAddress, parseISOtoUTC)
+from mitumc.common import (Hint, bconcat, iso8601TimeStamp, parseAddress,
+                           parseISOtoUTC)
 from mitumc.constant import VERSION
+from mitumc.hash import sha
 from mitumc.hint import (BASE_FACT_SIGN, BTC_PRIVKEY, ETHER_PRIVKEY,
                          STELLAR_PRIVKEY)
-from mitumc.key.base import BaseKey
 from mitumc.key.btc import to_btc_keypair
 from mitumc.key.ether import to_ether_keypair
 from mitumc.key.stellar import to_stellar_keypair
-from rlp.sedes import List, binary, text
 
 
 def _newFactSign(b, hinted_priv):
@@ -49,171 +49,190 @@ def _newFactSign(b, hinted_priv):
     )
 
 
-class Memo(rlp.Serializable):
+class Memo(object):
     """ Description for an operation.
 
     Attributes:
-        m (text): Description
+        m (str): Description
     """
-    fields = (
-        ('m', text),
-    )
-    
-    @property
-    def memo(self):
-        return self.as_dict()['m']
+    def __init__(self, memo):
+        self.memo = memo
     
     def to_bytes(self):
-        return self.as_dict()['m'].encode()
+        return self.memo.encode()
 
 
-class Amount(rlp.Serializable):
+class Amount(object):
     """ Single amount.
 
     Attributes:
         h   (Hint): hint; MC_AMOUNT
         big  (Int): Amount in big endian integer
-        cid (text): CurrencyID
+        cid (str): CurrencyID
     """
-    fields = (
-        ('h', Hint),
-        ('big', Int),
-        ('cid', text),
-    )
+    def __init__(self, h, big, cid):
+        self.h = h
+        self.big = big
+        self.cid = cid
 
     def to_bytes(self):
         # Returns concatenated [big, cid] in byte format
-        d = self.as_dict()
-        bbig = d['big'].tight_bytes()
-        bcid = d['cid'].encode()
+        bbig = self.big.tight_bytes()
+        bcid = self.cid.encode()
 
         return bconcat(bbig, bcid)
 
     def to_dict(self):
-        d = self.as_dict()
         amount = {}
-        amount['_hint'] = d['h'].hint
-        amount['amount'] = str(d['big'].value)
-        amount['currency'] = d['cid']
+        amount['_hint'] = self.h.hint
+        amount['amount'] = str(self.big.value)
+        amount['currency'] = self.cid
         return amount
 
 
-class Address(rlp.Serializable):
+class Address(object):
     """ Address with hint.
 
     Attributes:
         h    (Hint): hint; MC_ADDRESS
-        addr (text): address
+        addr (str): address
     """
-    fields = (
-        ('h', Hint),
-        ('addr', text),
-    )
+    def __init__(self, h, addr):
+        self.h = h
+        self.addr = addr
 
     def hint(self):
-        return self.as_dict()['h'].hint
+        return self.h.hint
 
     def hinted(self):
         # Returns hinted address
-        d = self.as_dict()
-        return d['addr'] + '-' + d['h'].hint
+        return self.addr + '-' + self.h.hint
 
     def to_bytes(self):
         # Returns hinted address in byte format
-        return self.as_dict()['addr'].encode()
+        return self.addr.encode()
 
 
-class FactSign(rlp.Serializable):
+class FactSign(object):
     """ Single fact_sign.
 
     Attributes:
         h         (Hint): hint; BASE_FACT_SIGN
         signer (BaseKey): Signer's public key
         sign    (binary): Signature signed by signer
-        t         (text): The time signature generated
+        t         (str): The time signature generated
     """
-    fields = (
-            ('h', Hint),
-            ('signer', BaseKey),
-            ('sign', binary),
-            ('t', text),
-        )
+    def __init__(self, h, signer, sign, t):
+        self.h = h
+        self.signer = signer
+        self.sign = sign
+        self.t = t
 
     def to_bytes(self):
         # Returns concatenated [signer, sign, t] in byte format
-        d = self.as_dict()
-        bsigner = d['signer'].hinted().encode()
-        bsign = d['sign']
-        btime = parseISOtoUTC(d['t']).encode()
+        bsigner = self.signer.hinted().encode()
+        bsign = self.sign
+        btime = parseISOtoUTC(self.t).encode()
 
         return bconcat(bsigner, bsign, btime)
 
     def signed_at(self):
-       return self.as_dict()['t'][:26] + 'Z'
+       return self.t[:26] + 'Z'
 
     def to_dict(self):
-        d = self.as_dict()
         fact_sign = {}
-        fact_sign['_hint'] = d['h'].hint
-        fact_sign['signer'] = d['signer'].hinted()
-        fact_sign['signature'] = base58.b58encode(d['sign']).decode()
+        fact_sign['_hint'] = self.h.hint
+        fact_sign['signer'] = self.signer.hinted()
+        fact_sign['signature'] = base58.b58encode(self.sign).decode()
         fact_sign['signed_at'] = self.signed_at()
         return fact_sign
 
 
 # skeleton: CreateAccountsFactBody, KeyUpdaterFactBody, TransfersFactBody
-class OperationFactBody(rlp.Serializable):
-    fields = (
-        ('h', Hint),
-        ('token', text),
-    )
-
-    def to_bytes(self):
-        pass
-
-    def generate_hash(self):
-        pass
+class OperationFactBody(object):
+    def __init__(self, h, token):
+        self.h = h
+        self.token = token
 
 
 # skeleton: CreateAccountsFact, KeyUpdaterFact, TransfersFact
-class OperationFact(rlp.Serializable):
-    fields = (
-        ('hs', Hash),
-        ('body', OperationFactBody),
-    )
+class OperationFact(object):
+    def __init__(self, hs, body):
+        self.hs = hs
+        self.body = body
 
     def hash(self):
-        return self.as_dict()['hs']
+        return self.hs
 
-    def newFactSign(self, net_id, hinted_priv):
+    def newFactSign(self, net_id, priv):
+        # Generate a fact_sign object for provided network id and private key
+        assert isinstance(net_id, str), '[arg1] Network ID must be provided as string format'
+
         b = bconcat(self.hash().digest, net_id.encode())
-        return _newFactSign(b, hinted_priv)
-    
-    def to_dict(self):
-        pass
+        return _newFactSign(b, priv)
 
 
-# skeleton: CreateAccountsBody, KeyUpdaterBody, TransfersBody
-class OperationBody(rlp.Serializable):
-    fields = (
-        ('h', Hint),
-        ('fact', OperationFact),
-        ('fact_sg', List((FactSign,), False)),
-    )
+class OperationBody(object):
+    """ Body of Operation.
+
+    Attributes:
+        memo        (Memo): Description
+        h           (Hint): hint; MC_[OPERATION-TYPE]_OP
+        fact        (Fact): Fact object corresponding operation-type
+        fact_sg (FactSign): List of fact signatures
+    """
+    def __init__(self, memo, h, fact, fact_sg):
+        self.memo = memo
+        self.h = h
+        self.fact = fact
+        self.fact_sg = fact_sg
+
+    def to_bytes(self):
+        # Returns concatenated [fact.hs, fact_sg, memo] in byte format
+        bfact_hs = self.fact.hash().digest
+        bmemo = self.memo.to_bytes()
+
+        fact_sg = self.fact_sg
+        bfact_sg = bytearray()
+        for sg in fact_sg:
+            bfact_sg += bytearray(sg.to_bytes())
+        bfact_sg = bytes(bfact_sg)
+
+        return bconcat(bfact_hs, bfact_sg, bmemo)
 
     def generate_hash(self):
-        pass
+        return sha.sum256(self.to_bytes())
 
 
-# skeleton: CreateAccounts, KeyUpdater, Transfers
-class Operation(rlp.Serializable):
-    fields = (
-        ('hs', Hash),
-        ('body', OperationBody),
-    )
+class Operation(object):
+    """ Operation.
+
+    Attributes:
+        hs (Hash): Operation Hash
+        body (Body): Body object corresponding operation-type
+    """
+    def __init__(self, hs, body):
+        self.hs = hs
+        self.body = body
 
     def hash(self):
-        return self.as_dict()['hs']
+        return self.hs
 
     def to_dict(self):
-        pass
+        d = self.body
+        oper = {}
+        oper['memo'] = d.memo.memo
+        oper['_hint'] = d.h.hint
+        oper['fact'] = d.fact.to_dict()
+        oper['hash'] = self.hash().hash
+
+        fact_signs = list()
+        for _sg in d.fact_sg:
+            fact_signs.append(_sg.to_dict())
+        oper['fact_signs'] = fact_signs
+
+        return oper
+
+    def to_json(self, file_name):
+        with open(file_name, "w") as fp:
+            json.dump(self.to_dict(), fp)

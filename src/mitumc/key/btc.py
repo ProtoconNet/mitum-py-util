@@ -10,7 +10,7 @@ from ecdsa.curves import SECP256k1
 from ecdsa.util import sigencode_der_canonize
 from mitumc.hash import sha
 from mitumc.hint import BTC_PBLCKEY, BTC_PRIVKEY
-from mitumc.key.base import BaseKey, KeyPair, to_basekey
+from mitumc.key.base import KeyPair, to_basekey
 
 
 class BTCKeyPair(KeyPair):
@@ -20,10 +20,8 @@ class BTCKeyPair(KeyPair):
         privkey (BaseKey): BTC Private Key
         pubkey  (BaseKey): BTC Public Key
     """
-    fields = (
-        ('privkey', BaseKey),
-        ('pubkey', BaseKey),
-    )
+    def __init__(self, priv, pub):
+        super(BTCKeyPair, self).__init__(priv, pub)
 
     def sign(self, b):
         """ Returns raw BTC-ECDSA signature for binary input.
@@ -39,16 +37,12 @@ class BTCKeyPair(KeyPair):
         setup('mainnet')
         
         hs = sha.sha256(b).digest
-        wif = self.as_dict()['privkey'].key
+        wif = self.privkey.key
         
         pk = PrivateKey(wif=wif)
         sk = ecdsa.SigningKey.from_string(pk.key.to_string(), curve=SECP256k1)
         
         return sk.sign(hs, hashfunc=hashlib.sha256, sigencode=sigencode_der_canonize)
-
-    @property
-    def public_key(self):
-        return self.as_dict()['pubkey']
 
 
 def to_btc_keypair(priv):

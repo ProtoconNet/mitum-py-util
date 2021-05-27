@@ -91,7 +91,7 @@ You can create json file of the operation by to_json(file_name) method.
 >>> createAccounts.to_json("create_account.json")
 ```
 
-Then the result will be like [this](example/create_accounts.json)
+Then the result will be like [this](example/create_accounts.json).
 
 ### Generate Key-Updater
 
