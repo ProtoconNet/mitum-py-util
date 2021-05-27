@@ -7,7 +7,6 @@
 Recommended requirements for 'mitum-py-util' are,
 
 * python v3.9 or later.
-* rlp v2.0.1
 * base58 v2.1.0
 * pybase64 v1.1.4
 * ecdsa v0.13.3
