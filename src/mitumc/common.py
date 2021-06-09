@@ -69,7 +69,7 @@ class Hint(object):
 
     @property
     def hint(self):
-        return self.h_type + ":" + self.h_ver
+        return self.h_type + "-" + self.h_ver
 
 
 class Hash(object):
@@ -130,8 +130,32 @@ def parseAddress(addr):
         addr (str): Address(or key) without hint
     """
     assert isinstance(addr, str), 'Input must be provided in string format'
-    assert '-' in addr, 'Invalid format of Address(or key)'
+    assert ':' in addr, 'Invalid format of Address(or key)'
 
-    idx = addr.index('-')
-    type = addr[idx+1:idx+5]
+    idx = addr.index(':')
+
+    idx2 = -1
+
+    ver_count = 0
+    dot_count = 0
+    lastNum = False
+    for i in range(len(addr)-1, idx, -1):
+        if addr[i] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            if lastNum == False:
+                ver_count += 1
+            lastNum = True
+        else:
+            lastNum = False
+        if '.' == addr[i]:
+            dot_count += 1
+        if 'v' == addr[i] and dot_count == 2 and ver_count == 3:
+            idx2 = i
+            if addr[i-1] != '-':
+                idx2 = -1
+            break
+        
+    assert idx2 != -1, 'Invalid hint'
+
+    type = addr[idx+1:idx2-1]
+
     return type, addr[:idx]

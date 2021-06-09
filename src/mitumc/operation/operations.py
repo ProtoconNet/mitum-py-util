@@ -43,7 +43,7 @@ def to_keys(ks):
         
         key, w = _key
         assert isinstance(key, str), 'Key must be provided in string format'
-        assert '-' in key, 'Key must be hinted'
+        assert ':' in key, 'Key must be hinted'
         assert isinstance(w, int), 'Invalid weight of key'
         
         t, k = parseAddress(key)

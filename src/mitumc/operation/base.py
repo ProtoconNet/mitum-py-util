@@ -24,7 +24,7 @@ def _newFactSign(b, hinted_priv):
     """
     assert isinstance(b, bytes), '[arg1] Must be provided in byte format'
     assert isinstance(hinted_priv, str), '[arg2] Key must be provided in string format'
-    assert '-' in hinted_priv, '[arg2] Key must be hinted'
+    assert ':' in hinted_priv, '[arg2] Key must be hinted'
 
     stype, saddr = parseAddress(hinted_priv)
     signature = None
@@ -106,7 +106,7 @@ class Address(object):
 
     def hinted(self):
         # Returns hinted address
-        return self.addr + '-' + self.h.hint
+        return self.addr + ':' + self.h.hint
 
     def to_bytes(self):
         # Returns hinted address in byte format

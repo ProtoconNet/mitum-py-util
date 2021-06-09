@@ -39,7 +39,7 @@ def to_stellar_keypair(priv):
         StellarKeyPair: StellarKeyPair for priv
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
-    assert '-' not in priv, 'Key must be parsed before generating KeyPair'
+    assert ':' not in priv, 'Key must be parsed before generating KeyPair'
 
     kp = stellar.Keypair.from_secret(priv)
     pubk = kp.public_key

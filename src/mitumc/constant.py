@@ -1,8 +1,8 @@
 # mitum-currency Version
-VERSION = "0.0.1"
+VERSION = "v0.0.1"
 
 # mitumc Version
-_VERSION = "0.1"
+_VERSION = "v0.1"
 
 # Network ID - Default
 NETWORK_ID = "mitum"

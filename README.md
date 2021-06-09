@@ -69,9 +69,9 @@ generate_create_accounts(network_id, source_private_key, source_address, amount,
 ```python
 >>> from mitumc.operation import generate_create_accounts
 
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE-0112:0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG-a000:0.0.1"
->>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X-0113:0.0.1"
+>>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
+>>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
+>>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X:btc-pub-v0.0.1"
 
 >>> network_id = "mitum"
 
@@ -90,7 +90,8 @@ You can create json file of the operation by to_json(file_name) method.
 >>> createAccounts.to_json("create_account.json")
 ```
 
-Then the result will be like [this](example/create_accounts.json).
+Then the result format will be like [this](example/create_accounts.json). (Each value is up to input arguments and time)
+
 
 ### Generate Key-Updater
 
@@ -109,9 +110,9 @@ generate_key_updater(network_id, source_private_key, source_address, target_publ
 ```python
 >>> from mitumc.operation import generate_key_updater
 
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE-0112:0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG-a000:0.0.1"
->>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X-0113:0.0.1"
+>>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
+>>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
+>>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X:btc-pub-v0.0.1"
 
 >>> network_id = "mitum"
 
@@ -136,9 +137,9 @@ generate_transfers(network_id, source_private_key, source_address, target_addres
 ```python
 >>> from mitumc.operation import generate_transfers
 
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE-0112:0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG-a000:0.0.1"
->>> target_address = "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg-a000:0.0.1"
+>>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
+>>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
+>>> target_address = "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg:mca-v0.0.1"
 
 >>> network_id = "mitum"
 
@@ -175,13 +176,14 @@ generate_seal(file_name, network_id, signing_key, operations)
 ```python
 >>> from mitumc.operation import generate_seal, generate_create_accounts, generate_key_updater, generate_transfers
 
->>> source_prv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok-0112:0.0.1"
->>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn-a000:0.0.1"
+>>> source_prv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
 
->>> ac1_prv = "SBGISVULOQA6BPEYF4OS2JGMBST7HYCBSL3TA2QRVGRNBMVWIZVE6336-0110:0.0.1"
->>> ac1_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35-0111:0.0.1"
->>> ac2_addr = "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt-a000:0.0.1"
->>> ac3_pub = "GCV6WZ5U7HXFOXWTMLUXCG4PW3KP2YYTMAPZDE3IIVWQY7Q6SYPG63TZ-0111:0.0.1"
+>>> ac1_prv = "SBGISVULOQA6BPEYF4OS2JGMBST7HYCBSL3TA2QRVGRNBMVWIZVE6336:stellar-priv-v0.0.1"
+>>> ac1_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
+>>> ac1_addr = "8HQt6CfBVgMhLmPxcataTF2CXHuw2Km32FAcW7FXmQZ3:mca-v0.0.1"
+>>> ac2_addr = "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1"
+>>> ac3_pub = "GCV6WZ5U7HXFOXWTMLUXCG4PW3KP2YYTMAPZDE3IIVWQY7Q6SYPG63TZ:stellar-pub-v0.0.1"
 
 >>> createAccounts = generate_create_accounts("mitum", source_prv, source_addr, (100, "MCC"), [(ac1_pub, 100)])
 >>> keyUpdater = generate_key_updater("mitum", ac1_prv, ac1_addr, ac3_pub, 100, "MCC")
@@ -193,7 +195,7 @@ generate_seal(file_name, network_id, signing_key, operations)
 >>> generate_seal("seal.json", network_id, source_prv, operations)
 ```
 
-Then the result will be like [this](example/seal.json).
+Then the result format will be like [this](example/seal.json). (Each value is up to input arguments and time)
 
 ## Send Seal to Network
 
@@ -224,7 +226,7 @@ mitumc_hash.py
 >>> print(sha2_hash.digest)
 >>> print(sha2_hash.hash)
 >>> print(sha3_hash.digest)
->>>print(sha3_hash.hash)
+>>> print(sha3_hash.hash)
 ```
 
 The result will be,

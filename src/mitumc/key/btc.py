@@ -55,7 +55,7 @@ def to_btc_keypair(priv):
         BTCKeyPair: BTCKeyPair for priv
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
-    assert '-' not in priv, 'Key must be parsed before generating KeyPair'
+    assert ':' not in priv, 'Key must be parsed before generating KeyPair'
 
     wif = base58.b58encode_check(base58.b58decode_check(priv)[:-1]).decode()
     wallet = Wallet(wif)

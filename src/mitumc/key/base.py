@@ -27,7 +27,7 @@ class BaseKey(object):
 
     def hinted(self):
         # Returns hinted key
-        return self.k + "-" + self.h.hint
+        return self.k + ":" + self.h.hint
 
     def to_bytes(self): 
         # Returns hintless key in byte format

@@ -57,7 +57,7 @@ def to_ether_keypair(priv):
         ETHKeyPair: ETHKeyPair for priv
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
-    assert '-' not in priv, 'Key must be parsed before generating KeyPair'
+    assert ':' not in priv, 'Key must be parsed before generating KeyPair'
 
     pk = keys.PrivateKey(codecs.decode(priv, "hex"))
     pubk = pk.public_key.to_hex()[0] + '4' + pk.public_key.to_hex()[2:]
