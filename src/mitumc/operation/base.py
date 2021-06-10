@@ -38,6 +38,8 @@ def _newFactSign(b, hinted_priv):
     elif stype == STELLAR_PRIVKEY:
         kp = to_stellar_keypair(saddr)
         signature = kp.sign(bconcat(b)) 
+    else:
+        return None
 
     vk = kp.public_key
 

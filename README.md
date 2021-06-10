@@ -85,7 +85,7 @@ When you use 'Generator', you must set 'network id' before you create something.
 >>> from mitumc.operation import Generator
 
 >>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
 >>> target_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
 
 >>> generator = Generator("mitum")
@@ -125,7 +125,7 @@ Key-Updater literally supports to update cource public key to something else.
 >>> from mitumc.operation import Generator
 
 >>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
 >>> target_pub = "04c7a0b69c4041d2d3cf60d9318b5fdb1c29c7f63b3514aab52db6a852083dd3e1065afa8524c4ba54688ae36055377b2bb3de931054c124f01f38e7eab27e9e8f:ether-pub-v0.0.1"
 
 >>> generator = Generator('mitum')
@@ -152,8 +152,8 @@ To generate an operation, you must prepare target address, not public key. Trans
 >>> from mitumc.operation import Generator
 
 >>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
->>> target_addr = "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg:mca-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+>>> target_addr = "CzCW7V9Doi71dLJVXcdnS6V4BJDzvPdY28YCn1ksiG4m:mca-v0.0.1"
 
 >>> generator = Generator('mitum')
 
