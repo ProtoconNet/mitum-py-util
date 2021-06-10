@@ -83,8 +83,8 @@ class CreateAccountsFact(OperationFact):
         hs                     (Hash): Fact Hash
         body (CreateAccountsFactBody): Fact body object
     """
-    def __init__(self, hs, body):
-        super(CreateAccountsFact, self).__init__(hs, body)
+    def __init__(self, net_id, hs, body):
+        super(CreateAccountsFact, self).__init__(net_id, hs, body)
 
     def hash(self):
         return self.hs

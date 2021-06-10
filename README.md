@@ -51,42 +51,64 @@ Before generating new operation, you should check below,
 
 Notice that the package name of 'mitum-py-util' is 'mitumc' for python codes.
 
+* Every key, address, and keypair must be that of mitum-currency.
+
+### Generator
+
+'mitumc' package provides 'Generator' class to generate operations.
+
+Modules that 'Generator' supports are,
+
+```python
+>>> Generator.set_id(net_id) 
+>>> Generator.createKeys(keys, threshold)
+>>> Generator.createAmounts(amounts) 
+>>> Generator.createCreateAccountsItem(keys_o, amounts)
+>>> Generator.createTransfersItem(receiver, amoutns)
+>>> Generator.createCreateAccountsFact(sender, items)
+>>> Generator.createKeyUpdaterFact(target, cid, keys_o)
+>>> Generator.createTransfersFact(sender, items)
+>>> Generator.createOperation(fact, memo)
+```
+
+You can check use-cases of Generator in the next part.
+
 ### Generate Create-Accounts 
 
 To generate an operation, 'currency id' and 'initial amount' must be set. With source account, you can create and register new account of target public key.
 
+When you use 'Generator', you must set 'network id' before you create something.
+
 #### Usage
 
 ```python
-generate_create_accounts(network_id, source_private_key, source_address, amount, target_keys)
-```
+>>> from mitumc.operation import Generator
 
-* 'amount' must be 2-length tuple in (big, currency id) format.
-* 'target_keys' must be a list of 2-length tuple in (target_public_key, weight) format.
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> target_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
 
-#### Example
+>>> generator = Generator("mitum")
 
-```python
->>> from mitumc.operation import generate_create_accounts
-
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
->>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X:btc-pub-v0.0.1"
-
->>> network_id = "mitum"
+>>> key = (target_pub, 100)
+>>> keys_o = generator.createKeys([_key], 100)
 
 >>> amount = (100, "MCC")
+>>> amounts = generator.createAmounts([_amount])
 
->>> target_key = (target_public_key, 100)
->>> target_keys = list()
->>> target_keys.append(target_key)
+>>> createAccountsItem = generator.createCreateAccountsItem(keys_o, amounts)
+>>> createAccountsFact = generator.createCreateAccountsFaact(source_addr, [createAccountsItem])
 
->>> createAccounts = generate_create_accounts(network_id, source_private_key, source_address, amount, targets)
+>>> createAccounts = generator.createOperation(createAccountsFact, "")
+>>> createAccounts.addFactSign(source_priv)
 ```
 
-You can create json file of the operation by to_json(file_name) method.
+You must add new fact signature by addFactSign before create seal or json files from an operation.
+
+Then Operation.to_dict() and Operation.to_json(file_name) methods work correctly.
 
 ```python
+>>> createAccounts.to_dict()
 >>> createAccounts.to_json("create_account.json")
 ```
 
@@ -100,23 +122,23 @@ Key-Updater literally supports to update cource public key to something else.
 #### Usage
 
 ```python
-generate_key_updater(network_id, source_private_key, source_address, target_public_key, weight, currency_id)
-```
+>>> from mitumc.operation import Generator
 
-* Every arguments must be single instance. (not tuple, list or somethine else...)
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> target_pub = "04c7a0b69c4041d2d3cf60d9318b5fdb1c29c7f63b3514aab52db6a852083dd3e1065afa8524c4ba54688ae36055377b2bb3de931054c124f01f38e7eab27e9e8f:ether-pub-v0.0.1"
 
-#### Example
+>>> generator = Generator('mitum')
 
-```python
->>> from mitumc.operation import generate_key_updater
+>>> key = (target_pub, 100)
+>>> keys = generator.createKeys([key], 100)
 
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
->>> target_public_key = "27LZo3wxW5T9VH5Da1La9bCSg1VfnaKtNvb3Gmg115N6X:btc-pub-v0.0.1"
+>>> keyUpdaterFact = generator.createKeyUpdaterFact(source_addr, "MCC", keys)
 
->>> network_id = "mitum"
+>>> keyUpdater = generator.createOperation(keyUpdaterFact, "")
+>>> keyUpdater.addFactSign(source_priv)
 
->>> keyUpdater = generate_key_updater(network_id, source_private_key, source_address, target_public_key, 100, "MCC")
+>>> keyUpdater.to_dict()
 >>> keyUpdater.to_json("key_updater.json")
 ```
 
@@ -127,26 +149,26 @@ To generate an operation, you must prepare target address, not public key. Trans
 #### Usage
 
 ```python
-generate_transfers(network_id, source_private_key, source_address, target_address, amount)
-```
+>>> from mitumc.operation import Generator
 
-* 'amount' must be 2-length tuple in (big, currency id) format.
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> target_addr = "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg:mca-v0.0.1"
 
-#### Example
-
-```python
->>> from mitumc.operation import generate_transfers
-
->>> source_private_key = "L1oTaxcPztdqAU7ZzrHMWLnX2iUm6MhMW3RxT5YByiEpceDbUhPE:btc-priv-v0.0.1"
->>> source_address = "8AwAwFAaboopKDH7Nriq9Sq2eb2xjThMBFtWWCt3iebG:mca-v0.0.1"
->>> target_address = "CHmkPR6GqTZfxrs1ptoWupsgvzkgvNdE7ZzhvimGUErg:mca-v0.0.1"
-
->>> network_id = "mitum"
+>>> generator = Generator('mitum')
 
 >>> amount = (100, "MCC")
+>>> amounts = generator.createAmounts([amount])
 
->>> transfers = generate_transfers(network_id, source_private_key, source_address, target_address, amount)
->>> transfers.to_json("transfers.json")
+>>> transfersItem = generator.createTransfersItem(target_addr, amounts)
+
+>>> transfersFact = generator.createTransfersFact(source_addr, [transfersItem])
+
+>>> transfers = generator.createOperation(transfersFact, "")
+>>> transfers.addFactSign(source_priv)
+
+>>> transfers.to_dict()
+>>> transfers.to_json('transfers.json')
 ```
 
 ## Generate New Seal
@@ -162,40 +184,45 @@ To generate a seal, 'mitum-py-util' requires,
 
 Registration of 'signing key' is not neccessary.
 
-### Usage
+### JSONParser
+
+You can create a json file from generated seal object without 'JSONParser' class provided by 'mitumc'. However, I recommend that use 'JSONParser' for convenience.
+
+Modules that 'JSONParser' supports are,
 
 ```python
-generate_seal(file_name, network_id, signing_key, operations)
+>>> JSONParser.toJSONString(seal)
+>>> JSONParser.generateFile(seal, fName)
 ```
 
-* 'signing key' must be a private key of 'mitum-currency' kepair.
-* Every elements of operations list must be pre-constructed by 'generate_create_accounts', 'generate_key_updater', or 'generate_transfers'.
+A use-case of 'JSONParser' will be introduced in the next part.
+
+### Usage
+
+First of all, suppose that every operation is that generated by 'Generator'. (createAccounts, keyUpdater, Transfers)
 
 ### Example
 
 ```python
->>> from mitumc.operation import generate_seal, generate_create_accounts, generate_key_updater, generate_transfers
+>>> from mitumc.operation import Generator, JSONParser
 
->>> source_prv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "8PdeEpvqfyL3uZFHRZG5PS3JngYUzFFUGPvCg29C2dBn:mca-v0.0.1"
+>>> generator = Generator('mitum')
 
->>> ac1_prv = "SBGISVULOQA6BPEYF4OS2JGMBST7HYCBSL3TA2QRVGRNBMVWIZVE6336:stellar-priv-v0.0.1"
->>> ac1_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
->>> ac1_addr = "8HQt6CfBVgMhLmPxcataTF2CXHuw2Km32FAcW7FXmQZ3:mca-v0.0.1"
->>> ac2_addr = "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1"
->>> ac3_pub = "GCV6WZ5U7HXFOXWTMLUXCG4PW3KP2YYTMAPZDE3IIVWQY7Q6SYPG63TZ:stellar-pub-v0.0.1"
+... omitted
+''' Create each operation [createAccounts, keyUpdater, transfers] with generator. See above sections.
+'''
+...
 
->>> createAccounts = generate_create_accounts("mitum", source_prv, source_addr, (100, "MCC"), [(ac1_pub, 100)])
->>> keyUpdater = generate_key_updater("mitum", ac1_prv, ac1_addr, ac3_pub, 100, "MCC")
->>> transfers = generate_transfers("mitum", source_prv, source_addr, ac2_addr, (100, "MCC"))
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
 
 >>> operations = [createAccounts, keyUpdater, transfers]
->>> network_id = "mitum"
+>>> seal = generator.createSeal(source_priv, operations)
 
->>> generate_seal("seal.json", network_id, source_prv, operations)
+>>> JSONParser.toJSONString(seal)
+>>> JSONParser.generateFile(seal, 'seal.json')
 ```
 
-Then the result format will be like [this](example/seal.json). (Each value is up to input arguments and time)
+Then the result format of generateFile() will be like [this](example/seal.json). (Each value is up to input arguments and time)
 
 ## Send Seal to Network
 

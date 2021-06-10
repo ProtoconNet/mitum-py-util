@@ -1,5 +1,4 @@
-from mitumc.operation import key_updater
-from mitumc.operation.operations import generate_create_accounts, generate_key_updater, generate_seal, generate_transfers
+from mitumc.operation.generator import Generator, JSONParser
 
 source_prv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
 source_pub = "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1"
@@ -17,12 +16,56 @@ ac3_prv = "SBEJGCQ4OBOOIHFWZBEHOI6FSSTDLATDFY73QIZANP2J6KMLL77CAI4D:stellar-priv
 ac3_pub = "GCV6WZ5U7HXFOXWTMLUXCG4PW3KP2YYTMAPZDE3IIVWQY7Q6SYPG63TZ:stellar-pub-v0.0.1"
 ac3_addr = "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1"
 
-createAccounts = generate_create_accounts(
-    "mitum", source_prv, source_addr, (100, "MCC"), [(ac1_pub, 100)]
-)
-keyUpdater = generate_key_updater("mitum", ac1_prv, ac1_addr, ac3_pub, 100, "MCC")
-transfers = generate_transfers("mitum", source_prv, source_addr, ac2_addr, (100, "MCC"))
+generator = Generator('mitum')
+
+_key = (ac1_pub, 100)
+_keys = [_key]
+keys = generator.createKeys(_keys, 100)
+
+_amount = (100, 'MCC')
+_amounts = [_amount]
+amounts = generator.createAmounts(_amounts)
+
+_createAccountsItem = generator.createCreateAccountsItem(keys, amounts)
+createAccountsItems = [_createAccountsItem]
+
+createAccountsFact = generator.createCreateAccountsFact(source_addr, createAccountsItems)
+
+createAccounts = generator.createOperation(createAccountsFact, "")
+createAccounts.addFactSign(source_prv)
+
+# print(createAccounts.to_dict())
+createAccounts.to_json('../example/create_accounts.json')
+
+_key2 = (ac2_pub, 100)
+_keys2 = [_key2]
+keys2 = generator.createKeys(_keys2, 100)
+
+keyUpdaterFact = generator.createKeyUpdaterFact(source_addr, "MCC", keys2)
+
+keyUpdater = generator.createOperation(keyUpdaterFact, "")
+keyUpdater.addFactSign(source_prv)
+
+# print(keyUpdater.to_dict())
+keyUpdater.to_json('../example/key_updater.json')
+
+_amount2 = (100, 'MCC')
+_amounts2 = [_amount2]
+amounts2 = generator.createAmounts(_amounts2)
+
+_transfersItem = generator.createTransfersItem(ac3_addr, amounts2)
+transfersItems = [_transfersItem]
+
+transfersFact = generator.createTransfersFact(source_addr, transfersItems)
+
+transfers = generator.createOperation(transfersFact, "")
+transfers.addFactSign(source_prv)
+
+# print(transfers.to_dict())
+transfers.to_json('../example/transfers.json')
 
 operations = [createAccounts, keyUpdater, transfers]
+seal = generator.createSeal(source_prv, operations)
 
-generate_seal("seal.json", "mitum", source_prv, operations)
+# print(JSONParser.toJSONString(seal))
+JSONParser.generateFile(seal, '../example/seal.json')

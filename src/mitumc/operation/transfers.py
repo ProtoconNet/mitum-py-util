@@ -82,8 +82,8 @@ class TransfersFact(OperationFact):
         hs                (Hash): Fact Hash
         body (TransfersFactbody): Fact body object
     """
-    def __init__(self, hs, body):
-        super(TransfersFact, self).__init__(hs, body)
+    def __init__(self, net_id, hs, body):
+        super(TransfersFact, self).__init__(net_id, hs, body)
 
     def to_dict(self):
         d = self.body

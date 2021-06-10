@@ -157,18 +157,20 @@ class OperationFactBody(object):
 
 # skeleton: CreateAccountsFact, KeyUpdaterFact, TransfersFact
 class OperationFact(object):
-    def __init__(self, hs, body):
+    def __init__(self, net_id, hs, body):
         self.hs = hs
         self.body = body
+        self.net_id = net_id
 
     def hash(self):
         return self.hs
 
-    def newFactSign(self, net_id, priv):
-        # Generate a fact_sign object for provided network id and private key
-        assert isinstance(net_id, str), '[arg1] Network ID must be provided as string format'
+    def hint(self):
+        return self.body.h.type
 
-        b = bconcat(self.hash().digest, net_id.encode())
+    def newFactSign(self, priv):
+        # Generate a fact_sign object for provided network id and private key
+        b = bconcat(self.hash().digest, self.net_id.encode())
         return _newFactSign(b, priv)
 
 
@@ -181,14 +183,16 @@ class OperationBody(object):
         fact        (Fact): Fact object corresponding operation-type
         fact_sg (FactSign): List of fact signatures
     """
-    def __init__(self, memo, h, fact, fact_sg):
+    def __init__(self, memo, h, fact):
         self.memo = memo
         self.h = h
         self.fact = fact
-        self.fact_sg = fact_sg
+        self.fact_sg = []
 
     def to_bytes(self):
         # Returns concatenated [fact.hs, fact_sg, memo] in byte format
+        assert self.fact_sg, 'Fact Sign is empty!'
+        
         bfact_hs = self.fact.hash().digest
         bmemo = self.memo.to_bytes()
 
@@ -199,6 +203,10 @@ class OperationBody(object):
         bfact_sg = bytes(bfact_sg)
 
         return bconcat(bfact_hs, bfact_sg, bmemo)
+
+    def addFactSign(self, priv):
+        new_fact_sg = self.fact.newFactSign(priv)
+        self.fact_sg.append(new_fact_sg)
 
     def generate_hash(self):
         return sha.sum256(self.to_bytes())
@@ -211,14 +219,20 @@ class Operation(object):
         hs (Hash): Operation Hash
         body (Body): Body object corresponding operation-type
     """
-    def __init__(self, hs, body):
-        self.hs = hs
+    def __init__(self, body):
+        self.hs = None
         self.body = body
 
+    def addFactSign(self, priv):
+        self.body.addFactSign(priv)
+        self.hs = self.body.generate_hash()
+
     def hash(self):
+        assert self.body.fact_sg, 'Fact Sign is empty!'
         return self.hs
 
     def to_dict(self):
+        assert self.body.fact_sg, 'Fact Sign is empty!'
         d = self.body
         oper = {}
         oper['memo'] = d.memo.memo
@@ -234,5 +248,6 @@ class Operation(object):
         return oper
 
     def to_json(self, file_name):
+        assert self.body.fact_sg, 'Fact Sign is empty!'
         with open(file_name, "w") as fp:
             json.dump(self.to_dict(), fp)
