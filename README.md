@@ -103,7 +103,7 @@ When you use 'Generator', you must set 'network id' before you create something.
 >>> createAccounts.addFactSign(source_priv)
 ```
 
-You must add new fact signature by addFactSign before create seal or json files from an operation.
+You must add new fact signature by addFactSign before creating seal or json files from an operation.
 
 Then Operation.to_dict() and Operation.to_json(file_name) methods work correctly.
 
@@ -117,7 +117,7 @@ Then the result format will be like [this](example/create_accounts.json). (Each 
 
 ### Generate Key-Updater
 
-Key-Updater literally supports to update cource public key to something else.
+Key-Updater literally supports to update source public key to something else.
 
 #### Usage
 
@@ -186,7 +186,7 @@ Registration of 'signing key' is not neccessary.
 
 ### JSONParser
 
-You can create a json file from generated seal object without 'JSONParser' class provided by 'mitumc'. However, I recommend that use 'JSONParser' for convenience.
+You can create a json file from generated seal object without 'JSONParser' class provided by 'mitumc'. However, I recommend to use 'JSONParser' for convenience.
 
 Modules that 'JSONParser' supports are,
 
