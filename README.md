@@ -1,6 +1,6 @@
 # mitum-py-util
 
-'mitum-py-util' will introduce the usage of mitum-currency for python.
+'mitum-py-util' will introduce the usage of [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for python.
 
 ## Installation
 
@@ -75,7 +75,7 @@ You can check use-cases of Generator in the next part.
 
 ### Generate Create-Accounts 
 
-To generate an operation, 'currency id' and 'initial amount' must be set. With source account, you can create and register new account of target public key.
+For new account, 'currency id' and 'initial amount' must be set. With source account, you can create and register new account of target public key.
 
 When you use 'Generator', you must set 'network id' before you create something.
 
@@ -91,13 +91,13 @@ When you use 'Generator', you must set 'network id' before you create something.
 >>> generator = Generator("mitum")
 
 >>> key = (target_pub, 100)
->>> keys_o = generator.createKeys([_key], 100)
+>>> keys_o = generator.createKeys([key], 100)
 
 >>> amount = (100, "MCC")
->>> amounts = generator.createAmounts([_amount])
+>>> amounts = generator.createAmounts([amount])
 
 >>> createAccountsItem = generator.createCreateAccountsItem(keys_o, amounts)
->>> createAccountsFact = generator.createCreateAccountsFaact(source_addr, [createAccountsItem])
+>>> createAccountsFact = generator.createCreateAccountsFact(source_addr, [createAccountsItem])
 
 >>> createAccounts = generator.createOperation(createAccountsFact, "")
 >>> createAccounts.addFactSign(source_priv)
