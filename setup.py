@@ -13,7 +13,7 @@ setup(
     install_requires = [
         'base58', 'pybase64',
         'ecdsa', 'bitcoinaddress', 'bitcoin-utils',
-        'eth_keys', 'stellar_sdk',
+        'eth-keys', 'stellar-sdk',
         'pytz', 'datetime'
     ],
     packages         = find_packages('./src', exclude=['test', 'test_run']),
