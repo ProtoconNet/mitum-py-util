@@ -28,6 +28,14 @@ $ cd mitum-py-util
 $ python setup.py install
 ```
 
+If setup.py doesn't work properly, please just install necessary packages with requirements.txt before run setup.py.
+
+```sh
+$ cd mitum-py-util
+
+$ pip install -r requirements.txt
+```
+
 ## Generate New Operation
 
 ### Operations
