@@ -253,3 +253,4 @@ class Operation(object):
         assert self.body.fact_sg, 'Fact Sign is empty!'
         with open(file_name, "w") as fp:
             json.dump(self.to_dict(), fp)
+

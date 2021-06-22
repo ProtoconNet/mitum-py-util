@@ -5,7 +5,7 @@ import ecdsa
 from ecdsa import curves
 from ecdsa.util import sigencode_der_canonize
 from eth_keys import keys
-from mitumc.common import Int, bconcat
+from mitumc.common import Int, bconcat, parseAddress
 from mitumc.hint import ETHER_PBLCKEY, ETHER_PRIVKEY
 from mitumc.key.base import KeyPair, to_basekey
 
@@ -57,7 +57,9 @@ def to_ether_keypair(priv):
         ETHKeyPair: ETHKeyPair for priv
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
-    assert ':' not in priv, 'Key must be parsed before generating KeyPair'
+    
+    if ':' in priv:
+        _, priv = parseAddress(priv)
 
     pk = keys.PrivateKey(codecs.decode(priv, "hex"))
     pubk = pk.public_key.to_hex()[0] + '4' + pk.public_key.to_hex()[2:]
@@ -66,3 +68,12 @@ def to_ether_keypair(priv):
         to_basekey(ETHER_PRIVKEY, priv),
         to_basekey(ETHER_PBLCKEY, pubk),
     )
+
+def _get_keypair():
+    """ Returns new ETHKeyPair.
+
+    Returns:
+        ETHKeyPair
+    """
+    pk = ecdsa.SigningKey.generate(curve=curves.SECP256k1, hashfunc=hashlib.sha256)
+    return to_ether_keypair(pk.to_string().hex())

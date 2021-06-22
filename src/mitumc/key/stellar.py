@@ -1,3 +1,4 @@
+from mitumc.common import parseAddress
 import stellar_sdk as stellar
 from mitumc.hint import STELLAR_PBLCKEY, STELLAR_PRIVKEY
 from mitumc.key.base import KeyPair, to_basekey
@@ -39,7 +40,9 @@ def to_stellar_keypair(priv):
         StellarKeyPair: StellarKeyPair for priv
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
-    assert ':' not in priv, 'Key must be parsed before generating KeyPair'
+    
+    if ':' in priv:
+        _, priv = parseAddress(priv)
 
     kp = stellar.Keypair.from_secret(priv)
     pubk = kp.public_key
@@ -47,3 +50,11 @@ def to_stellar_keypair(priv):
     return StellarKeyPair(
         to_basekey(STELLAR_PRIVKEY, kp.secret),
         to_basekey(STELLAR_PBLCKEY, pubk))
+
+def _get_keypair():
+    """ Returns new StellarKeyPair.
+
+    Returns:
+        StellarKeyPair
+    """
+    return to_stellar_keypair(stellar.Keypair.random().secret)
