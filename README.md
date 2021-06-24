@@ -2,8 +2,6 @@
 
 'mitum-py-util' will introduce the usage of [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for python.
 
-This project is being totally copied to [ProtoconNet/mitum-py-util](https://github.com/ProtoconNet/mitum-py-util).
-
 ## Installation
 
 Recommended requirements for 'mitum-py-util' are,
