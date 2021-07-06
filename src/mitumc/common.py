@@ -22,7 +22,7 @@ class Int(object):
             result.append(n & 0xff)
             n = n >> 8
         
-        return bytes(result[::-1])
+        return bytes(result)
 
     def to_bytes(self):
         # Converts int to 8 length bytes by big endian 
