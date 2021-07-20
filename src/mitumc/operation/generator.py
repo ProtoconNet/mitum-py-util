@@ -17,7 +17,7 @@ from mitumc.key.btc import to_btc_keypair
 from mitumc.key.ether import to_ether_keypair
 from mitumc.key.stellar import to_stellar_keypair
 from mitumc.operation.base import (Address, Amount, Memo, Operation,
-                                   OperationBody)
+                                   OperationBody, _newFactSign)
 from mitumc.operation.create_accounts import (CreateAccountsFact,
                                               CreateAccountsFactBody,
                                               CreateAccountsItem)
@@ -226,3 +226,62 @@ class JSONParser(object):
     def generateFile(seal, fname):
         with open(fname, 'w') as fp:
             json.dump(seal, fp)
+
+
+def _factSignToBuffer(fs):
+    bsigner = fs['signer'].encode()
+    bsign = base58.b58decode(fs['signature'].encode())
+    bat = parseISOtoUTC(fs['signed_at']).encode()
+
+    return bconcat(bsigner, bsign, bat)
+
+def _factSignsToBuffer(_fact_signs):
+    buffers = bytearray(''.encode())
+    for _fs in _fact_signs:
+        buffers += bytearray(_factSignToBuffer(_fs))
+    return buffers
+
+class Signer(object):
+    def __init__(self, net_id, sk):
+        self.net_id = net_id
+        self.sk = sk
+    
+    def setNetId(self, _id):
+        self.net_id = _id
+
+    def signOperation(self, f_oper):
+        before = None
+        if type(f_oper) == type("") :
+            with open(f_oper) as jf:
+                before = json.load(jf)
+        elif type(f_oper) == type({}):
+            before = f_oper
+        
+        if not before:
+            return None
+
+        after = {}
+        fact_hash = before['fact']['hash']
+        bfact_hash = base58.b58decode(fact_hash.encode())
+        fact_sign = before['fact_signs']
+
+        fact_sign.append(
+            _newFactSign(
+                bconcat(bfact_hash, self.net_id.encode()),
+                self.sk
+            ).to_dict()
+        )
+        bfact_sg = _factSignsToBuffer(fact_sign)
+
+        after['memo'] = before['memo']
+        after['_hint'] = before['_hint']
+        after['fact'] = before['fact']
+        after['fact_signs'] = fact_sign
+
+        bmemo = before['memo'].encode()
+        after['hash'] = base58.b58encode(
+            sha.sum256(
+                bconcat(bfact_hash, bfact_sg, bmemo)
+            ).digest
+        ).decode()
+        return after

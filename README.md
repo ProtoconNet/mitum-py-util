@@ -330,6 +330,105 @@ AN1rKvtXAEWjt4KUGZxoZ8e8YMVuLPo6MqciW9En5DbA1w1FLp6NhGmMFCuAjVipRBibWDkiVLQYvp4P
 
 Omit ether/stellar keypair sign. (bcz same...)
 
+## Add Fact Signature to Operation
+
+With 'Signer' object in 'mitum-py-util', you can add new fact signature to operation json.
+
+To add signatures, you must prepare 'network id' and 'signing key'.
+
+### Usage
+
+For example, suppose that you already have an implemented operation json file like below.
+
+operation.json
+```json
+{
+    "memo": "",
+    "_hint": "mitum-currency-transfers-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
+        "hash": "HdVp5vNCVcdnTA5H36cEfNsjjZAktpgBLdL66rgTqFVA",
+        "token": "MjAyMS0wNi0xMFQwNzowMjo0MS45NzgyOTErMDA6MDA=",
+        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
+        "items": [
+            {
+                "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
+                "receiver": "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1",
+                "amounts": [
+                    {
+                        "_hint": "mitum-currency-amount-v0.0.1",
+                        "amount": "100",
+                        "currency": "MCC"
+                    }
+                ]
+            }
+        ]
+    },
+    "hash": "6KJQdbLvomAh2HmjVuqQbYEVvVMMrsMgJEsrwcRMiqCx",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
+            "signature": "AN1rKvt3cim48ETgzpEaXC5EiRJfcPhVtsK7bUTNB3f9c9152Px4enY3xh59e7EmCgmiwVvzk3tvkmTk7B3MA74E2f5gpqFzG",
+            "signed_at": "2021-06-10T07:02:42.614946Z"
+        }
+    ]
+}
+```
+
+#### Sign Operation
+
+Use 'Signer.signOperation(#operation-file-path)' to add new fact signature to "fact_signs" key.
+
+After adding a fact signature, operation hash will be changed.
+
+```python
+>>> import mitumc.operation as op
+>>> signer = op.Signer('mitum', "L4qMcVKwQkqrnPPtEhj8idCQyvCN2zyG374i5oftGQfraJEP8iek:btc-priv-v0.0.1")
+
+>>> # Signer.signOperation(#target)
+>>> # #target must be a dictionary object or the path of opertaion json file
+>>> newOperation = signer.signOperation('operation.json') # or an object itself instead of the path 'operation.json'
+```
+
+After signing, above operation must be like below.(Each value is up to input arguments and time)
+
+```json
+{
+    "memo": "",
+    "_hint": "mitum-currency-transfers-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
+        "hash": "HdVp5vNCVcdnTA5H36cEfNsjjZAktpgBLdL66rgTqFVA",
+        "token": "MjAyMS0wNi0xMFQwNzowMjo0MS45NzgyOTErMDA6MDA=",
+        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
+        "items": [{
+            "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
+            "receiver": "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1",
+            "amounts": [{
+                "_hint": "mitum-currency-amount-v0.0.1",
+                "amount": "100",
+                "currency": "MCC"
+            }]
+        }]
+    },
+    "fact_signs": [{
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
+        "signature": "AN1rKvt3cim48ETgzpEaXC5EiRJfcPhVtsK7bUTNB3f9c9152Px4enY3xh59e7EmCgmiwVvzk3tvkmTk7B3MA74E2f5gpqFzG",
+        "signed_at": "2021-06-10T07:02:42.614946Z"
+    }, {
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "cnMJqt1Q7LXKqFAWprm6FBC7fRbWQeZhrymTavN11PKJ:btc-pub-v0.0.1",
+        "signature": "AN1rKvt7VpVb76PXpKV2Znvixvo8bqmUJqha7WrkaTm3GKwZWfH8U2La13jJuPGvpcrbgLJqSYR5gHP2SwvtCM81NrtiBCW8a",
+        "signed_at": "2021-07-20T08:24:29.163696Z"
+    }],
+    "hash": "DdwC2wAmvctrzCvnZSTu1xK2uKwNxNr9Y73xcHKLpqYb"
+}
+```
+
+Signer class returns a dictionary object.
+
 ## Hash Functions
 
 'mitumc.hash' module supports sha2(sha256) and sha3(sum256) hashing.
