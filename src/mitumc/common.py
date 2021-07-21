@@ -96,10 +96,15 @@ def iso8601TimeStamp():
     return str(datetime.datetime.now(tz=pytz.utc).isoformat())
 
 def getNewToken(iso):
-    return iso[:26] + 'Z'
+    idx = iso.find('+')
+    if idx == -1:
+        print('[ERROR] Invalid iso time')
+        exit(-1)
+    return iso[:idx] + 'Z'
 
-def parseISOtoUTC(t):
-    date, at, z = t[:10], t[11:23], t[26:29] + t[30:]
+def parseISOtoUTC(iso):
+    t = iso.find('T')
+    date, at, z = iso[:t], iso[t+1:t+13], "+0000"
     return date + " " + at + " " + z + " " + "UTC"
 
 def bconcat(*blist):
