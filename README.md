@@ -1,6 +1,6 @@
 # mitum-py-util
 
-'mitum-py-util' will introduce the usage of [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for python.
+'mitum-py-util' will introduce the usage of [mitum-currency](https://github.com/ProtoconNet/mitum-currency) and [mitum-data-blocksign](https://github.com/ProtoconNet/mitum-data-blocksign) for python.
 
 ## Installation
 
@@ -40,7 +40,7 @@ $ pip install -r requirements.txt
 
 ### Operations
 
-'mitum-py-util' provides three operations to be generated,
+'mitum-py-util' provides three operations of 'mitum-currency',
 
 * 'Create-Accounts' creates an account corresponding to any public key with a pre-registered account.
 * 'Key-Updater' updates the public key of the account to something else.
@@ -48,14 +48,25 @@ $ pip install -r requirements.txt
 
 'mitum-currency' supports various kinds of operations, but 'mitum-py-util' will provide these frequently used operations.
 
+In addition, 'mitum-py-util' provides three operations of 'mitum-data-blocksign',
+
+* 'Create-Documents' creates an document with filehash.
+* 'Sign-Documents' signs the document.
+* 'Transfer-Documents' transfers documents from the account to another account.
+
 ### Prerequisite
 
-Before generating new operation, you should check below,
+Before generating new operation, you should check below for 'mitum-currency',
 
 * 'private key' of source account to generate signatures (a.k.a signing key)
 * 'public address' of source account
 * 'public key' of target account
 * 'network id'
+
+Additionally, you should check below for 'mitum-data-blocksign',
+
+* 'filehash' for Create-Documents
+* 'owner' and 'documentid' for Sign-Documents and Transfer-Documents
 
 Note that the package name of 'mitum-py-util' is 'mitumc' for python codes.
 
@@ -73,6 +84,9 @@ Modules that 'Generator' supports are,
 >>> Generator.createAmounts(amounts) 
 >>> Generator.createCreateAccountsItem(keys_o, amounts)
 >>> Generator.createTransfersItem(receiver, amoutns)
+>>> Generator.createCreateDocumentsItem(filehash, signers, cid)
+>>> Generator.createSignDocumentsItem(owner, documentid, cid)
+>>> Generator.createTransferDocumentsItem(owner, receiver, documentid, cid)
 >>> Generator.createCreateAccountsFact(sender, items)
 >>> Generator.createKeyUpdaterFact(target, cid, keys_o)
 >>> Generator.createTransfersFact(sender, items)
@@ -179,6 +193,82 @@ To generate an operation, you must prepare target address, not public key. Trans
 >>> transfers.to_json('transfers.json')
 ```
 
+### Generate Create-Documents
+
+To generate an operation, you must prepare file-hash. Create-Document supports to create documents with setting signers who must sign them.
+
+#### Usage
+
+```python
+>>> from mitumc.operation import Generator
+
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+
+>>> generator = Generator('mitum')
+
+>>> createDocumentsItem = generator.createCreateDocumentsItem("abc:mbhf-v0.0.1", [], "MCC")
+
+>>> createDocumentsFact = generator.createCreateDocumentsFact(source_addr, [createDocumentsItem])
+
+>>> createDocuments = generator.createOperation(createDocumentsFact, "")
+>>> createDocuments.addFactSign(source_prv)
+
+>>> createDocuments.to_dict()
+>>> createDocuments.to_json('create_documents.json')
+```
+
+### Generate Sign-Documents
+
+To generate an operation, you must prepare owner and document id. Sign-Document supports to sign documents registered by 'mitum-data-blocksign'
+
+#### Usage
+
+```python
+>>> from mitumc.operation import Generator
+
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+
+>>> generator = Generator('mitum')
+
+>>> signDocumentsItem = generator.createSignDocumentsItem(source_addr, 0, "MCC")
+
+>>> signDocumentsFact = generator.createSignDocumentsFact(source_addr, [signDocumentsItem])
+
+>>> signDocuments = generator.createOperation(signDocumentsFact, ""))
+>>> signDocuments.addFactSign(source_prv)
+
+>>> signDocuments.to_dict()
+>>> signDocuments.to_json('sign_documents.json')
+```
+
+### Generate Transfer-Documents
+
+To generate an operation, you must prepare owner and document id. Transfer-Document supports to transfer documents to other account.
+
+#### Usage
+
+```python
+>>> from mitumc.operation import Generator
+
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+>>> target_addr = "ATDxH32CL7hdrpgLcvtNroNTF111V6wUJCK5JTa4f8Po:mca-v0.0.1"
+
+>>> generator = Generator('mitum')
+
+>>> transferDocumentsItem = generator.createTransferDocumentsItem(source_addr, target_addr, 0, "MCC")
+
+>>> transferDocumentsFact = generator.createTransferDocumentsFact(source_addr, [transferDocumentsItem])
+
+>>> transferDocuments = generator.createOperation(transferDocumentsFact, "")
+>>> transferDocuments.addFactSign(source_prv)
+
+>>> transferDocuments.to_dict()
+>>> transferDocuments.to_json('transfer_documents.json')
+```
+
 ## Generate New Seal
 
 Supports you to generate a seal json file such that the seal is able to consist of several operations. Those operations can be any type 'mitum-py-util' provides.
@@ -237,7 +327,7 @@ Created seal json files will be used to send seals by 'mitum-currency'.
 Use below command to send them to the target network. (See [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for details)
 
 ```sh
-$ bin/mc seal send --network-id=$NETWORK_ID $SIGNING_KEY --seal=seal.json
+$ ./mc seal send --network-id=$NETWORK_ID $SIGNING_KEY --seal=seal.json
 ```
 
 * seal.json is your seal file.

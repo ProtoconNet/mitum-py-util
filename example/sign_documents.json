@@ -1,0 +1,23 @@
+{
+    "memo": "",
+    "_hint": "mitum-blocksign-sign-documents-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-blocksign-sign-documents-operation-fact-v0.0.1",
+        "hash": "9i3DveaDoGy6DVjoVQv83TCwiRNBeydBsPysCERG3mdX",
+        "token": "MjAyMS0wOC0xOVQwMjo1OTo1My43MTg3ODUrMDA6MDA=",
+        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
+        "items": [{
+            "_hint": "mitum-blocksign-sign-item-single-document-v0.0.1",
+            "documentid": "0",
+            "owner": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
+            "currency": "MCC"
+        }]
+    },
+    "hash": "3fkTUi8Vgj5sKByRftZ46LR6XVpXJnDNvMMNtnpYtKte",
+    "fact_signs": [{
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
+        "signature": "AN1rKvtM1SkbS6xX6MwV5sFqf8MMwU9FQrYtJHdaZjmPJSCFNhcP91GFFdVbjoKcH96TUuAj798PQrG5BvfNtYvxjSv6fhbs6",
+        "signed_at": "2021-08-19T02:59:53.733593Z"
+    }]
+}

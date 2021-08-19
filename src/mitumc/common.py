@@ -107,6 +107,7 @@ def parseISOtoUTC(iso):
     date, at, z = iso[:t], iso[t+1:t+13], "+0000"
     return date + " " + at + " " + z + " " + "UTC"
 
+
 def bconcat(*blist):
     """ Concatenates bytes type arguments.
 
