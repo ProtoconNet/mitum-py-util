@@ -3,30 +3,24 @@
     "_hint": "mitum-currency-transfers-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
-        "hash": "HdVp5vNCVcdnTA5H36cEfNsjjZAktpgBLdL66rgTqFVA",
-        "token": "MjAyMS0wNi0xMFQwNzowMjo0MS45NzgyOTErMDA6MDA=",
+        "hash": "NxuhZrn64tAtWrBMhSxXtW5yWzjsnSsarNS7FZYKRUd",
+        "token": "MjAyMS0wOS0wOFQwMTo1MjoxOS40ODIyMzUrMDA6MDA=",
         "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
-        "items": [
-            {
-                "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
-                "receiver": "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1",
-                "amounts": [
-                    {
-                        "_hint": "mitum-currency-amount-v0.0.1",
-                        "amount": "100",
-                        "currency": "MCC"
-                    }
-                ]
-            }
-        ]
+        "items": [{
+            "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
+            "receiver": "CzCW7V9Doi71dLJVXcdnS6V4BJDzvPdY28YCn1ksiG4m:mca-v0.0.1",
+            "amounts": [{
+                "_hint": "mitum-currency-amount-v0.0.1",
+                "amount": "100",
+                "currency": "MCC"
+            }]
+        }]
     },
-    "hash": "6KJQdbLvomAh2HmjVuqQbYEVvVMMrsMgJEsrwcRMiqCx",
-    "fact_signs": [
-        {
-            "_hint": "base-fact-sign-v0.0.1",
-            "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
-            "signature": "AN1rKvt3cim48ETgzpEaXC5EiRJfcPhVtsK7bUTNB3f9c9152Px4enY3xh59e7EmCgmiwVvzk3tvkmTk7B3MA74E2f5gpqFzG",
-            "signed_at": "2021-06-10T07:02:42.614946Z"
-        }
-    ]
+    "hash": "GtFV9QYFic5j1tdeWinN2wYe4d4LJ9agdoev9FPTDfF5",
+    "fact_signs": [{
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
+        "signature": "AN1rKvtkP42C7SejEkZv7DrQxmQcHKGReKZziAwMtpyWgbSM9YAvecoaAtNd4aNCnBsAJW6qJS7eNtMH1nTnh4XCZkx65ThBq",
+        "signed_at": "2021-09-08T01:52:19.492459Z"
+    }]
 }

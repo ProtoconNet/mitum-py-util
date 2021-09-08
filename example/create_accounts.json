@@ -3,41 +3,33 @@
     "_hint": "mitum-currency-create-accounts-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-create-accounts-operation-fact-v0.0.1",
-        "hash": "7Rms6VujdnHX5jp6nfgMwRMku1TMQDW3a6wayoa76bwm",
-        "token": "MjAyMS0wNi0xMFQwNzowMjo0MC42OTE0MDcrMDA6MDA=",
+        "hash": "AjndyQ3ubXnC4dcr8dUS1y1q9EKE3ZHF8Eq8qoww6yhG",
+        "token": "MjAyMS0wOS0wOFQwMTo1MjoxOS40NTUyNDkrMDA6MDA=",
         "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
-        "items": [
-            {
-                "_hint": "mitum-currency-create-accounts-single-amount-v0.0.1",
-                "keys": {
-                    "_hint": "mitum-currency-keys-v0.0.1",
-                    "hash": "EN99uNg2LgCjYaDW8pUBohYThwsSQRWdxkF1gJhKbC7T",
-                    "keys": [
-                        {
-                            "_hint": "mitum-currency-key-v0.0.1",
-                            "weight": 100,
-                            "key": "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
-                        }
-                    ],
-                    "threshold": 100
-                },
-                "amounts": [
-                    {
-                        "_hint": "mitum-currency-amount-v0.0.1",
-                        "amount": "100",
-                        "currency": "MCC"
-                    }
-                ]
-            }
-        ]
+        "items": [{
+            "_hint": "mitum-currency-create-accounts-single-amount-v0.0.1",
+            "keys": {
+                "_hint": "mitum-currency-keys-v0.0.1",
+                "hash": "EN99uNg2LgCjYaDW8pUBohYThwsSQRWdxkF1gJhKbC7T",
+                "keys": [{
+                    "_hint": "mitum-currency-key-v0.0.1",
+                    "weight": 100,
+                    "key": "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
+                }],
+                "threshold": 100
+            },
+            "amounts": [{
+                "_hint": "mitum-currency-amount-v0.0.1",
+                "amount": "100",
+                "currency": "MCC"
+            }]
+        }]
     },
-    "hash": "9yiimPVZ2YaCwkmoDQ1xXuAJwnAj8kg9b6eshzRk7ro3",
-    "fact_signs": [
-        {
-            "_hint": "base-fact-sign-v0.0.1",
-            "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
-            "signature": "381yXZUGYycvWE8UJCfevmf7adQPeBZrfZRHPJjjLcVeUhwD4HWhbGrMLBncRppprTn7hMKazqGkQxAU3tb9WoGXBLP8whUx",
-            "signed_at": "2021-06-10T07:02:41.347168Z"
-        }
-    ]
+    "hash": "Ad3syZoyX38K5NHk8dQkNNeX9Td68w5zCHfYoa3Kn6AU",
+    "fact_signs": [{
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
+        "signature": "AN1rKvtCboxwyLgaEC6EXqKxf83f96cZEvUyQhRm2B5dEtJr2zehw8GMjFCYtuhUzzzmSmxbT1jaRPLfcmaWFmx8HtcwRPxH4",
+        "signed_at": "2021-09-08T01:52:19.468810Z"
+    }]
 }
