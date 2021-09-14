@@ -4,18 +4,9 @@
 
 ## Installation
 
-Recommended requirements for 'mitum-py-util' are,
+Recommended requirements for 'mitum-py-util' is,
 
 * python v3.9 or later.
-* base58 v2.1.0
-* pybase64 v1.1.4
-* ecdsa v0.13.3
-* bitcoinaddress v0.1.5
-* bitcoin-utils v0.4.11
-* eth_keys v0.3.3
-* stellar_sdk v3.3.2
-* pytz v2021.1
-* datetime v4.3
 
 ```sh
 $ python --version
@@ -90,7 +81,11 @@ Modules that 'Generator' supports are,
 >>> Generator.createCreateAccountsFact(sender, items)
 >>> Generator.createKeyUpdaterFact(target, cid, keys_o)
 >>> Generator.createTransfersFact(sender, items)
+>>> Generator.createCreateDocumentsFact(sender, items)
+>>> Generator.createSignDocumentsFact(sender, items)
+>>> Generator.createTransferDocumentsFact(sender, items)
 >>> Generator.createOperation(fact, memo)
+>>> Generator.createSeal(sign_key, operations)
 ```
 
 You can check use-cases of Generator in the next part.
@@ -243,9 +238,11 @@ To generate an operation, you must prepare owner and document id. Sign-Document 
 >>> signDocuments.to_json('sign_documents.json')
 ```
 
-### Generate Transfer-Documents
+### ~~Generate Transfer-Documents~~
 
-To generate an operation, you must prepare owner and document id. Transfer-Document supports to transfer documents to other account.
+__This operation is not supported anymore.__
+
+~~To generate an operation, you must prepare owner and document id. Transfer-Document supports to transfer documents to other account.~~
 
 #### Usage
 
