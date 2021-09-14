@@ -3,8 +3,8 @@
     "_hint": "mitum-currency-transfers-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
-        "hash": "NxuhZrn64tAtWrBMhSxXtW5yWzjsnSsarNS7FZYKRUd",
-        "token": "MjAyMS0wOS0wOFQwMTo1MjoxOS40ODIyMzUrMDA6MDA=",
+        "hash": "8z3BvoAYNhwpBsi4fDT2wutxhKNHbYC5MZBM8Hoc4dcu",
+        "token": "MjAyMS0wOS0wOFQwMjowMDo1MC45NzQ0MDArMDA6MDA=",
         "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
         "items": [{
             "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
@@ -16,11 +16,11 @@
             }]
         }]
     },
-    "hash": "GtFV9QYFic5j1tdeWinN2wYe4d4LJ9agdoev9FPTDfF5",
+    "hash": "1xMGhW6UZbqoqrB6HDu3dnjACesyn8wc92C5h7anNDJ",
     "fact_signs": [{
         "_hint": "base-fact-sign-v0.0.1",
         "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
-        "signature": "AN1rKvtkP42C7SejEkZv7DrQxmQcHKGReKZziAwMtpyWgbSM9YAvecoaAtNd4aNCnBsAJW6qJS7eNtMH1nTnh4XCZkx65ThBq",
-        "signed_at": "2021-09-08T01:52:19.492459Z"
+        "signature": "AN1rKvszaMeyNHW2dq6hV72fyo8SEmwqgYy6VL86LjRdHkGJStq6apfrqZDDmedqL8CCPLMeiWEWzhmjK8F4fzZ9Yjrizdn2k",
+        "signed_at": "2021-09-08T02:00:50.995196Z"
     }]
 }

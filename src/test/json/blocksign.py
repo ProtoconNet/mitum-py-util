@@ -11,7 +11,7 @@ addr1 = "ATDxH32CL7hdrpgLcvtNroNTF111V6wUJCK5JTa4f8Po:mca-v0.0.1"
 generator = Generator('mitum')
 
 # CreateDocumentsItem
-createDocumentsItem = generator.createCreateDocumentsItem("abc:mbhf-v0.0.1", [], "MCC")
+createDocumentsItem = generator.createCreateDocumentsItem("abcdddd:mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
 
 # CreateDocumentsFact
 createDocumentsFact = generator.createCreateDocumentsFact(source_addr, [createDocumentsItem])

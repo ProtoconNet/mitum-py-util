@@ -84,7 +84,7 @@ Modules that 'Generator' supports are,
 >>> Generator.createAmounts(amounts) 
 >>> Generator.createCreateAccountsItem(keys_o, amounts)
 >>> Generator.createTransfersItem(receiver, amoutns)
->>> Generator.createCreateDocumentsItem(filehash, signers, cid)
+>>> Generator.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
 >>> Generator.createSignDocumentsItem(owner, documentid, cid)
 >>> Generator.createTransferDocumentsItem(owner, receiver, documentid, cid)
 >>> Generator.createCreateAccountsFact(sender, items)
@@ -207,7 +207,7 @@ To generate an operation, you must prepare file-hash. Create-Document supports t
 
 >>> generator = Generator('mitum')
 
->>> createDocumentsItem = generator.createCreateDocumentsItem("abc:mbhf-v0.0.1", [], "MCC")
+>>> createDocumentsItem = generator.createCreateDocumentsItem("abcdddd:mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
 
 >>> createDocumentsFact = generator.createCreateDocumentsFact(source_addr, [createDocumentsItem])
 
@@ -236,7 +236,7 @@ To generate an operation, you must prepare owner and document id. Sign-Document 
 
 >>> signDocumentsFact = generator.createSignDocumentsFact(source_addr, [signDocumentsItem])
 
->>> signDocuments = generator.createOperation(signDocumentsFact, ""))
+>>> signDocuments = generator.createOperation(signDocumentsFact, "")
 >>> signDocuments.addFactSign(source_prv)
 
 >>> signDocuments.to_dict()

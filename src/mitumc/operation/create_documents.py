@@ -6,22 +6,47 @@ from mitumc.operation import OperationFact, OperationFactBody
 
 
 class CreateDocumentsItem(object):
-    def __init__(self, h, fh, signers, cid):
+    def __init__(self, h, fh, did, signcode, title, size, cid, signers, signcodes):
         self.h = h
         self.fh = fh
+        self.did = did
+        self.signcode = signcode
+        self.title = title
+        self.size = size
         self.cid = cid
         self.signers = signers
+        self.signcodes = signcodes
 
     def to_bytes(self):
         bfh = self.fh.encode()
+        bdid = self.did.tight_bytes()
+        bscode = self.signcode.encode()
+        btitle = self.title.encode()
+        bsize = self.size.tight_bytes()
         bcid = self.cid.encode()
-        return bconcat(bfh, bcid)
+
+        bsigners = bytearray()
+        for s in self.signers:
+            bsigners += bytearray(s.encode())
+        bsigners = bytes(bsigners)
+        
+        bscodes = bytearray()
+        for sc in self.signcodes:
+            bscodes += bytearray(sc.encode())
+        bscodes = bytes(bscodes)
+
+        return bconcat(bfh, bdid, bscode, btitle, bsize, bcid, bsigners, bscodes)
 
     def to_dict(self):
         item = {}
         item['_hint'] = self.h.hint
         item['filehash'] = self.fh
+        item['documentid'] = str(self.did.value)
+        item['signcode'] = self.signcode
+        item['title'] = self.title
+        item['size'] = str(self.size.value)
         item['signers'] = self.signers
+        item['signcodes'] = self.signcodes
         item['currency'] = self.cid
         return item
 

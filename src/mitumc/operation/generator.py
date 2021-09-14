@@ -111,10 +111,10 @@ class Generator(object):
 
         return TransfersItem(Hint(_hint, VERSION), _receiver, amts)
 
-    def createCreateDocumentsItem(self, filehash, signers, cid):
+    def createCreateDocumentsItem(self, filehash, did, signcode, title, size, cid, signers, signcodes):
         _hint = MBS_CREATE_DOCUMENTS_SINGLE_FILE
 
-        return CreateDocumentsItem(Hint(_hint, VERSION), filehash, signers, cid)
+        return CreateDocumentsItem(Hint(_hint, VERSION), filehash, Int(did), signcode, title, Int(size), cid, signers, signcodes)
 
     def createSignDocumentsItem(self, owner, did, cid):
         _hint = MBS_SIGN_ITEM_SINGLE_DOCUMENT
