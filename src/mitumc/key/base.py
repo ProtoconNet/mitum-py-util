@@ -2,7 +2,8 @@ from mitumc.common import Hint, bconcat
 from mitumc.constant import VERSION
 from mitumc.hash import sha
 from mitumc.hint import (BTC_PBLCKEY, BTC_PRIVKEY, ETHER_PBLCKEY,
-                         ETHER_PRIVKEY, STELLAR_PBLCKEY, STELLAR_PRIVKEY)
+                         ETHER_PRIVKEY, STELLAR_PBLCKEY, STELLAR_PRIVKEY,
+                         MC_ADDRESS)
 
 
 class BaseKey(object):
@@ -29,19 +30,20 @@ class BaseKey(object):
         # Returns hinted key
         return self.k + ":" + self.h.hint
 
-    def to_bytes(self): 
+    def to_bytes(self):
         # Returns hintless key in byte format
         return self.k.encode()
-    
+
 
 class Key(object):
     """ Single key with weight.
-    
+
     Attributes:
         h    (Hint): hint; MC_KEY
         k (BaseKey): Basekey object for key
         w     (Int): weight
     """
+
     def __init__(self, h, k, w):
         self.h = h
         self.k = k
@@ -74,6 +76,7 @@ class KeysBody(object):
         threshold       (Int): threshold
         ks        (List(Key)): List of keys
     """
+
     def __init__(self, h, threshold, ks):
         self.h = h
         self.threshold = threshold
@@ -106,6 +109,7 @@ class Keys(object):
         hs       (Hash): Keys Hash
         body (KeysBody): Body object
     """
+
     def __init__(self, hs, body):
         self.hs = hs
         self.body = body
@@ -115,6 +119,10 @@ class Keys(object):
 
     def hash(self):
         return self.hs
+
+    @property
+    def address(self):
+        return self.hs.hash + ":" + MC_ADDRESS + "-" + VERSION
 
     def to_dict(self):
         d = self.body
@@ -161,6 +169,6 @@ def to_basekey(type, k):
         ETHER_PRIVKEY, ETHER_PBLCKEY,
         STELLAR_PRIVKEY, STELLAR_PBLCKEY], '[arg1] Invalid type or not a key type'
     assert isinstance(k, str), '[arg2] Key must be provided in string format'
-    
+
     hint = Hint(type, VERSION)
     return BaseKey(hint, k)

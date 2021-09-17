@@ -110,6 +110,12 @@ When you use 'Generator', you must set 'network id' before you create something.
 >>> key = (target_pub, 100)
 >>> keys_o = generator.createKeys([key], 100)
 
+# If you want to get address from keys, try below codes...
+# 
+# keys = generator.createKeys({key list}, {threshold})
+# keys.address
+#
+
 >>> amount = (100, "MCC")
 >>> amounts = generator.createAmounts([amount])
 
