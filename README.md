@@ -63,6 +63,78 @@ Note that the package name of 'mitum-py-util' is 'mitumc' for python codes.
 
 * Every key, address, and keypair must be that of mitum-currency.
 
+### Generate Keypair
+
+'mitumc.key' supports to generate btc, ether, and stellar keypair.
+
+You can get keypairs from already known private key, too.
+
+```python
+getKeypair('btc') # returns btc keypair
+getKeypair('ether') # returns ether keypair
+getKeypair('stellar') # returns stellar keypair
+
+to_btc_keypair(key) # returns btc keypair; key: hinted or raw key
+to_ether_keypair(key) # returns ether keypair; key: hinted or raw key
+to_stellar_keypair(key) # returns stellar keypair; key: hinted or raw key
+```
+
+#### Usage
+
+```python
+>>> from mitumc.key import getKeypair
+
+>>> btckp = getKeypair('btc') # returns BTCKeyPair
+>>> ethkp = getKeypair('ether') # returns ETHKeyPair
+>>> stlkp = getKeypair('stellar') # returns StellarKeyPair
+
+>>> btckp.privkey.key
+5JDCaUK6NoD8vdUdmxptiKXGqgx7ngH3aL3c1FQ19jHLo9anwW3
+
+>>> btckp.pubkey.key
+wk4RnmibruceqbjcunJpAE9ufXVgpAHuvXXBBKQUvzas
+
+>>> ethkp.privkey.key
+7222d364be36e4f038270065a5c9f5c1dadf97a85ab14305f6580e243e224d8a
+
+>>> ethkp.pubkey.key
+049757460673bbd7d6e9904eb3554055614dce1d39aea623a07483065fb655d87d1797a0ce131ca8ae8bd8da20097a6cbc1c60b8246dc770907ef30a3dc78cdd9d
+
+>>> stlkp.privkey.key
+SCEKV2MWAZQCQGKYYTPVMOBR52CRFVROT4XGMOLVSSFYD5K7AM24L57T
+
+>>> stlkp.pubkey.key
+GBQRPKLCB7BTURVHA33LC5HKKXAOISMELEN6YYSDECKH4LSOS6YJCYCT
+```
+
+Note that 'mitumc.key' provides uncompressed btc key.
+
+If you want to get compressed wif key, use 'BTCKeyPair.wifc'.
+
+```python
+>>> from mitumc.key import getKeypair
+
+>>> btckp = getKeypair('btc')
+>>> btckp.wifc
+Kxxr6jYrjCxZyhzyKTQPFNkcuuLGxcMpN74VW6YXfXd8NXALHhDE
+```
+
+Of course, you can get any keypair with your known private key.
+
+Note that it works with either hintless or hinted keys to generate keypairs.
+(key-hint ex. btc-priv, ether-pub, etc...) 
+
+```python
+>>> from mitumc.key import to_btc_keypair, to_ether_keypair, to_stellar_keypair
+
+# both work same
+>>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD:btc-priv-v0.0.1")
+>>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD") # returns BTCKeyPair
+
+>>> ethkp = to_ether_keypair("013e56aca7cf88d95aa6535fb6c66f366d449a0380128e0eb656a863b45a5ad5:ether-priv-v0.0.1") # returns ETHKeyPair
+>>> stlkp = to_stellar_keypair("SBZV72AJVXGARRY6BYXF5IPNQYWMGZJ5YVF6NIENEEATETDF6LGH4CLL:stellar-priv-v0.0.1") # returns StellarKeyPair
+```
+
 ### Generator
 
 'mitumc' package provides 'Generator' class to generate operations.
@@ -70,22 +142,22 @@ Note that the package name of 'mitum-py-util' is 'mitumc' for python codes.
 Modules that 'Generator' supports are,
 
 ```python
->>> Generator.set_id(net_id) 
->>> Generator.createKeys(keys, threshold)
->>> Generator.createAmounts(amounts) 
->>> Generator.createCreateAccountsItem(keys_o, amounts)
->>> Generator.createTransfersItem(receiver, amoutns)
->>> Generator.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
->>> Generator.createSignDocumentsItem(owner, documentid, cid)
->>> Generator.createTransferDocumentsItem(owner, receiver, documentid, cid)
->>> Generator.createCreateAccountsFact(sender, items)
->>> Generator.createKeyUpdaterFact(target, cid, keys_o)
->>> Generator.createTransfersFact(sender, items)
->>> Generator.createCreateDocumentsFact(sender, items)
->>> Generator.createSignDocumentsFact(sender, items)
->>> Generator.createTransferDocumentsFact(sender, items)
->>> Generator.createOperation(fact, memo)
->>> Generator.createSeal(sign_key, operations)
+Generator.set_id(net_id) 
+Generator.createKeys(keys, threshold)
+Generator.createAmounts(amounts) 
+Generator.createCreateAccountsItem(keys_o, amounts)
+Generator.createTransfersItem(receiver, amoutns)
+Generator.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
+Generator.createSignDocumentsItem(owner, documentid, cid)
+Generator.createTransferDocumentsItem(owner, receiver, documentid, cid)
+Generator.createCreateAccountsFact(sender, items)
+Generator.createKeyUpdaterFact(target, cid, keys_o)
+Generator.createTransfersFact(sender, items)
+Generator.createCreateDocumentsFact(sender, items)
+Generator.createSignDocumentsFact(sender, items)
+Generator.createTransferDocumentsFact(sender, items)
+Generator.createOperation(fact, memo)
+Generator.createSeal(sign_key, operations)
 ```
 
 You can check use-cases of Generator in the next part.
@@ -292,8 +364,8 @@ You can create a json file from generated seal object without 'JSONParser' class
 Modules that 'JSONParser' supports are,
 
 ```python
->>> JSONParser.toJSONString(seal)
->>> JSONParser.generateFile(seal, fName)
+JSONParser.toJSONString(seal)
+JSONParser.generateFile(seal, fName)
 ```
 
 A use-case of 'JSONParser' will be introduced in the next part.
@@ -342,62 +414,6 @@ Sign message with btc, ether, stellar keypair.
 'mitumc.key' module supports generate and get keypairs. You can get signature digest which contains a signature by signing with keypairs.
 
 ### Usage
-
-#### Generate Keypair
-
-```python
->>> from mitumc.key import getKeypair
-
->>> btckp = getKeypair('btc') # returns BTCKeyPair
->>> ethkp = getKeypair('ether') # returns ETHKeyPair
->>> stlkp = getKeypair('stellar') # returns StellarKeyPair
-
->>> btckp.privkey.key
-5JDCaUK6NoD8vdUdmxptiKXGqgx7ngH3aL3c1FQ19jHLo9anwW3
-
->>> btckp.pubkey.key
-wk4RnmibruceqbjcunJpAE9ufXVgpAHuvXXBBKQUvzas
-
->>> ethkp.privkey.key
-7222d364be36e4f038270065a5c9f5c1dadf97a85ab14305f6580e243e224d8a
-
->>> ethkp.pubkey.key
-049757460673bbd7d6e9904eb3554055614dce1d39aea623a07483065fb655d87d1797a0ce131ca8ae8bd8da20097a6cbc1c60b8246dc770907ef30a3dc78cdd9d
-
->>> stlkp.privkey.key
-SCEKV2MWAZQCQGKYYTPVMOBR52CRFVROT4XGMOLVSSFYD5K7AM24L57T
-
->>> stlkp.pubkey.key
-GBQRPKLCB7BTURVHA33LC5HKKXAOISMELEN6YYSDECKH4LSOS6YJCYCT
-```
-
-Note that 'mitumc.key' provides uncompressed btc key.
-
-If you want to get compressed wif key, use 'BTCKeyPair.wifc'.
-
-```python
->>> from mitumc.key import getKeypair
-
->>> btckp = getKeypair('btc')
->>> btckp.wifc
-Kxxr6jYrjCxZyhzyKTQPFNkcuuLGxcMpN74VW6YXfXd8NXALHhDE
-```
-
-Of course, you can get any keypair with your known private key.
-
-Note that it works with either hintless or hinted keys to generate keypairs.
-(key-hint ex. btc-priv, ether-pub, etc...) 
-
-```python
->>> from mitumc.key import to_btc_keypair, to_ether_keypair, to_stellar_keypair
-
-# both work same
->>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD:btc-priv-v0.0.1")
->>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD") # returns BTCKeyPair
-
->>> ethkp = to_ether_keypair("013e56aca7cf88d95aa6535fb6c66f366d449a0380128e0eb656a863b45a5ad5:ether-priv-v0.0.1") # returns ETHKeyPair
->>> stlkp = to_stellar_keypair("SBZV72AJVXGARRY6BYXF5IPNQYWMGZJ5YVF6NIENEEATETDF6LGH4CLL:stellar-priv-v0.0.1") # returns StellarKeyPair
-```
 
 #### Sign Message
 
