@@ -3,6 +3,7 @@ import datetime
 import base58
 import pytz
 
+SUFFIX = '~'
 
 class Int(object):
     """ Contains big endian integer.
@@ -176,9 +177,9 @@ def parseAddress(addr):
         addr (str): Address(or key) without hint
     """
     assert isinstance(addr, str), 'Input must be provided in string format'
-    assert ':' in addr, 'Invalid format of Address(or key)'
+    assert SUFFIX in addr, 'Invalid format of Address(or key)'
 
-    idx = addr.index(':')
+    idx = addr.index(SUFFIX)
 
     idx2 = -1
 

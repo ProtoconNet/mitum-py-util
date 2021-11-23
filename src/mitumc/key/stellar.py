@@ -1,4 +1,4 @@
-from mitumc.common import parseAddress
+from mitumc.common import parseAddress, SUFFIX
 import stellar_sdk as stellar
 from mitumc.hint import STELLAR_PBLCKEY, STELLAR_PRIVKEY
 from mitumc.key.base import KeyPair, to_basekey
@@ -41,7 +41,7 @@ def to_stellar_keypair(priv):
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
     
-    if ':' in priv:
+    if SUFFIX in priv:
         _, priv = parseAddress(priv)
 
     kp = stellar.Keypair.from_secret(priv)

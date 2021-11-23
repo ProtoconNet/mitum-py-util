@@ -1,9 +1,6 @@
 # mitum-currency Version
 VERSION = "v0.0.1"
 
-# mitumc Version
-_VERSION = "v0.1"
-
 # Network ID - Default
 NETWORK_ID = "mitum"
 WEIGHT = 100

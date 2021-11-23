@@ -5,7 +5,7 @@ import ecdsa
 from ecdsa import curves
 from ecdsa.util import sigencode_der_canonize
 from eth_keys import keys
-from mitumc.common import Int, bconcat, parseAddress
+from mitumc.common import Int, bconcat, parseAddress, SUFFIX
 from mitumc.hint import ETHER_PBLCKEY, ETHER_PRIVKEY
 from mitumc.key.base import KeyPair, to_basekey
 
@@ -58,7 +58,7 @@ def to_ether_keypair(priv):
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
     
-    if ':' in priv:
+    if SUFFIX in priv:
         _, priv = parseAddress(priv)
 
     pk = keys.PrivateKey(codecs.decode(priv, "hex"))

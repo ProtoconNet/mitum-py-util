@@ -128,11 +128,11 @@ Note that it works with either hintless or hinted keys to generate keypairs.
 >>> from mitumc.key import to_btc_keypair, to_ether_keypair, to_stellar_keypair
 
 # both work same
->>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD:btc-priv-v0.0.1")
+>>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD~btc-priv-v0.0.1")
 >>> btckp = to_btc_keypair("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZD") # returns BTCKeyPair
 
->>> ethkp = to_ether_keypair("013e56aca7cf88d95aa6535fb6c66f366d449a0380128e0eb656a863b45a5ad5:ether-priv-v0.0.1") # returns ETHKeyPair
->>> stlkp = to_stellar_keypair("SBZV72AJVXGARRY6BYXF5IPNQYWMGZJ5YVF6NIENEEATETDF6LGH4CLL:stellar-priv-v0.0.1") # returns StellarKeyPair
+>>> ethkp = to_ether_keypair("013e56aca7cf88d95aa6535fb6c66f366d449a0380128e0eb656a863b45a5ad5~ether-priv-v0.0.1") # returns ETHKeyPair
+>>> stlkp = to_stellar_keypair("SBZV72AJVXGARRY6BYXF5IPNQYWMGZJ5YVF6NIENEEATETDF6LGH4CLL~stellar-priv-v0.0.1") # returns StellarKeyPair
 ```
 
 ### Generator
@@ -173,9 +173,9 @@ When you use 'Generator', you must set 'network id' before you create something.
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
->>> target_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35:stellar-pub-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
+>>> target_pub = "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35~stellar-pub-v0.0.1"
 
 >>> generator = Generator("mitum")
 
@@ -219,9 +219,9 @@ Key-Updater literally supports to update source public key to something else.
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
->>> target_pub = "04c7a0b69c4041d2d3cf60d9318b5fdb1c29c7f63b3514aab52db6a852083dd3e1065afa8524c4ba54688ae36055377b2bb3de931054c124f01f38e7eab27e9e8f:ether-pub-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
+>>> target_pub = "04c7a0b69c4041d2d3cf60d9318b5fdb1c29c7f63b3514aab52db6a852083dd3e1065afa8524c4ba54688ae36055377b2bb3de931054c124f01f38e7eab27e9e8f~ether-pub-v0.0.1"
 
 >>> generator = Generator('mitum')
 
@@ -246,9 +246,9 @@ To generate an operation, you must prepare target address, not public key. Trans
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
->>> target_addr = "CzCW7V9Doi71dLJVXcdnS6V4BJDzvPdY28YCn1ksiG4m:mca-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
+>>> target_addr = "CzCW7V9Doi71dLJVXcdnS6V4BJDzvPdY28YCn1ksiG4m~mca-v0.0.1"
 
 >>> generator = Generator('mitum')
 
@@ -275,12 +275,12 @@ To generate an operation, you must prepare file-hash. Create-Document supports t
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
 
 >>> generator = Generator('mitum')
 
->>> createDocumentsItem = generator.createCreateDocumentsItem("abcdddd:mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
+>>> createDocumentsItem = generator.createCreateDocumentsItem("abcdddd~mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
 
 >>> createDocumentsFact = generator.createCreateDocumentsFact(source_addr, [createDocumentsItem])
 
@@ -300,8 +300,8 @@ To generate an operation, you must prepare owner and document id. Sign-Document 
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
 
 >>> generator = Generator('mitum')
 
@@ -327,9 +327,9 @@ __This operation is not supported anymore.__
 ```python
 >>> from mitumc.operation import Generator
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
->>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
->>> target_addr = "ATDxH32CL7hdrpgLcvtNroNTF111V6wUJCK5JTa4f8Po:mca-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
+>>> source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1"
+>>> target_addr = "ATDxH32CL7hdrpgLcvtNroNTF111V6wUJCK5JTa4f8Po~mca-v0.0.1"
 
 >>> generator = Generator('mitum')
 
@@ -384,7 +384,7 @@ First of all, suppose that every operation is that generated by 'Generator'. (cr
 '''
 ...
 
->>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
+>>> source_priv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok~btc-priv-v0.0.1"
 
 >>> operations = [createAccounts, keyUpdater, transfers]
 >>> seal = generator.createSeal(source_priv, operations)
@@ -456,32 +456,26 @@ operation.json
     "_hint": "mitum-currency-transfers-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
-        "hash": "HdVp5vNCVcdnTA5H36cEfNsjjZAktpgBLdL66rgTqFVA",
-        "token": "MjAyMS0wNi0xMFQwNzowMjo0MS45NzgyOTErMDA6MDA=",
-        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
-        "items": [
-            {
-                "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
-                "receiver": "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1",
-                "amounts": [
-                    {
-                        "_hint": "mitum-currency-amount-v0.0.1",
-                        "amount": "100",
-                        "currency": "MCC"
-                    }
-                ]
-            }
-        ]
+        "hash": "6oSda9opz5JtoL6twvvkKVRnWkMKMMqqCdxTrLsF5TFL",
+        "token": "MjAyMS0xMS0yM1QwMjozOTozMC45Mzk1MTcrMDA6MDA=",
+        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1",
+        "items": [{
+            "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
+            "receiver": "HJC4YAHznWLpBCzUZh7txn6vec5rhQ7EoKFfqX9UphLF~mca-v0.0.1",
+            "amounts": [{
+                "_hint": "mitum-currency-amount-v0.0.1",
+                "amount": "100",
+                "currency": "MCC"
+            }]
+        }]
     },
-    "hash": "6KJQdbLvomAh2HmjVuqQbYEVvVMMrsMgJEsrwcRMiqCx",
-    "fact_signs": [
-        {
-            "_hint": "base-fact-sign-v0.0.1",
-            "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
-            "signature": "AN1rKvt3cim48ETgzpEaXC5EiRJfcPhVtsK7bUTNB3f9c9152Px4enY3xh59e7EmCgmiwVvzk3tvkmTk7B3MA74E2f5gpqFzG",
-            "signed_at": "2021-06-10T07:02:42.614946Z"
-        }
-    ]
+    "hash": "AbWWRDm4eY3XErj7HQsUuKKHTWdE7YjCgmZP9F3YEdY",
+    "fact_signs": [{
+        "_hint": "base-fact-sign-v0.0.1",
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG~btc-pub-v0.0.1",
+        "signature": "381yXYp56XxXXWJfvstwwaUSPt7CbNotJ7o1kK5oJ1EBvYceMkSNpX1o1tx53yLESpT8ziMnrJjkz5Bdnq32VFn2SYE15AHd",
+        "signed_at": "2021-11-23T02:39:30.951728Z"
+    }]
 }
 ```
 
@@ -493,7 +487,7 @@ After adding a fact signature, operation hash will be changed.
 
 ```python
 >>> import mitumc.operation as op
->>> signer = op.Signer('mitum', "L4qMcVKwQkqrnPPtEhj8idCQyvCN2zyG374i5oftGQfraJEP8iek:btc-priv-v0.0.1")
+>>> signer = op.Signer('mitum', "SBGISVULOQA6BPEYF4OS2JGMBST7HYCBSL3TA2QRVGRNBMVWIZVE6336~stellar-priv-v0.0.1")
 
 >>> # Signer.signOperation(#target)
 >>> # #target must be a dictionary object or the path of opertaion json file
@@ -508,12 +502,12 @@ After signing, above operation must be like below.(Each value is up to input arg
     "_hint": "mitum-currency-transfers-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-transfers-operation-fact-v0.0.1",
-        "hash": "HdVp5vNCVcdnTA5H36cEfNsjjZAktpgBLdL66rgTqFVA",
-        "token": "MjAyMS0wNi0xMFQwNzowMjo0MS45NzgyOTErMDA6MDA=",
-        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1",
+        "hash": "6oSda9opz5JtoL6twvvkKVRnWkMKMMqqCdxTrLsF5TFL",
+        "token": "MjAyMS0xMS0yM1QwMjozOTozMC45Mzk1MTcrMDA6MDA=",
+        "sender": "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz~mca-v0.0.1",
         "items": [{
             "_hint": "mitum-currency-transfers-item-single-amount-v0.0.1",
-            "receiver": "8dsqP9dUPKv3TjJg6DCKJ7NE7vsMx47Gc4VrseEcyXtt:mca-v0.0.1",
+            "receiver": "HJC4YAHznWLpBCzUZh7txn6vec5rhQ7EoKFfqX9UphLF~mca-v0.0.1",
             "amounts": [{
                 "_hint": "mitum-currency-amount-v0.0.1",
                 "amount": "100",
@@ -523,16 +517,16 @@ After signing, above operation must be like below.(Each value is up to input arg
     },
     "fact_signs": [{
         "_hint": "base-fact-sign-v0.0.1",
-        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1",
-        "signature": "AN1rKvt3cim48ETgzpEaXC5EiRJfcPhVtsK7bUTNB3f9c9152Px4enY3xh59e7EmCgmiwVvzk3tvkmTk7B3MA74E2f5gpqFzG",
-        "signed_at": "2021-06-10T07:02:42.614946Z"
+        "signer": "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG~btc-pub-v0.0.1",
+        "signature": "381yXYp56XxXXWJfvstwwaUSPt7CbNotJ7o1kK5oJ1EBvYceMkSNpX1o1tx53yLESpT8ziMnrJjkz5Bdnq32VFn2SYE15AHd",
+        "signed_at": "2021-11-23T02:39:30.951728Z"
     }, {
         "_hint": "base-fact-sign-v0.0.1",
-        "signer": "cnMJqt1Q7LXKqFAWprm6FBC7fRbWQeZhrymTavN11PKJ:btc-pub-v0.0.1",
-        "signature": "AN1rKvt7VpVb76PXpKV2Znvixvo8bqmUJqha7WrkaTm3GKwZWfH8U2La13jJuPGvpcrbgLJqSYR5gHP2SwvtCM81NrtiBCW8a",
-        "signed_at": "2021-07-20T08:24:29.163696Z"
+        "signer": "GBYLIBJYZP6ZIYPFGOZSXSAPMRDA6XXRKNSMOMRCKNV2YZ35DGRPEQ35~stellar-pub-v0.0.1",
+        "signature": "3q8bPzbj9xJVc2JfL8mv8aMUGpUQ9StcsNm9SskZhezwLyd5mZXAR7bS56GYMMimLdF55oYbwHhsSwJ7HNAkmLXg",
+        "signed_at": "2021-11-23T02:43:25.564683Z"
     }],
-    "hash": "DdwC2wAmvctrzCvnZSTu1xK2uKwNxNr9Y73xcHKLpqYb"
+    "hash": "34e7gtDLF2k2mXWMT4v2NHryEhG4TvY3Jk4xFD1huDMb"
 }
 ```
 

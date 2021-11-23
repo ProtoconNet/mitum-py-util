@@ -3,7 +3,7 @@ import json
 import base58
 from mitumc.common import (Hint, Int, bconcat, getNewToken, iso8601TimeStamp,
                            parseAddress, parseISOtoUTC)
-from mitumc.constant import THRESHOLDS, VERSION
+from mitumc.constant import VERSION
 from mitumc.hash import sha
 from mitumc.hint import (BTC_PRIVKEY, ETHER_PRIVKEY, MBS_CREATE_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP, MBS_TRANSFER_DOCUMENTS_OP, MC_ADDRESS, MC_AMOUNT, MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS,
                          MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT,

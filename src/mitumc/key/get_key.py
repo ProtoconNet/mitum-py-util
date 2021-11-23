@@ -17,4 +17,4 @@ def getKeypair(k_type):
     elif k_type == 'stellar':
         return stellar._get_keypair()
     else:
-        return None;
+        return None

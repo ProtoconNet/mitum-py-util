@@ -9,7 +9,7 @@ from bitcoinutils.keys import PrivateKey
 from bitcoinutils.setup import setup
 from ecdsa.curves import SECP256k1
 from ecdsa.util import sigencode_der_canonize
-from mitumc.common import parseAddress
+from mitumc.common import parseAddress, SUFFIX
 from mitumc.hash import sha
 from mitumc.hint import BTC_PBLCKEY, BTC_PRIVKEY
 from mitumc.key.base import KeyPair, to_basekey
@@ -59,7 +59,7 @@ def to_btc_keypair(priv):
     """
     assert isinstance(priv, str), 'Key must be provided in string format'
     
-    if ':' in priv:
+    if SUFFIX in priv:
         _, priv = parseAddress(priv)
 
     wif = base58.b58encode_check(base58.b58decode_check(priv)[:-1]).decode()

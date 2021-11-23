@@ -1,4 +1,4 @@
-from mitumc.common import Hint, bconcat
+from mitumc.common import Hint, bconcat, SUFFIX
 from mitumc.constant import VERSION
 from mitumc.hash import sha
 from mitumc.hint import (BTC_PBLCKEY, BTC_PRIVKEY, ETHER_PBLCKEY,
@@ -28,7 +28,10 @@ class BaseKey(object):
 
     def hinted(self):
         # Returns hinted key
-        return self.k + ":" + self.h.hint
+        return self.k + SUFFIX + self.h.hint
+
+    def hinted_no_version(self):
+        return self.k + SUFFIX + self.h.type
 
     def to_bytes(self):
         # Returns hintless key in byte format
@@ -55,7 +58,7 @@ class Key(object):
 
     def to_bytes(self):
         # Returns concatenated [key, weight] in byte format
-        bkey = self.k.hinted().encode()
+        bkey = self.k.hinted_no_version().encode()
         bweight = self.w.to_bytes()
 
         return bconcat(bkey, bweight)
@@ -122,7 +125,7 @@ class Keys(object):
 
     @property
     def address(self):
-        return self.hs.hash + ":" + MC_ADDRESS + "-" + VERSION
+        return self.hs.hash + SUFFIX + MC_ADDRESS + "-" + VERSION
 
     def to_dict(self):
         d = self.body
