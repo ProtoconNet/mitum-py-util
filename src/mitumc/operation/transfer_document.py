@@ -33,7 +33,7 @@ class TransferDocumentsItem(object):
 
 class TransferDocumentsFact(OperationFact):
     def __init__(self, sender, items):
-        super(TransferDocumentsFact, self).__init__(_hint(MBS_TRANSFER_DOCUMENTS_OP_FACT))
+        super(TransferDocumentsFact, self).__init__(MBS_TRANSFER_DOCUMENTS_OP_FACT)
         self.sender = Address(sender)
         self.items = items
         self.hash = sha.sha3(self.bytes())

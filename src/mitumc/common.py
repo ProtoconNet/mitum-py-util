@@ -71,7 +71,7 @@ def iso8601TimeStamp():
 def getNewToken(iso):
     idx = iso.find('+')
     if idx == -1:
-        print('[ERROR] Invalid iso time')
+        print('Invalid iso time; getNewToken')
         exit(-1)
     return iso[:idx] + 'Z'
 
@@ -84,7 +84,7 @@ def parseISOtoUTC(iso):
     if z < 0:
         z = iso.find('+')
 
-    assert z > -1, "[ERROR] Invalid ISO type for parseISOtoUTC"
+    assert z > -1, "Invalid ISO type; parseISOtoUTC"
 
     _time = iso[t + 1: z]
     if len(_time) > 12:
@@ -120,18 +120,18 @@ def bconcat(*blist):
 
     for i in blist:
         assert isinstance(i, bytes) or isinstance(
-            i, bytearray), 'Arguments must be provided in bytes or bytearray format'
+            i, bytearray), 'Arguments must be provided in bytes or bytearray format; bconcat'
         concated += bytearray(i)
 
     return bytes(concated)
 
 def parseType(typed):
-    assert len(typed) < 3, 'Invalid typed string for parseType'
+    assert len(typed) > 3, 'Invalid typed string; parseType'
 
     raw = typed[:-3]
     type = typed[-3:]
 
-    assert type == MC_ADDRESS or type == KEY_PRIVATE or type == KEY_PUBLIC, 'Invalid type of typed string for parseType'
+    assert type == MC_ADDRESS or type == KEY_PRIVATE or type == KEY_PUBLIC, 'Invalid type of typed string; parseType'
 
     return raw, type
 

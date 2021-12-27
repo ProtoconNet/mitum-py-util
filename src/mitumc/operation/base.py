@@ -9,15 +9,14 @@ from mitumc.key.keypair import getKeypairFromPrivateKey
 
 
 def newFactSign(b, networkId, signKey):
-    assert isinstance(b, bytes), 'Invalid target b; _newFactSign'
+    assert isinstance(b, bytes), 'Invalid target b; newFactSign'
     _, type = parseType(signKey)
-    assert type == KEY_PRIVATE, 'Invalid sign key; _newFactSign'
+    assert type == KEY_PRIVATE, 'Invalid sign key; newFactSign'
 
     kp = getKeypairFromPrivateKey(signKey)
     signature = kp.sign(bconcat(b, networkId.encode()))
 
     return FactSign(
-        _hint(BASE_FACT_SIGN),
         kp.publicKey,
         signature,
         iso8601TimeStamp(),
@@ -111,12 +110,12 @@ class Operation(object):
         return bconcat(bfactHash, bfact_sg, bmemo)
 
     def addFactSign(self, priv):
-        factSign = newFactSign(self.fact.hash.hash, self.networkId, priv)
+        factSign = newFactSign(self.fact.hash.digest, self.networkId, priv)
         self.factSigns.append(factSign)
         self.generateHash()
 
     def generateHash(self):
-        return sha.sha3(self.bytes())
+        self.hash = sha.sha3(self.bytes())
 
     def dict(self):
         assert self.factSigns, 'Empty fact_signs'

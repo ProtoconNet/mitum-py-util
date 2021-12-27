@@ -41,7 +41,7 @@ class TransfersItem(object):
 
 class TransfersFact(OperationFact):
     def __init__(self, sender, items):
-        super(TransfersFact, self).__init__(_hint(MC_TRANSFERS_OP_FACT))
+        super(TransfersFact, self).__init__(MC_TRANSFERS_OP_FACT)
         self.sender = sender
         self.items = items
         self.hash = sha.sha3(self.bytes())

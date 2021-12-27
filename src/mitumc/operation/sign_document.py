@@ -30,7 +30,7 @@ class SignDocumentsItem(object):
 
 class SignDocumentsFact(OperationFact):
     def __init__(self, sender, items):
-        super(SignDocumentsFact, self).__init__(_hint(MBS_SIGN_DOCUMENTS_OP_FACT))
+        super(SignDocumentsFact, self).__init__(MBS_SIGN_DOCUMENTS_OP_FACT)
         self.sender = Address(sender)
         self.items = items
         self.hash = sha.sha3(self.bytes())

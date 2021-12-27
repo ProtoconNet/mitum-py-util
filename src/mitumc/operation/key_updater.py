@@ -8,7 +8,7 @@ from mitumc.operation.base import OperationFact, Address
 
 class KeyUpdaterFact(OperationFact):
     def __init__(self, target, keys, cid):
-        super(KeyUpdaterFact, self).__init__(_hint(MC_KEYUPDATER_OP_FACT))
+        super(KeyUpdaterFact, self).__init__(MC_KEYUPDATER_OP_FACT)
         self.target = Address(target)
         self.cid = cid
         self.keys = keys

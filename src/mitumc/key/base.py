@@ -10,14 +10,6 @@ class BaseKey(object):
         self.key = key
 
     @property
-    def key(self):
-        return self.key
-
-    @property
-    def type(self):
-        return self.type
-
-    @property
     def typed(self):
         return self.key + self.type
 

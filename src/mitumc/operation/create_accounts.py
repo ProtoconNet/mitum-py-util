@@ -43,7 +43,7 @@ class CreateAccountsItem(object):
 
 class CreateAccountsFact(OperationFact):
     def __init__(self, sender, items):
-        super(CreateAccountsFact, self).__init__(_hint(MC_CREATE_ACCOUNTS_OP_FACT))
+        super(CreateAccountsFact, self).__init__(MC_CREATE_ACCOUNTS_OP_FACT)
         self.sender = Address(sender)
         self.items = items
         self.hash = sha.sha3(self.bytes())

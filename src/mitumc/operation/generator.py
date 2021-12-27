@@ -23,19 +23,18 @@ from mitumc.operation.sign_document import SignDocumentsItem, SignDocumentsFact
 
 def _to_keys(keys, threshold):
     _keys = []
-
+    
     for _key in keys:
         key, weight = _key
+
         _keys.append(
             Key(key, weight)
         )
 
-    keys = Keys(
+    return Keys(
         _keys,
         threshold,
     )
-
-    return keys
 
 
 def _to_amounts(amts):
@@ -59,52 +58,53 @@ class Generator(object):
     def set_id(self, _id):
         self.networkId = _id
 
-    def key(key, weight):
+    def key(self, key, weight):
         return (key, weight)
 
-    def amount(big, cid):
+    def amount(self, big, cid):
         return (big, cid)
 
-    def createKeys(keys, threshold):
+    def createKeys(self, keys, threshold):
         return _to_keys(keys, threshold)
 
-    def createAmounts(amts):
+    def createAmounts(self, amts):
         return _to_amounts(amts)
 
-    def createCreateAccountsItem(keys, amounts):
+    def createCreateAccountsItem(self, keys, amounts):
         return CreateAccountsItem(keys, amounts)
 
-    def createTransfersItem(receiver, amounts):
+    def createTransfersItem(self, receiver, amounts):
         return TransfersItem(receiver, amounts)
 
-    def createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes):
+    def createCreateDocumentsItem(self, filehash, did, signcode, title, size, cid, signers, signcodes):
         return CreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
 
-    def createSignDocumentsItem(owner, did, cid):
+    def createSignDocumentsItem(self, owner, did, cid):
         return SignDocumentsItem(owner, did, cid)
 
-    def createTransferDocumentsItem(owner, receiver, did, cid):
+    def createTransferDocumentsItem(self, owner, receiver, did, cid):
         return TransferDocumentsItem(owner, receiver, did, cid)
 
-    def createCreateAccountsFact(sender, items):
+    def createCreateAccountsFact(self, sender, items):
         return CreateAccountsFact(sender, items)
 
-    def createKeyUpdaterFact(target, keys, cid):
+    def createKeyUpdaterFact(self, target, keys, cid):
         return KeyUpdaterFact(target, keys, cid)
 
-    def createTransfersFact(sender, items):
+    def createTransfersFact(self, sender, items):
         return TransfersFact(sender, items)
 
-    def createCreateDocumentsFact(sender, items):
+    def createCreateDocumentsFact(self, sender, items):
         return CreateDocumentsFact(sender, items)
 
-    def createSignDocumentsFact(sender, items):
+    def createSignDocumentsFact(self, sender, items):
         return SignDocumentsFact(sender, items)
 
-    def createTransferDocumentsFact(sender, items):
+    def createTransferDocumentsFact(self, sender, items):
         return TransferDocumentsFact(sender, items)
 
     def createOperation(self, fact, memo):
+
         if fact.hint.type == MC_CREATE_ACCOUNTS_OP_FACT:
             _type = MC_CREATE_ACCOUNTS_OP
         elif fact.hint.type == MC_KEYUPDATER_OP_FACT:
