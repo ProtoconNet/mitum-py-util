@@ -2,21 +2,15 @@ import datetime
 
 import base58
 import pytz
+from mitumc.constant import VERSION
 
-SUFFIX = '~'
+from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
 
 class Int(object):
-    """ Contains big endian integer.
-
-    Attributes:
-        value (int): Integer by big endian byteorder
-    """
-
     def __init__(self, value):
         self.value = value
 
-    def tight_bytes(self):
-        # Converts int to N length bytes by big endian
+    def tight(self):
         n = abs(self.value)
 
         result = bytearray()
@@ -26,8 +20,7 @@ class Int(object):
 
         return bytes(result[::-1])
 
-    def to_bytes(self):
-        # Converts int to 8 length bytes by big endian
+    def bytes(self):
         n = int(self.value)
         count = 0
 
@@ -40,27 +33,8 @@ class Int(object):
         result = result[::-1] + bytearray([0] * (8-count))
         return bytes(result)
 
-    def little4_to_bytes(self):
-        # Convert int to 4 length bytes by little endian
-        n = int(self.value)
-        count = 0
-
-        result = bytearray()
-        while(n):
-            result.append(n & 0xff)
-            n = n >> 8
-            count += 1
-        result = result + bytearray([0] * (4-count))
-        return bytes(result)
-
 
 class Hint(object):
-    """ Contains type-hint and mitum-currency version.
-
-    Attributes:
-        h_type (str): type-hint
-        h_ver  (str): mitum-currency version
-    """
 
     def __init__(self, type, ver):
         self.h_type = type
@@ -76,12 +50,6 @@ class Hint(object):
 
 
 class Hash(object):
-    """ Contains hash digest.
-
-    Attributes:
-        hs (binary): Hash digest in binary format
-    """
-
     def __init__(self, hs):
         self.hs = hs
 
@@ -148,14 +116,6 @@ def parseISOtoUTC(iso):
 
 
 def bconcat(*blist):
-    """ Concatenates bytes type arguments.
-
-    Args:
-        *blist: Arguments to concatenate
-
-    Returns:
-        bytes: Concatenated bytes type instance
-    """
     concated = bytearray()
 
     for i in blist:
@@ -165,44 +125,15 @@ def bconcat(*blist):
 
     return bytes(concated)
 
+def parseType(typed):
+    assert len(typed) < 3, 'Invalid typed string for parseType'
 
-def parseAddress(addr):
-    """ Seperates address(or key) into type-hint and hintless address(key).
+    raw = typed[:-3]
+    type = typed[-3:]
 
-    Args:
-        addr (str): Hinted address(or key)
+    assert type == MC_ADDRESS or type == KEY_PRIVATE or type == KEY_PUBLIC, 'Invalid type of typed string for parseType'
 
-    Returns:
-        type (str): Hint of address(or key)
-        addr (str): Address(or key) without hint
-    """
-    assert isinstance(addr, str), 'Input must be provided in string format'
-    assert SUFFIX in addr, 'Invalid format of Address(or key)'
+    return raw, type
 
-    idx = addr.index(SUFFIX)
-
-    idx2 = -1
-
-    ver_count = 0
-    dot_count = 0
-    lastNum = False
-    for i in range(len(addr)-1, idx, -1):
-        if addr[i] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            if lastNum == False:
-                ver_count += 1
-            lastNum = True
-        else:
-            lastNum = False
-        if '.' == addr[i]:
-            dot_count += 1
-        if 'v' == addr[i] and dot_count == 2 and ver_count == 3:
-            idx2 = i
-            if addr[i-1] != '-':
-                idx2 = -1
-            break
-
-    assert idx2 != -1, 'Invalid hint'
-
-    type = addr[idx+1:idx2-1]
-
-    return type, addr[:idx]
+def _hint(hint):
+    return Hint(hint, VERSION)

@@ -1,59 +1,35 @@
 import base64
 
-from mitumc.common import bconcat
+from mitumc.common import bconcat, _hint
 from mitumc.hash import sha
-from mitumc.operation import OperationFact, OperationFactBody
+from mitumc.hint import MC_KEYUPDATER_OP_FACT
+from mitumc.operation.base import OperationFact, Address
 
 
-class KeyUpdaterFactBody(OperationFactBody):
-    """ Body of KeyUpdaterFact.
-
-    Attributes:
-        h         (Hint): hint; MC_KEYUPDATER_OP_FACT
-        token     (text): base64 encoded fact token
-        target (Address): Target Address
-        cid       (text): CurrencyID
-        ks        (Keys): Keys object
-    """
-    def __init__(self, h, token, target, cid, ks):
-        super(KeyUpdaterFactBody, self).__init__(h, token)
-        self.target = target
+class KeyUpdaterFact(OperationFact):
+    def __init__(self, target, keys, cid):
+        super(KeyUpdaterFact, self).__init__(_hint(MC_KEYUPDATER_OP_FACT))
+        self.target = Address(target)
         self.cid = cid
-        self.ks = ks
+        self.keys = keys
+        self.hash = sha.sha3(self.bytes())
     
-    def to_bytes(self):
-        # Returns concatenated [token, target, ks, cid] in byte format
-
+    def bytes(self):
         btoken = self.token.encode()
-        btarget = self.target.hinted().encode()
-        bkeys = self.ks.to_bytes()
+        btarget = self.target.bytes()
+        bkeys = self.keys.bytes()
         bcid = self.cid.encode()
       
         return bconcat(btoken, btarget, bkeys, bcid)
-
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
     
-
-class KeyUpdaterFact(OperationFact):
-    """ Contains KeyUpdaterFactBody and a hash.
-
-    Attributes:
-        hs                 (Hash): Fact Hash
-        body (KeyUpdaterFactBody): Fact body object
-    """
-    def __init__(self, net_id, hs, body):
-        super(KeyUpdaterFact, self).__init__(net_id, hs, body)
-
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         fact = {}
-        fact['_hint'] = d.h.hint
-        fact['hash'] = self.hash().hash
-        fact['token'] = base64.b64encode(d.token.encode('ascii')).decode('ascii')
-        fact['target'] = d.target.hinted()
-        fact['keys'] = d.ks.to_dict()
-        fact['currency'] = d.cid
+        fact['_hint'] = self.hint.hint
+        fact['hash'] = self.hash.hash
+        fact['token'] = base64.b64encode(self.token.encode('ascii')).decode('ascii')
+        fact['target'] = self.target.address
+        fact['keys'] = self.keys.dict()
+        fact['currency'] = self.cid
         return fact
 
 

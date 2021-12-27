@@ -1,28 +1,29 @@
 import base64
 
-from mitumc.common import bconcat
+from mitumc.common import bconcat, _hint, Int
 from mitumc.hash import sha
-from mitumc.operation import OperationFact, OperationFactBody
+from mitumc.hint import MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_SINGLE_FILE
+from mitumc.operation.base import OperationFact, Address
 
 
 class CreateDocumentsItem(object):
-    def __init__(self, h, fh, did, signcode, title, size, cid, signers, signcodes):
-        self.h = h
-        self.fh = fh
-        self.did = did
+    def __init__(self, fileHash, did, signcode, title, size, cid, signers, signcodes):
+        self.hint = _hint(MBS_CREATE_DOCUMENTS_SINGLE_FILE)
+        self.fileHash = fileHash
+        self.did = Int(did)
         self.signcode = signcode
         self.title = title
-        self.size = size
+        self.size = Int(size)
         self.cid = cid
         self.signers = signers
         self.signcodes = signcodes
 
-    def to_bytes(self):
-        bfh = self.fh.encode()
-        bdid = self.did.tight_bytes()
+    def bytes(self):
+        bfh = self.fileHash.encode()
+        bdid = self.did.tight()
         bscode = self.signcode.encode()
         btitle = self.title.encode()
-        bsize = self.size.tight_bytes()
+        bsize = self.size.tight()
         bcid = self.cid.encode()
 
         bsigners = bytearray()
@@ -37,10 +38,10 @@ class CreateDocumentsItem(object):
 
         return bconcat(bfh, bdid, bscode, btitle, bsize, bcid, bsigners, bscodes)
 
-    def to_dict(self):
+    def dict(self):
         item = {}
-        item['_hint'] = self.h.hint
-        item['filehash'] = self.fh
+        item['_hint'] = self.hint.hint
+        item['filehash'] = self.fileHash
         item['documentid'] = str(self.did.value)
         item['signcode'] = self.signcode
         item['title'] = self.title
@@ -51,46 +52,35 @@ class CreateDocumentsItem(object):
         return item
 
 
-class CreateDocumentsFactBody(OperationFactBody):
-    def __init__(self, h, token, sender, items):
-        super(CreateDocumentsFactBody, self).__init__(h, token)
-        self.sender = sender
+class CreateDocumentsFact(OperationFact):
+    def __init__(self, sender, items):
+        super(CreateDocumentsFact, self).__init__(_hint(MBS_CREATE_DOCUMENTS_OP_FACT))
+        self.sender = Address(sender)
         self.items = items
+        self.hash = sha.sha3(self.bytes())
 
-    def to_bytes(self):
+    def bytes(self):
         bitems = bytearray()
         for i in self.items:
-            bitems += bytearray(i.to_bytes())
+            bitems += bytearray(i.bytes())
         
         btoken = self.token.encode()
-        bsender = self.sender.hinted().encode()
+        bsender = self.sender.bytes()
         bitems = bytes(bitems)
 
         return bconcat(btoken, bsender, bitems)
 
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
-
-
-class CreateDocumentsFact(OperationFact):
-    def __init__(self, net_id, hs, body):
-        super(CreateDocumentsFact, self).__init__(net_id, hs, body)
-
-    def hash(self):
-        return self.hs
-
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         fact = {}
-        fact['_hint'] = d.h.hint
-        fact['hash'] = self.hash().hash
-        token = base64.b64encode(d.token.encode('ascii')).decode('ascii')
+        fact['_hint'] = self.hint.hint
+        fact['hash'] = self.hash.hash
+        token = base64.b64encode(self.token.encode('ascii')).decode('ascii')
         fact['token'] = token
-        fact['sender'] = d.sender.hinted()
+        fact['sender'] = self.sender.address
 
         _items = list()
-        for item in d.items:
-            _items.append(item.to_dict())
+        for item in self.items:
+            _items.append(item.dict())
         fact['items'] = _items
         return fact
         

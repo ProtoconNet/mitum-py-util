@@ -1,106 +1,74 @@
 import base64
 
-from mitumc.common import bconcat
+from mitumc.common import bconcat, _hint
 from mitumc.hash import sha
-from mitumc.operation import OperationFact, OperationFactBody
+from mitumc.hint import MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS, MC_CREATE_ACCOUNTS_OP_FACT, MC_CREATE_ACCOUNTS_SINGLE_AMOUNT
+from mitumc.operation.base import OperationFact, Address
 
 
 class CreateAccountsItem(object):
-    """ Single CreateAccountsItem.
-
-    Attributes:
-        h               (Hint): hint; MC_CREATE_ACCOUNTS_SINGLE_AMOUNT
-        ks              (Keys): Keys object for single item
-        amounts (List(Amount)): List of amounts
-    """
-    def __init__(self, h, ks, amounts):
-        self.h = h
-        self.ks = ks
+    def __init__(self, keys, amounts):
+        if len(amounts) > 1:
+            self.hint = _hint(MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS)
+        else:
+            self.hint = _hint(MC_CREATE_ACCOUNTS_SINGLE_AMOUNT)
+        self.keys = keys
         self.amounts = amounts
 
-    def to_bytes(self):
-        # Returns concatenated [ks, amounts] in byte format
+    def bytes(self):
         amounts = self.amounts
 
         bamounts = bytearray()
         for amount in amounts:
-            bamounts += bytearray(amount.to_bytes())
+            bamounts += bytearray(amount.bytes())
 
-        bkeys = self.ks.to_bytes()
+        bkeys = self.keys.bytes()
         bamounts = bytes(bamounts)
 
         return bconcat(bkeys, bamounts)
 
-    def to_dict(self):
+    def dict(self):
         item = {}
-        item['_hint'] = self.h.hint
-        item['keys'] = self.ks.to_dict()
+        item['_hint'] = self.hint.hint
+        item['keys'] = self.keys.dict()
         
         _amounts = self.amounts
         amounts = list()
         for _amount in _amounts:
-            amounts.append(_amount.to_dict())
+            amounts.append(_amount.dict())
         item['amounts'] = amounts
 
         return item
 
 
-class CreateAccountsFactBody(OperationFactBody):
-    """ Body of CreateAccountsFact.
-
-    Attributes:
-        h                         (Hint): hint; MC_CREATE_ACCOUNTS_OP_FACT
-        token                      (str): base64 encoded fact token
-        sender                 (Address): Sender address
-        items (List(CreateAccountsItem)): List of items
-    """
-    def __init__(self, h, token, sender, items):
-        super(CreateAccountsFactBody, self).__init__(h, token)
-        self.sender = sender
+class CreateAccountsFact(OperationFact):
+    def __init__(self, sender, items):
+        super(CreateAccountsFact, self).__init__(_hint(MC_CREATE_ACCOUNTS_OP_FACT))
+        self.sender = Address(sender)
         self.items = items
+        self.hash = sha.sha3(self.bytes())
 
-    def to_bytes(self):
-        # Returns concatenated [token, sender, items] in byte format
-
+    def bytes(self):
         bitems = bytearray()
         for i in self.items:
-            bitems += bytearray(i.to_bytes())
+            bitems += bytearray(i.bytes())
         
         btoken = self.token.encode()
-        bsender = self.sender.hinted().encode()
+        bsender = self.sender.bytes()
         bitems = bytes(bitems)
 
         return bconcat(btoken, bsender, bitems)
 
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
-
-
-class CreateAccountsFact(OperationFact):
-    """ Contains CreateAccountsFactBody and a hash.
-
-    Attributes:
-        hs                     (Hash): Fact Hash
-        body (CreateAccountsFactBody): Fact body object
-    """
-    def __init__(self, net_id, hs, body):
-        super(CreateAccountsFact, self).__init__(net_id, hs, body)
-
-    def hash(self):
-        return self.hs
-
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         fact = {}
-        fact['_hint'] = d.h.hint
-        fact['hash'] = self.hash().hash
-        token = base64.b64encode(d.token.encode('ascii')).decode('ascii')
+        fact['_hint'] = self.hint.hint
+        fact['hash'] = self.hash.hash
+        token = base64.b64encode(self.token.encode('ascii')).decode('ascii')
         fact['token'] = token
-        fact['sender'] = d.sender.hinted()
+        fact['sender'] = self.sender.address
 
         _items = list()
-        for item in d.items:
-            _items.append(item.to_dict())
+        for item in self.items:
+            _items.append(item.dict())
         fact['items'] = _items
         return fact
-        

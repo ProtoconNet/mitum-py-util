@@ -1,144 +1,100 @@
-from mitumc.common import Hint, bconcat, SUFFIX
-from mitumc.constant import VERSION
+from mitumc.common import bconcat, parseType, _hint, Int
 from mitumc.hash import sha
-from mitumc.hint import (BTC_PBLCKEY, BTC_PRIVKEY, ETHER_PBLCKEY,
-                         ETHER_PRIVKEY, STELLAR_PBLCKEY, STELLAR_PRIVKEY,
-                         MC_ADDRESS)
+from mitumc.hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
 
 
 class BaseKey(object):
-    """ Contains a key and its type hint.
 
-    Attributes:
-        h (Hint): hint; [TYPE]_PBLCKEY, [TYPE]_PRIVKEY
-        k (str): Hintless key
-    """
-
-    def __init__(self, h, k):
-        self.h = h
-        self.k = k
+    def __init__(self, type, key):
+        self.type = type
+        self.key = key
 
     @property
     def key(self):
-        # Returns hintless key
-        return self.k
+        return self.key
 
-    def hint(self):
-        return self.h
+    @property
+    def type(self):
+        return self.type
 
-    def hinted(self):
-        # Returns hinted key
-        return self.k + SUFFIX + self.h.hint
+    @property
+    def typed(self):
+        return self.key + self.type
 
-    def hinted_no_version(self):
-        return self.k + SUFFIX + self.h.type
+    def bytesWithoutType(self):
+        return self.key.encode()
 
-    def to_bytes(self):
-        # Returns hintless key in byte format
-        return self.k.encode()
+    def bytes(self):
+        return self.typed.encode()
 
 
 class Key(object):
-    """ Single key with weight.
+    def __init__(self, key, weight):
+        raw, type = parseType(key)
+        assert type == KEY_PUBLIC, 'Not public key; Key'
+        assert weight > 0 and weight <= 100, "Weight should be in range 0 < weight <= 100; Key"
 
-    Attributes:
-        h    (Hint): hint; MC_KEY
-        k (BaseKey): Basekey object for key
-        w     (Int): weight
-    """
+        self.hint = _hint(MC_KEY)
+        self.key = BaseKey(KEY_PUBLIC, raw)
+        self.weight = Int(weight)
 
-    def __init__(self, h, k, w):
-        self.h = h
-        self.k = k
-        self.w = w
-
-    def key_bytes(self):
+    def bytesKey(self):
         # Returns hintless key in byte format
-        return self.k.to_bytes()
+        return self.key.bytesWithoutType()
 
-    def to_bytes(self):
+    def bytes(self):
         # Returns concatenated [key, weight] in byte format
-        bkey = self.k.hinted_no_version().encode()
-        bweight = self.w.to_bytes()
+        bkey = self.key.bytes()
+        bweight = self.weight.bytes()
 
         return bconcat(bkey, bweight)
 
-    def to_dict(self):
+    def dict(self):
         key = {}
-        key['_hint'] = self.h.hint
-        key['weight'] = self.w.value
-        key['key'] = self.k.hinted()
+        key['_hint'] = self.hint.hint
+        key['weight'] = self.weight.value
+        key['key'] = self.key.typed
         return key
 
 
-class KeysBody(object):
-    """ Body of Keys.
+class Keys(object):
+    def __init__(self, keys, threshold):
+        self.hint = _hint(MC_KEYS)
+        self.threshold = Int(threshold)
+        self.keys = keys
+        self.hash = sha.sha3(self.bytes())
 
-    Attributes:
-        h              (Hint): hint; MC_KEYS
-        threshold       (Int): threshold
-        ks        (List(Key)): List of keys
-    """
-
-    def __init__(self, h, threshold, ks):
-        self.h = h
-        self.threshold = threshold
-        self.ks = ks
-
-    def to_bytes(self):
-        # Returns concatenated [ks, threshold] in byte format
-        keys = self.ks
+    def bytes(self):
+            # Returns concatenated [ks, threshold] in byte format
+        keys = self.keys
 
         lkeys = list(keys)
-        lkeys.sort(key=lambda x: x.key_bytes())
+        lkeys.sort(key=lambda x: x.bytesKey())
 
         bkeys = bytearray()
         for k in lkeys:
-            bkeys += k.to_bytes()
+            bkeys += k.bytes()
 
         bkeys = bytes(bkeys)
-        bthreshold = self.threshold.to_bytes()
+        bthreshold = self.threshold.bytes()
 
         return bconcat(bkeys, bthreshold)
 
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
-
-
-class Keys(object):
-    """ Contains KeysBody and a hash.
-
-    Attributes:
-        hs       (Hash): Keys Hash
-        body (KeysBody): Body object
-    """
-
-    def __init__(self, hs, body):
-        self.hs = hs
-        self.body = body
-
-    def to_bytes(self):
-        return self.body.to_bytes()
-
-    def hash(self):
-        return self.hs
-
     @property
     def address(self):
-        return self.hs.hash + SUFFIX + MC_ADDRESS + "-" + VERSION
+        return self.hash.hash + MC_ADDRESS
 
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         keys = {}
-        keys['_hint'] = d.h.hint
-        keys['hash'] = self.hash().hash
+        keys['_hint'] = self.hint.hint
+        keys['hash'] = self.hash.hash
 
-        _keys = d.ks
+        _keys = self.keys
         ks = list()
         for _key in _keys:
-            ks.append(_key.to_dict())
+            ks.append(_key.dict())
         keys['keys'] = ks
-        keys['threshold'] = d.threshold.value
+        keys['threshold'] = self.threshold.value
         return keys
 
 
@@ -155,23 +111,3 @@ class KeyPair(object):
     @property
     def public_key(self):
         return self.pubkey
-
-
-def to_basekey(type, k):
-    """ Returns BaseKey for k
-
-    Args:
-        type (str): Type hint for key
-        k    (str): Hintless key
-
-    Returns:
-        BaseKey: BaseKey object for k
-    """
-    assert type in [
-        BTC_PRIVKEY, BTC_PBLCKEY,
-        ETHER_PRIVKEY, ETHER_PBLCKEY,
-        STELLAR_PRIVKEY, STELLAR_PBLCKEY], '[arg1] Invalid type or not a key type'
-    assert isinstance(k, str), '[arg2] Key must be provided in string format'
-
-    hint = Hint(type, VERSION)
-    return BaseKey(hint, k)

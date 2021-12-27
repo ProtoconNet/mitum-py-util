@@ -1,64 +1,38 @@
 import json
 
 import base58
-from mitumc.common import (Hint, Int, bconcat, getNewToken, iso8601TimeStamp,
-                           parseAddress, parseISOtoUTC)
-from mitumc.constant import VERSION
+from mitumc.common import (_hint, bconcat, getNewToken, iso8601TimeStamp, parseISOtoUTC)
 from mitumc.hash import sha
-from mitumc.hint import (BTC_PRIVKEY, ETHER_PRIVKEY, MBS_CREATE_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP, MBS_TRANSFER_DOCUMENTS_OP, MC_ADDRESS, MC_AMOUNT, MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS,
+from mitumc.hint import (MBS_CREATE_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP, MBS_TRANSFER_DOCUMENTS_OP,
                          MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT,
-                         MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_KEY, MC_KEYS,
-                         MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT, MC_TRANSFERS_ITEM_MULTI_AMOUNTS,
-                         MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT,
-                         MC_TRNASFERS_ITEM_SINGLE_AMOUNT, SEAL,
-                         STELLAR_PRIVKEY,
-                         MBS_CREATE_DOCUMENTS_SINGLE_FILE, MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
-                         MBS_SIGN_ITEM_SINGLE_DOCUMENT, MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP,
-                         MBS_TRANSFER_ITEM_SINGLE_DOCUMENT, MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP)
-from mitumc.key.base import Key, Keys, KeysBody, to_basekey
-from mitumc.key.btc import to_btc_keypair
-from mitumc.key.ether import to_ether_keypair
-from mitumc.key.stellar import to_stellar_keypair
-from mitumc.operation.base import (Address, Amount, Memo, Operation,
-                                   OperationBody, _newFactSign)
-from mitumc.operation.create_accounts import (CreateAccountsFact,
-                                              CreateAccountsFactBody,
-                                              CreateAccountsItem)
-from mitumc.operation.key_updater import KeyUpdaterFact, KeyUpdaterFactBody
-from mitumc.operation.transfers import (TransfersFact, TransfersFactBody,
-                                        TransfersItem)
-from mitumc.operation.create_documents import (
-    CreateDocumentsItem, CreateDocumentsFactBody, CreateDocumentsFact)
-from mitumc.operation.transfer_document import (
-    TransferDocumentsItem, TransferDocumentsFactBody, TransferDocumentsFact)
-from mitumc.operation.sign_document import (
-    SignDocumentsItem, SignDocumentsFactBody, SignDocumentsFact)
+                         MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT, 
+                         MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT, SEAL,
+                         MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
+                         MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP,
+                         MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP)
+from mitumc.key.base import Key, Keys
+from mitumc.key.keypair import getKeypairFromPrivateKey
+from mitumc.operation.base import Amount, Operation, Operation, newFactSign
+from mitumc.operation.create_accounts import CreateAccountsFact, CreateAccountsItem
+from mitumc.operation.key_updater import KeyUpdaterFact
+from mitumc.operation.transfers import TransfersFact, TransfersItem
+from mitumc.operation.create_documents import CreateDocumentsItem, CreateDocumentsFact
+from mitumc.operation.transfer_document import TransferDocumentsItem, TransferDocumentsFact
+from mitumc.operation.sign_document import SignDocumentsItem, SignDocumentsFact
 
 
-def _to_keys(ks, threshold):
+def _to_keys(keys, threshold):
     _keys = []
 
-    for _key in ks:
-        key, w = _key
-
-        t, k = parseAddress(key)
+    for _key in keys:
+        key, weight = _key
         _keys.append(
-            Key(
-                Hint(MC_KEY, VERSION),
-                to_basekey(t, k),
-                Int(w),
-            )
+            Key(key, weight)
         )
 
-    keys_body = KeysBody(
-        Hint(MC_KEYS, VERSION),
-        Int(threshold),
-        _keys,
-    )
-
     keys = Keys(
-        keys_body.generate_hash(),
-        keys_body,
+        _keys,
+        threshold,
     )
 
     return keys
@@ -70,9 +44,8 @@ def _to_amounts(amts):
     for _amt in amts:
         amounts.append(
             Amount(
-                Hint(MC_AMOUNT, VERSION),
-                Int(_amt[0]),
-                _amt[1],
+                _amt[0],
+                _amt[1]
             )
         )
 
@@ -80,229 +53,108 @@ def _to_amounts(amts):
 
 
 class Generator(object):
-    def __init__(self, net_id):
-        self.net_id = net_id
+    def __init__(self, networkId):
+        self.networkId = networkId
 
     def set_id(self, _id):
-        self.net_id = _id
+        self.networkId = _id
 
-    def createKeys(self, keys, threshold):
+    def key(key, weight):
+        return (key, weight)
+
+    def amount(big, cid):
+        return (big, cid)
+
+    def createKeys(keys, threshold):
         return _to_keys(keys, threshold)
 
-    def createAmounts(self, amts):
+    def createAmounts(amts):
         return _to_amounts(amts)
 
-    def createCreateAccountsItem(self, keys_o, amts):
-        _hint = MC_CREATE_ACCOUNTS_SINGLE_AMOUNT
+    def createCreateAccountsItem(keys, amounts):
+        return CreateAccountsItem(keys, amounts)
 
-        if len(amts) > 1:
-            _hint = MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS
+    def createTransfersItem(receiver, amounts):
+        return TransfersItem(receiver, amounts)
 
-        return CreateAccountsItem(Hint(_hint, VERSION), keys_o, amts)
+    def createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes):
+        return CreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
 
-    def createTransfersItem(self, receiver, amts):
-        _hint = MC_TRNASFERS_ITEM_SINGLE_AMOUNT
+    def createSignDocumentsItem(owner, did, cid):
+        return SignDocumentsItem(owner, did, cid)
 
-        if len(amts) > 1:
-            _hint = MC_TRANSFERS_ITEM_MULTI_AMOUNTS
+    def createTransferDocumentsItem(owner, receiver, did, cid):
+        return TransferDocumentsItem(owner, receiver, did, cid)
 
-        t, addr = parseAddress(receiver)
-        _receiver = Address(Hint(t, VERSION), addr)
+    def createCreateAccountsFact(sender, items):
+        return CreateAccountsFact(sender, items)
 
-        return TransfersItem(Hint(_hint, VERSION), _receiver, amts)
+    def createKeyUpdaterFact(target, keys, cid):
+        return KeyUpdaterFact(target, keys, cid)
 
-    def createCreateDocumentsItem(self, filehash, did, signcode, title, size, cid, signers, signcodes):
-        _hint = MBS_CREATE_DOCUMENTS_SINGLE_FILE
+    def createTransfersFact(sender, items):
+        return TransfersFact(sender, items)
 
-        return CreateDocumentsItem(Hint(_hint, VERSION), filehash, Int(did), signcode, title, Int(size), cid, signers, signcodes)
+    def createCreateDocumentsFact(sender, items):
+        return CreateDocumentsFact(sender, items)
 
-    def createSignDocumentsItem(self, owner, did, cid):
-        _hint = MBS_SIGN_ITEM_SINGLE_DOCUMENT
+    def createSignDocumentsFact(sender, items):
+        return SignDocumentsFact(sender, items)
 
-        t, addr = parseAddress(owner)
-        _owner = Address(Hint(t, VERSION), addr)
-
-        return SignDocumentsItem(Hint(_hint, VERSION), _owner, Int(did), cid)
-
-    def createTransferDocumentsItem(self, owner, receiver, did, cid):
-        _hint = MBS_TRANSFER_ITEM_SINGLE_DOCUMENT
-
-        owner_t, owner_addr = parseAddress(owner)
-        receiver_t, receiver_addr = parseAddress(receiver)
-        _owner = Address(Hint(owner_t, VERSION), owner_addr)
-        _receiver = Address(Hint(receiver_t, VERSION), receiver_addr)
-
-        return TransferDocumentsItem(Hint(_hint, VERSION), _owner, _receiver, Int(did), cid)
-
-    def createCreateAccountsFact(self, sender, items):
-        t, addr = parseAddress(sender)
-        _sender = Address(Hint(t, VERSION), addr)
-
-        fact_body = CreateAccountsFactBody(
-            Hint(MC_CREATE_ACCOUNTS_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _sender,
-            items,
-        )
-
-        return CreateAccountsFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
-
-    def createKeyUpdaterFact(self, target, cid, keys_o):
-        t, addr = parseAddress(target)
-        _target = Address(Hint(t, VERSION), addr)
-
-        fact_body = KeyUpdaterFactBody(
-            Hint(MC_KEYUPDATER_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _target,
-            cid,
-            keys_o,
-        )
-
-        return KeyUpdaterFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
-
-    def createTransfersFact(self, sender, items):
-        t, addr = parseAddress(sender)
-        _sender = Address(Hint(t, VERSION), addr)
-
-        fact_body = TransfersFactBody(
-            Hint(MC_TRANSFERS_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _sender,
-            items,
-        )
-
-        return TransfersFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
-
-    def createCreateDocumentsFact(self, sender, items):
-        t, addr = parseAddress(sender)
-        _sender = Address(Hint(t, VERSION), addr)
-
-        fact_body = CreateDocumentsFactBody(
-            Hint(MBS_CREATE_DOCUMENTS_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _sender,
-            items,
-        )
-
-        return CreateDocumentsFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
-
-    def createSignDocumentsFact(self, sender, items):
-        t, addr = parseAddress(sender)
-        _sender = Address(Hint(t, VERSION), addr)
-
-        fact_body = SignDocumentsFactBody(
-            Hint(MBS_SIGN_DOCUMENTS_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _sender,
-            items,
-        )
-
-        return SignDocumentsFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
-
-    def createTransferDocumentsFact(self, sender, items):
-        t, addr = parseAddress(sender)
-        _sender = Address(Hint(t, VERSION), addr)
-
-        fact_body = TransferDocumentsFactBody(
-            Hint(MBS_TRANSFER_DOCUMENTS_OP_FACT, VERSION),
-            iso8601TimeStamp(),
-            _sender,
-            items,
-        )
-
-        return TransferDocumentsFact(
-            self.net_id,
-            fact_body.generate_hash(),
-            fact_body,
-        )
+    def createTransferDocumentsFact(sender, items):
+        return TransferDocumentsFact(sender, items)
 
     def createOperation(self, fact, memo):
-        if fact.hint() == MC_CREATE_ACCOUNTS_OP_FACT:
+        if fact.hint.type == MC_CREATE_ACCOUNTS_OP_FACT:
             _type = MC_CREATE_ACCOUNTS_OP
-        elif fact.hint() == MC_KEYUPDATER_OP_FACT:
+        elif fact.hint.type == MC_KEYUPDATER_OP_FACT:
             _type = MC_KEYUPDATER_OP
-        elif fact.hint() == MC_TRANSFERS_OP_FACT:
+        elif fact.hint.type == MC_TRANSFERS_OP_FACT:
             _type = MC_TRANSFERS_OP
-        elif fact.hint() == MBS_CREATE_DOCUMENTS_OP_FACT:
+        elif fact.hint.type == MBS_CREATE_DOCUMENTS_OP_FACT:
             _type = MBS_CREATE_DOCUMENTS_OP
-        elif fact.hint() == MBS_SIGN_DOCUMENTS_OP_FACT:
+        elif fact.hint.type == MBS_SIGN_DOCUMENTS_OP_FACT:
             _type = MBS_SIGN_DOCUMENTS_OP
-        elif fact.hint() == MBS_TRANSFER_DOCUMENTS_OP_FACT:
+        elif fact.hint.type == MBS_TRANSFER_DOCUMENTS_OP_FACT:
             _type = MBS_TRANSFER_DOCUMENTS_OP
         else:
             return None
 
-        oper_body = OperationBody(
-            Memo(memo),
-            Hint(_type, VERSION),
-            fact,
-        )
+        return Operation(_type, fact, memo, self.networkId)
 
-        return Operation(oper_body)
+    def createSeal(self, signKey, operations):
+        assert operations, 'Operation list is empty!'
 
-    def createSeal(self, sk, opers):
-        assert opers, 'Operation list is empty!'
+        for op in operations:
+            assert isinstance(op, Operation), 'Not Operation; createSeal'
+            assert op.hash != None, "Operation haven't signed; createSeal"
 
-        for op in opers:
-            assert isinstance(op, Operation), 'Invalid operation'
-            assert op.hash() != None, "Some Operation haven't signed"
+        kp = getKeypairFromPrivateKey(signKey)
 
-        t, k = parseAddress(sk)
+        signedAt = iso8601TimeStamp()
+        bsignedAt = parseISOtoUTC(signedAt).encode()
 
-        if t == BTC_PRIVKEY:
-            kp = to_btc_keypair(k)
-        elif t == ETHER_PRIVKEY:
-            kp = to_ether_keypair(k)
-        elif t == STELLAR_PRIVKEY:
-            kp = to_stellar_keypair(k)
-        else:
-            return None
-
-        signed_at = iso8601TimeStamp()
-        bsigned_at = parseISOtoUTC(signed_at).encode()
-
-        bsigner = kp.public_key.hinted().encode()
+        bsigner = kp.publicKey.encode()
 
         bopers = bytearray()
-        for op in opers:
-            bopers += op.hash().digest
+        for op in operations:
+            bopers += op.hash.digest
 
-        body_hash = sha.sum256(bconcat(bsigner, bsigned_at, bopers))
-        signature = kp.sign(bconcat(body_hash.digest, self.net_id.encode()))
-        hash = sha.sum256(bconcat(body_hash.digest, signature))
+        bodyHash = sha.sha3(bconcat(bsigner, bsignedAt, bopers))
+        signature = kp.sign(bconcat(bodyHash.digest, self.networkId.encode()))
+        hash = sha.sha3(bconcat(bodyHash.digest, signature))
 
         seal = {}
-        seal['_hint'] = Hint(SEAL, VERSION).hint
+        seal['_hint'] = _hint(SEAL).hint
         seal['hash'] = hash.hash
-        seal['body_hash'] = body_hash.hash
-        seal['signer'] = kp.public_key.hinted()
+        seal['body_hash'] = bodyHash.hash
+        seal['signer'] = kp.publicKey
         seal['signature'] = base58.b58encode(signature).decode()
-        seal['signed_at'] = getNewToken(signed_at)
+        seal['signed_at'] = getNewToken(signedAt)
 
         operations = list()
-        for op in opers:
-            operations.append(op.to_dict())
+        for op in operations:
+            operations.append(op.dict())
         seal['operations'] = operations
 
         return seal
@@ -333,12 +185,12 @@ def _factSignsToBuffer(_fact_signs):
 
 
 class Signer(object):
-    def __init__(self, net_id, sk):
-        self.net_id = net_id
-        self.sk = sk
+    def __init__(self, networkId, signKey):
+        self.networkId = networkId
+        self.signKey = signKey
 
     def setNetId(self, _id):
-        self.net_id = _id
+        self.networkId = _id
 
     def signOperation(self, f_oper):
         before = None
@@ -357,10 +209,11 @@ class Signer(object):
         fact_sign = before['fact_signs']
 
         fact_sign.append(
-            _newFactSign(
-                bconcat(bfact_hash, self.net_id.encode()),
-                self.sk
-            ).to_dict()
+            newFactSign(
+                bfact_hash,
+                self.networkId,
+                self.signKey
+            ).dict()
         )
         bfact_sg = _factSignsToBuffer(fact_sign)
 
@@ -371,7 +224,7 @@ class Signer(object):
 
         bmemo = before['memo'].encode()
         after['hash'] = base58.b58encode(
-            sha.sum256(
+            sha.sha3(
                 bconcat(bfact_hash, bfact_sg, bmemo)
             ).digest
         ).decode()

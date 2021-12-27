@@ -1,72 +1,62 @@
 import base64
 
-from mitumc.common import bconcat
+from mitumc.common import bconcat, _hint, Int
 from mitumc.hash import sha
-from mitumc.operation import OperationFact, OperationFactBody
+from mitumc.hint import MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_ITEM_SINGLE_DOCUMENT
+from mitumc.operation.base import OperationFact, Address
 
 
 class SignDocumentsItem(object):
-    def __init__(self, h, owner, did, cid):
-        self.h = h
-        self.did = did
-        self.owner = owner
+    def __init__(self, owner, did, cid):
+        self.hint = _hint(MBS_SIGN_ITEM_SINGLE_DOCUMENT)
+        self.did = Int(did)
+        self.owner = Address(owner)
         self.cid = cid
 
     def to_bytes(self):
-        bdid = self.did.tight_bytes()
-        bowner = self.owner.hinted().encode()
+        bdid = self.did.tight()
+        bowner = self.owner.bytes()
         bcid = self.cid.encode()
         return bconcat(bdid, bowner, bcid)
 
     def to_dict(self):
         item = {}
-        item['_hint'] = self.h.hint
+        item['_hint'] = self.hint.hint
         item['documentid'] = str(self.did.value)
-        item['owner'] = self.owner.hinted()
+        item['owner'] = self.owner.address
         item['currency'] = self.cid
         return item
 
 
-class SignDocumentsFactBody(OperationFactBody):
-    def __init__(self, h, token, sender, items):
-        super(SignDocumentsFactBody, self).__init__(h, token)
-        self.sender = sender
+class SignDocumentsFact(OperationFact):
+    def __init__(self, sender, items):
+        super(SignDocumentsFact, self).__init__(_hint(MBS_SIGN_DOCUMENTS_OP_FACT))
+        self.sender = Address(sender)
         self.items = items
+        self.hash = sha.sha3(self.bytes())
 
-    def to_bytes(self):
+    def bytes(self):
         bitems = bytearray()
         for i in self.items:
-            bitems += bytearray(i.to_bytes())
+            bitems += bytearray(i.bytes())
         
         btoken = self.token.encode()
-        bsender = self.sender.hinted().encode()
+        bsender = self.sender.bytes()
         bitems = bytes(bitems)
 
         return bconcat(btoken, bsender, bitems)
 
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
-
-
-class SignDocumentsFact(OperationFact):
-    def __init__(self, net_id, hs, body):
-        super(SignDocumentsFact, self).__init__(net_id, hs, body)
-
-    def hash(self):
-        return self.hs
-
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         fact = {}
-        fact['_hint'] = d.h.hint
-        fact['hash'] = self.hash().hash
-        token = base64.b64encode(d.token.encode('ascii')).decode('ascii')
+        fact['_hint'] = self.hint.hint
+        fact['hash'] = self.hash.hash
+        token = base64.b64encode(self.token.encode('ascii')).decode('ascii')
         fact['token'] = token
-        fact['sender'] = d.sender.hinted()
+        fact['sender'] = self.sender.address
 
         _items = list()
-        for item in d.items:
-            _items.append(item.to_dict())
+        for item in self.items:
+            _items.append(item.dict())
         fact['items'] = _items
         return fact
         

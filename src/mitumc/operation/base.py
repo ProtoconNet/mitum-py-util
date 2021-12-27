@@ -1,256 +1,140 @@
 import json
 
 import base58
-from mitumc.common import (Hint, bconcat, iso8601TimeStamp, parseAddress,
-                           parseISOtoUTC, SUFFIX)
-from mitumc.constant import VERSION
+from mitumc.common import (Int, _hint, bconcat, iso8601TimeStamp, parseType,
+                           parseISOtoUTC)
 from mitumc.hash import sha
-from mitumc.hint import (BASE_FACT_SIGN, BTC_PRIVKEY, ETHER_PRIVKEY,
-                         STELLAR_PRIVKEY)
-from mitumc.key.btc import to_btc_keypair
-from mitumc.key.ether import to_ether_keypair
-from mitumc.key.stellar import to_stellar_keypair
+from mitumc.hint import (BASE_FACT_SIGN, KEY_PRIVATE, MC_ADDRESS, MC_AMOUNT)
+from mitumc.key.keypair import getKeypairFromPrivateKey
 
 
-def _newFactSign(b, hinted_priv):
-    """ Signs with provided private key and returns new FactSign object.
+def newFactSign(b, networkId, signKey):
+    assert isinstance(b, bytes), 'Invalid target b; _newFactSign'
+    _, type = parseType(signKey)
+    assert type == KEY_PRIVATE, 'Invalid sign key; _newFactSign'
 
-    Args:
-        b         (bytes): Target to sign
-        hinted_priv (str): Hinted private key
-
-    Returns:
-        FactSign: Generated FactSign object
-    """
-    assert isinstance(b, bytes), '[arg1] Must be provided in byte format'
-    assert isinstance(hinted_priv, str), '[arg2] Key must be provided in string format'
-    assert SUFFIX in hinted_priv, '[arg2] Key must be hinted'
-
-    stype, saddr = parseAddress(hinted_priv)
-    signature = None
-
-    if stype == BTC_PRIVKEY:
-        kp = to_btc_keypair(saddr)
-        signature = kp.sign(b)
-    elif stype == ETHER_PRIVKEY:
-        kp = to_ether_keypair(saddr)
-        signature = kp.sign(b)
-    elif stype == STELLAR_PRIVKEY:
-        kp = to_stellar_keypair(saddr)
-        signature = kp.sign(bconcat(b)) 
-    else:
-        return None
-
-    vk = kp.public_key
+    kp = getKeypairFromPrivateKey(signKey)
+    signature = kp.sign(bconcat(b, networkId.encode()))
 
     return FactSign(
-        Hint(BASE_FACT_SIGN, VERSION),
-        vk,
+        _hint(BASE_FACT_SIGN),
+        kp.publicKey,
         signature,
         iso8601TimeStamp(),
     )
 
-
-class Memo(object):
-    """ Description for an operation.
-
-    Attributes:
-        m (str): Description
-    """
-    def __init__(self, memo):
-        self.memo = memo
-    
-    def to_bytes(self):
-        return self.memo.encode()
-
-
 class Amount(object):
-    """ Single amount.
-
-    Attributes:
-        h   (Hint): hint; MC_AMOUNT
-        big  (Int): Amount in big endian integer
-        cid (str): CurrencyID
-    """
-    def __init__(self, h, big, cid):
-        self.h = h
-        self.big = big
+    def __init__(self, big, cid):
+        self.hint = _hint(MC_AMOUNT)
+        self.big = Int(big)
         self.cid = cid
 
-    def to_bytes(self):
-        # Returns concatenated [big, cid] in byte format
-        bbig = self.big.tight_bytes()
+    def bytes(self):
+        bbig = self.big.tight()
         bcid = self.cid.encode()
 
         return bconcat(bbig, bcid)
 
-    def to_dict(self):
+    def dict(self):
         amount = {}
-        amount['_hint'] = self.h.hint
+        amount['_hint'] = self.hint.hint
         amount['amount'] = str(self.big.value)
         amount['currency'] = self.cid
         return amount
 
 
 class Address(object):
-    """ Address with hint.
 
-    Attributes:
-        h    (Hint): hint; MC_ADDRESS
-        addr (str): address
-    """
-    def __init__(self, h, addr):
-        self.h = h
+    def __init__(self, addr):
+        _, type = parseType(addr)
+        assert type == MC_ADDRESS, 'Invalid address; Address'
         self.addr = addr
 
-    def hint(self):
-        return self.h.hint
+    @property
+    def address(self):
+        return self.addr
 
-    def hinted(self):
-        # Returns hinted address
-        return self.addr + SUFFIX + self.h.hint
-
-    def to_bytes(self):
-        # Returns hinted address in byte format
-        return self.addr.encode()
+    def bytes(self):
+        return self.address.encode()
 
 
 class FactSign(object):
-    """ Single fact_sign.
-
-    Attributes:
-        h         (Hint): hint; BASE_FACT_SIGN
-        signer (BaseKey): Signer's public key
-        sign    (binary): Signature signed by signer
-        t         (str): The time signature generated
-    """
-    def __init__(self, h, signer, sign, t):
-        self.h = h
+    def __init__(self, signer, sign, signedAt):
+        self.hint = _hint(BASE_FACT_SIGN)
         self.signer = signer
         self.sign = sign
-        self.t = t
+        self.signedAt = signedAt
 
-    def to_bytes(self):
-        # Returns concatenated [signer, sign, t] in byte format
-        bsigner = self.signer.hinted().encode()
+    def bytes(self):
+        bsigner = self.signer.encode()
         bsign = self.sign
-        btime = parseISOtoUTC(self.t).encode()
+        btime = parseISOtoUTC(self.signedAt).encode()
 
         return bconcat(bsigner, bsign, btime)
 
-    def signed_at(self):
-       return self.t[:26] + 'Z'
-
-    def to_dict(self):
+    def dict(self):
         fact_sign = {}
-        fact_sign['_hint'] = self.h.hint
-        fact_sign['signer'] = self.signer.hinted()
+        fact_sign['_hint'] = self.hint.hint
+        fact_sign['signer'] = self.signer
         fact_sign['signature'] = base58.b58encode(self.sign).decode()
-        fact_sign['signed_at'] = self.signed_at()
+        fact_sign['signed_at'] = self.signedAt[:26] + 'Z'
         return fact_sign
-
-
-# skeleton: CreateAccountsFactBody, KeyUpdaterFactBody, TransfersFactBody
-class OperationFactBody(object):
-    def __init__(self, h, token):
-        self.h = h
-        self.token = token
 
 
 # skeleton: CreateAccountsFact, KeyUpdaterFact, TransfersFact
 class OperationFact(object):
-    def __init__(self, net_id, hs, body):
-        self.hs = hs
-        self.body = body
-        self.net_id = net_id
-
-    def hash(self):
-        return self.hs
-
-    def hint(self):
-        return self.body.h.type
-
-    def newFactSign(self, priv):
-        # Generate a fact_sign object for provided network id and private key
-        b = bconcat(self.hash().digest, self.net_id.encode())
-        return _newFactSign(b, priv)
-
-
-class OperationBody(object):
-    """ Body of Operation.
-
-    Attributes:
-        memo        (Memo): Description
-        h           (Hint): hint; MC_[OPERATION-TYPE]_OP
-        fact        (Fact): Fact object corresponding operation-type
-        fact_sg (FactSign): List of fact signatures
-    """
-    def __init__(self, memo, h, fact):
-        self.memo = memo
-        self.h = h
-        self.fact = fact
-        self.fact_sg = []
-
-    def to_bytes(self):
-        # Returns concatenated [fact.hs, fact_sg, memo] in byte format
-        assert self.fact_sg, 'Fact Sign is empty!'
-        
-        bfact_hs = self.fact.hash().digest
-        bmemo = self.memo.to_bytes()
-
-        fact_sg = self.fact_sg
-        bfact_sg = bytearray()
-        for sg in fact_sg:
-            bfact_sg += bytearray(sg.to_bytes())
-        bfact_sg = bytes(bfact_sg)
-
-        return bconcat(bfact_hs, bfact_sg, bmemo)
-
-    def addFactSign(self, priv):
-        new_fact_sg = self.fact.newFactSign(priv)
-        self.fact_sg.append(new_fact_sg)
-
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
+    def __init__(self, hint):
+        self.hint = _hint(hint)
+        self.token = iso8601TimeStamp()
 
 
 class Operation(object):
-    """ Operation.
+    def __init__(self, hint, fact, memo, networkId):
+        self.memo = memo
+        self.networkId = networkId
+        self.hint = _hint(hint)
+        self.fact = fact
+        self.factSigns = []
+        self.hash = None
 
-    Attributes:
-        hs (Hash): Operation Hash
-        body (Body): Body object corresponding operation-type
-    """
-    def __init__(self, body):
-        self.hs = None
-        self.body = body
+    def bytes(self):
+        assert self.factSigns, 'Empty fact_signs'
+
+        bfactHash = self.fact.hash.digest
+        bmemo = self.memo.encode()
+
+        bfactSigns = bytearray()
+        for sg in self.factSigns:
+            bfactSigns += bytearray(sg.bytes())
+        bfact_sg = bytes(bfactSigns)
+
+        return bconcat(bfactHash, bfact_sg, bmemo)
 
     def addFactSign(self, priv):
-        self.body.addFactSign(priv)
-        self.hs = self.body.generate_hash()
+        factSign = newFactSign(self.fact.hash.hash, self.networkId, priv)
+        self.factSigns.append(factSign)
+        self.generateHash()
 
-    def hash(self):
-        assert self.body.fact_sg, 'Fact Sign is empty!'
-        return self.hs
+    def generateHash(self):
+        return sha.sha3(self.bytes())
 
-    def to_dict(self):
-        assert self.body.fact_sg, 'Fact Sign is empty!'
-        d = self.body
+    def dict(self):
+        assert self.factSigns, 'Empty fact_signs'
         oper = {}
-        oper['memo'] = d.memo.memo
-        oper['_hint'] = d.h.hint
-        oper['fact'] = d.fact.to_dict()
-        oper['hash'] = self.hash().hash
+        oper['memo'] = self.memo
+        oper['_hint'] = self.hint.hint
+        oper['fact'] = self.fact.dict()
+        oper['hash'] = self.hash.hash
 
         fact_signs = list()
-        for _sg in d.fact_sg:
-            fact_signs.append(_sg.to_dict())
+        for _sg in self.factSigns:
+            fact_signs.append(_sg.dict())
         oper['fact_signs'] = fact_signs
 
         return oper
 
-    def to_json(self, file_name):
-        assert self.body.fact_sg, 'Fact Sign is empty!'
+    def json(self, file_name):
+        assert self.factSigns, 'Empty fact_signs'
         with open(file_name, "w") as fp:
-            json.dump(self.to_dict(), fp)
-
+            json.dump(self.dict(), fp)
+  

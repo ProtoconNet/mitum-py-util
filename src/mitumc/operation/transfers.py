@@ -1,101 +1,72 @@
 import base64
 
-from mitumc.common import bconcat
+from mitumc.common import bconcat, _hint
 from mitumc.hash import sha
-from mitumc.operation import OperationFact, OperationFactBody
-
+from mitumc.hint import MC_TRANSFERS_ITEM_MULTI_AMOUNTS, MC_TRANSFERS_OP_FACT, MC_TRNASFERS_ITEM_SINGLE_AMOUNT
+from mitumc.operation.base import OperationFact, Address
 
 class TransfersItem(object):
-    """ Single TransfersItem.
-
-    Attributes:
-        h               (Hint): hint; MC_TRNASFERS_ITEM_SINGLE_AMOUNT
-        Receiver        (Keys): Receiver Address
-        amounts (List(Amount)): List of amounts
-    """
-    def __init__(self, h, receiver, amounts):
-        self.h = h
-        self.receiver = receiver
+    def __init__(self, receiver, amounts):
+        if len(amounts) > 1:
+            self.hint = _hint(MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
+        else:
+            self.hint = _hint(MC_TRNASFERS_ITEM_SINGLE_AMOUNT)
+        self.receiver = Address(receiver)
         self.amounts = amounts
 
-    def to_bytes(self):
-        # Returns concatenated [receiver, amounts] in byte format
+    def dict(self):
         amounts = self.amounts
 
         bamounts = bytearray()
         for amount in amounts:
-            bamounts += bytearray(amount.to_bytes())
+            bamounts += bytearray(amount.bytes())
 
-        breceiver = self.receiver.hinted().encode()
+        breceiver = self.receiver.bytes()
         bamounts = bytes(bamounts)
         
         return bconcat(breceiver, bamounts)
 
-    def to_dict(self):
+    def dict(self):
         item = {}
-        item['_hint'] = self.h.hint
-        item['receiver'] = self.receiver.hinted()
+        item['_hint'] = self.hint.hint
+        item['receiver'] = self.receiver.address
         
         _amounts = list()
         for _amount in self.amounts:
-            _amounts.append(_amount.to_dict())
+            _amounts.append(_amount.dict())
         item['amounts'] = _amounts
 
         return item
 
 
-class TransfersFactBody(OperationFactBody):
-    """ Body of TransfersFact.
-
-    Attributes:
-        h                    (Hint): hint; MC_TRANSFERS_OP_FACT
-        token                 (str): base64 encoded fact token
-        sender            (Address): Sender address
-        items (List(TransfersItem)): List of items
-    """
-    def __init__(self, h, token, sender, items):
-        super(TransfersFactBody, self).__init__(h, token)
+class TransfersFact(OperationFact):
+    def __init__(self, sender, items):
+        super(TransfersFact, self).__init__(_hint(MC_TRANSFERS_OP_FACT))
         self.sender = sender
         self.items = items
+        self.hash = sha.sha3(self.bytes())
 
-    def to_bytes(self):
-        # Returns concatenated [token, sender, items] in byte format
-
+    def bytes(self):
         bitems = bytearray()
         for i in self.items:
-            bitems += bytearray(i.to_bytes())
+            bitems += bytearray(i.bytes())
 
         btoken = self.token.encode()
-        bsender = self.sender.hinted().encode()
+        bsender = self.sender.bytes()
         bitems = bytes(bitems)
 
         return bconcat(btoken, bsender, bitems)
 
-    def generate_hash(self):
-        return sha.sum256(self.to_bytes())
-
-
-class TransfersFact(OperationFact):
-    """ Contains TransfersFactBody and a hash.
-
-    Attributes:
-        hs                (Hash): Fact Hash
-        body (TransfersFactbody): Fact body object
-    """
-    def __init__(self, net_id, hs, body):
-        super(TransfersFact, self).__init__(net_id, hs, body)
-
-    def to_dict(self):
-        d = self.body
+    def dict(self):
         fact = {}
-        fact['_hint'] = d.h.hint
-        fact['hash'] = self.hash().hash
-        fact['token'] = base64.b64encode(d.token.encode('ascii')).decode('ascii')
-        fact['sender'] = d.sender.hinted()
+        fact['_hint'] = self.hint.hint
+        fact['hash'] = self.hash.hash
+        fact['token'] = base64.b64encode(self.token.encode('ascii')).decode('ascii')
+        fact['sender'] = self.sender.address
 
         _items = list()
-        for _item in d.items:
-            _items.append(_item.to_dict())
+        for _item in self.items:
+            _items.append(_item.dict())
         fact['items'] = _items
 
         return fact
