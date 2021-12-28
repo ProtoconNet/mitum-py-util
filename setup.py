@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'mitumc',
-    version          = '0.1',
+    version          = '0.2',
     description      = 'mitum-currency python util',
     long_description = open('README.md').read(),
     author           = 'wyuinche',
