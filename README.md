@@ -152,12 +152,12 @@ key = gn.key(targetPub, 100)
 keys = generator.createKeys([key], 100)
 
 amount = gn.amount(100, 'MCC')
-amounts = generator.createAmounts([amount])
+amounts = gn.createAmounts([amount])
 
-createAccountsItem = generator.createCreateAccountsItem(keys, amounts)
-createAccountsFact = generator.createCreateAccountsFact(srcAddr, [createAccountsItem])
+createAccountsItem = gn.createCreateAccountsItem(keys, amounts)
+createAccountsFact = gn.createCreateAccountsFact(srcAddr, [createAccountsItem])
 
-createAccounts = generator.createOperation(createAccountsFact, "")
+createAccounts = gn.createOperation(createAccountsFact, "")
 createAccounts.addFactSign(srcPriv)
 ```
 
