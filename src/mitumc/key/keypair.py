@@ -1,18 +1,22 @@
 import codecs
 import hashlib
-import re
 
 import base58
+
 from bitcoinaddress.util import checksum
-import ecdsa
 from bitcoinaddress import Wallet
+
 from bitcoinutils.keys import PrivateKey
 from bitcoinutils.setup import setup
+
+import ecdsa
 from ecdsa.curves import SECP256k1
 from ecdsa.util import sigencode_der_canonize
-from mitumc.hash import sha
+
+from mitumc.hash import sha256
 from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC
-from mitumc.key.base import KeyPair, BaseKey
+from mitumc.key import Keypair
+from mitumc.key.base import BaseKey
 from mitumc.common import parseType
 
 
@@ -57,7 +61,7 @@ class Keypair:
         assert isinstance(b, bytes), 'Input must be provided in byte format'
         setup('mainnet')
 
-        hs = sha.sha256(b).digest
+        hs = sha256(b).digest
         wif = self.priv.key
 
         pk = PrivateKey(wif=wif)

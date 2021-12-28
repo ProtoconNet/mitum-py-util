@@ -1,7 +1,7 @@
 import base64
 
-from mitumc.common import bconcat, _hint
-from mitumc.hash import sha
+from mitumc.common import bconcat
+from mitumc.hash import sha3
 from mitumc.hint import MC_KEYUPDATER_OP_FACT
 from mitumc.operation.base import OperationFact, Address
 
@@ -12,7 +12,7 @@ class KeyUpdaterFact(OperationFact):
         self.target = Address(target)
         self.cid = cid
         self.keys = keys
-        self.hash = sha.sha3(self.bytes())
+        self.hash = sha3(self.bytes())
     
     def bytes(self):
         btoken = self.token.encode()

@@ -1,10 +1,9 @@
 from mitumc.common import bconcat, parseType, _hint, Int
-from mitumc.hash import sha
+from mitumc.hash import sha3
 from mitumc.hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
 
 
 class BaseKey(object):
-
     def __init__(self, type, key):
         self.type = type
         self.key = key
@@ -31,11 +30,9 @@ class Key(object):
         self.weight = Int(weight)
 
     def bytesKey(self):
-        # Returns hintless key in byte format
         return self.key.bytesWithoutType()
 
     def bytes(self):
-        # Returns concatenated [key, weight] in byte format
         bkey = self.key.bytes()
         bweight = self.weight.bytes()
 
@@ -54,10 +51,9 @@ class Keys(object):
         self.hint = _hint(MC_KEYS)
         self.threshold = Int(threshold)
         self.keys = keys
-        self.hash = sha.sha3(self.bytes())
+        self.hash = sha3(self.bytes())
 
     def bytes(self):
-            # Returns concatenated [ks, threshold] in byte format
         keys = self.keys
 
         lkeys = list(keys)
@@ -88,18 +84,3 @@ class Keys(object):
         keys['keys'] = ks
         keys['threshold'] = self.threshold.value
         return keys
-
-
-# skeleton
-class KeyPair(object):
-    def __init__(self, priv, pub):
-        self.privkey = priv
-        self.pubkey = pub
-
-    @property
-    def private_key(self):
-        return self.privkey
-
-    @property
-    def public_key(self):
-        return self.pubkey

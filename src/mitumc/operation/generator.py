@@ -1,29 +1,26 @@
 import json
 
 import base58
-from mitumc.common import (_hint, bconcat, getNewToken, iso8601TimeStamp, parseISOtoUTC)
-from mitumc.hash import sha
+from mitumc.common import (_hint, bconcat, getNewToken,
+                           iso8601TimeStamp, parseISOtoUTC)
+from mitumc.hash import sha3
 from mitumc.hint import (MBS_CREATE_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP, MBS_TRANSFER_DOCUMENTS_OP,
                          MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT,
-                         MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT, 
+                         MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT,
                          MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT, SEAL,
                          MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
                          MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP,
                          MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP)
-from mitumc.key.base import Key, Keys
-from mitumc.key.keypair import getKeypairFromPrivateKey
-from mitumc.operation.base import Amount, Operation, Operation, newFactSign
-from mitumc.operation.create_accounts import CreateAccountsFact, CreateAccountsItem
-from mitumc.operation.key_updater import KeyUpdaterFact
-from mitumc.operation.transfers import TransfersFact, TransfersItem
-from mitumc.operation.create_documents import CreateDocumentsItem, CreateDocumentsFact
-from mitumc.operation.transfer_document import TransferDocumentsItem, TransferDocumentsFact
-from mitumc.operation.sign_document import SignDocumentsItem, SignDocumentsFact
+from mitumc.key import Key, Keys, getKeypairFromPrivateKey
+from mitumc.operation import (Operation, CreateAccountsItem, CreateAccountsFact, KeyUpdaterFact, 
+                              TransfersItem, TransfersFact, CreateDocumentsItem, CreateDocumentsFact,
+                              TransferDocumentsItem, TransferDocumentsFact, SignDocumentsItem, SignDocumentsFact)
+from mitumc.operation.base import Amount, newFactSign
 
 
 def _to_keys(keys, threshold):
     _keys = []
-    
+
     for _key in keys:
         key, weight = _key
 
@@ -140,9 +137,9 @@ class Generator(object):
         for op in operations:
             bopers += op.hash.digest
 
-        bodyHash = sha.sha3(bconcat(bsigner, bsignedAt, bopers))
+        bodyHash = sha3(bconcat(bsigner, bsignedAt, bopers))
         signature = kp.sign(bconcat(bodyHash.digest, self.networkId.encode()))
-        hash = sha.sha3(bconcat(bodyHash.digest, signature))
+        hash = sha3(bconcat(bodyHash.digest, signature))
 
         seal = {}
         seal['_hint'] = _hint(SEAL).hint
@@ -152,10 +149,10 @@ class Generator(object):
         seal['signature'] = base58.b58encode(signature).decode()
         seal['signed_at'] = getNewToken(signedAt)
 
-        operations = list()
+        _operations = list()
         for op in operations:
-            operations.append(op.dict())
-        seal['operations'] = operations
+            _operations.append(op.dict())
+        seal['operations'] = _operations
 
         return seal
 
@@ -166,7 +163,7 @@ class JSONParser(object):
 
     def generateFile(seal, fname):
         with open(fname, 'w') as fp:
-            json.dump(seal, fp)
+            json.dump(seal, fp, indent=4)
 
 
 def _factSignToBuffer(fs):
@@ -224,7 +221,7 @@ class Signer(object):
 
         bmemo = before['memo'].encode()
         after['hash'] = base58.b58encode(
-            sha.sha3(
+            sha3(
                 bconcat(bfact_hash, bfact_sg, bmemo)
             ).digest
         ).decode()

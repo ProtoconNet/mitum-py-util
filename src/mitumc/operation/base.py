@@ -3,9 +3,9 @@ import json
 import base58
 from mitumc.common import (Int, _hint, bconcat, iso8601TimeStamp, parseType,
                            parseISOtoUTC)
-from mitumc.hash import sha
+from mitumc.hash import sha3
 from mitumc.hint import (BASE_FACT_SIGN, KEY_PRIVATE, MC_ADDRESS, MC_AMOUNT)
-from mitumc.key.keypair import getKeypairFromPrivateKey
+from mitumc.key import getKeypairFromPrivateKey
 
 
 def newFactSign(b, networkId, signKey):
@@ -21,6 +21,7 @@ def newFactSign(b, networkId, signKey):
         signature,
         iso8601TimeStamp(),
     )
+
 
 class Amount(object):
     def __init__(self, big, cid):
@@ -43,7 +44,6 @@ class Amount(object):
 
 
 class Address(object):
-
     def __init__(self, addr):
         _, type = parseType(addr)
         assert type == MC_ADDRESS, 'Invalid address; Address'
@@ -80,7 +80,6 @@ class FactSign(object):
         return fact_sign
 
 
-# skeleton: CreateAccountsFact, KeyUpdaterFact, TransfersFact
 class OperationFact(object):
     def __init__(self, hint):
         self.hint = _hint(hint)
@@ -115,7 +114,7 @@ class Operation(object):
         self.generateHash()
 
     def generateHash(self):
-        self.hash = sha.sha3(self.bytes())
+        self.hash = sha3(self.bytes())
 
     def dict(self):
         assert self.factSigns, 'Empty fact_signs'
@@ -135,5 +134,5 @@ class Operation(object):
     def json(self, file_name):
         assert self.factSigns, 'Empty fact_signs'
         with open(file_name, "w") as fp:
-            json.dump(self.dict(), fp)
+            json.dump(self.dict(), fp, indent=4)
   

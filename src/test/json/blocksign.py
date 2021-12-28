@@ -1,12 +1,12 @@
 from mitumc.operation.generator import Generator, JSONParser
 
-source_prv = "L5GTSKkRs9NPsXwYgACZdodNUJqCAWjz2BccuR4cAgxJumEZWjok:btc-priv-v0.0.1"
-source_pub = "rcrd3KA2wWNhKdAP8rHRzfRmgp91oR9mqopckyXRmCvG:btc-pub-v0.0.1"
-source_addr = "GbymDFuVmJwP4bjjyYu4L6xgBfUmdceufrMDdn4x1oz:mca-v0.0.1"
+source_prv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
+source_pub = "buSmGvywmR6TgRXaH2gy3WWvHPTiWDYZsJu1VMnY3gaYmpu"
+source_addr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
 
-priv1 = "SCXSRCZKAB5A53TKAFSFZEPMQRM4AAZAND2MBIHFDBEQLM3DWILRQUF2:stellar-priv-v0.0.1"
-pub1 = "GBMWRVVIY2SHIMLG3ZQR54WGXKG5RYXFHGC2HNT3W674DLXK6VQ4QY4X:stellar-pub-v0.0.1"
-addr1 = "ATDxH32CL7hdrpgLcvtNroNTF111V6wUJCK5JTa4f8Po:mca-v0.0.1"
+prv1 = "L2AJFiNcyC6gzbTQMpD7QRD6UUGnAFzDfcCFv68MPNqoYP4NGM9Cmpr"
+pub1 = "tjX9kWwUJaosuGvmiLQZy5aipq2fzDZLXfn21a5iK91impu"
+addr1 = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
 
 generator = Generator('mitum')
 
@@ -20,7 +20,7 @@ createDocumentsFact = generator.createCreateDocumentsFact(source_addr, [createDo
 createDocuments = generator.createOperation(createDocumentsFact, "")
 createDocuments.addFactSign(source_prv)
 
-JSONParser.generateFile(createDocuments.to_dict(), "../example/create_documents.json")
+JSONParser.generateFile(createDocuments.dict(), "../example/create_documents.json")
 
 # TransferDocumentsItem
 transferDocumentsItem = generator.createTransferDocumentsItem(source_addr, addr1, 0, "MCC")
@@ -32,7 +32,7 @@ transferDocumentsFact = generator.createTransferDocumentsFact(source_addr, [tran
 transferDocuments = generator.createOperation(transferDocumentsFact, "")
 transferDocuments.addFactSign(source_prv)
 
-JSONParser.generateFile(transferDocuments.to_dict(), "../example/transfer_documents.json")
+JSONParser.generateFile(transferDocuments.dict(), "../example/transfer_documents.json")
 
 # SignDocumentsItem
 signDocumentsItem = generator.createSignDocumentsItem(source_addr, 0, "MCC")
@@ -44,4 +44,4 @@ signDocumentsFact = generator.createSignDocumentsFact(source_addr, [signDocument
 signDocuments = generator.createOperation(signDocumentsFact, "")
 signDocuments.addFactSign(source_prv)
 
-JSONParser.generateFile(signDocuments.to_dict(), '../example/sign_documents.json')
+JSONParser.generateFile(signDocuments.dict(), '../example/sign_documents.json')

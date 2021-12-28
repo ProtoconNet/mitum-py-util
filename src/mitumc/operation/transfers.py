@@ -1,8 +1,8 @@
 import base64
 
 from mitumc.common import bconcat, _hint
-from mitumc.hash import sha
-from mitumc.hint import MC_TRANSFERS_ITEM_MULTI_AMOUNTS, MC_TRANSFERS_OP_FACT, MC_TRNASFERS_ITEM_SINGLE_AMOUNT
+from mitumc.hash import sha3
+from mitumc.hint import MC_TRANSFERS_ITEM_MULTI_AMOUNTS, MC_TRANSFERS_OP_FACT, MC_TRANSFERS_ITEM_SINGLE_AMOUNT
 from mitumc.operation.base import OperationFact, Address
 
 class TransfersItem(object):
@@ -10,11 +10,11 @@ class TransfersItem(object):
         if len(amounts) > 1:
             self.hint = _hint(MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
         else:
-            self.hint = _hint(MC_TRNASFERS_ITEM_SINGLE_AMOUNT)
+            self.hint = _hint(MC_TRANSFERS_ITEM_SINGLE_AMOUNT)
         self.receiver = Address(receiver)
         self.amounts = amounts
 
-    def dict(self):
+    def bytes(self):
         amounts = self.amounts
 
         bamounts = bytearray()
@@ -42,9 +42,9 @@ class TransfersItem(object):
 class TransfersFact(OperationFact):
     def __init__(self, sender, items):
         super(TransfersFact, self).__init__(MC_TRANSFERS_OP_FACT)
-        self.sender = sender
+        self.sender = Address(sender)
         self.items = items
-        self.hash = sha.sha3(self.bytes())
+        self.hash = sha3(self.bytes())
 
     def bytes(self):
         bitems = bytearray()

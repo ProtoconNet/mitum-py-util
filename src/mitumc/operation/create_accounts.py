@@ -1,7 +1,7 @@
 import base64
 
 from mitumc.common import bconcat, _hint
-from mitumc.hash import sha
+from mitumc.hash import sha3
 from mitumc.hint import MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS, MC_CREATE_ACCOUNTS_OP_FACT, MC_CREATE_ACCOUNTS_SINGLE_AMOUNT
 from mitumc.operation.base import OperationFact, Address
 
@@ -46,7 +46,7 @@ class CreateAccountsFact(OperationFact):
         super(CreateAccountsFact, self).__init__(MC_CREATE_ACCOUNTS_OP_FACT)
         self.sender = Address(sender)
         self.items = items
-        self.hash = sha.sha3(self.bytes())
+        self.hash = sha3(self.bytes())
 
     def bytes(self):
         bitems = bytearray()
