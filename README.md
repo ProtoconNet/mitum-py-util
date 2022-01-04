@@ -27,6 +27,114 @@ $ cd mitum-py-util
 $ pip install -r requirements.txt
 ```
 
+## Index
+
+||Title|
+|---|---|
+|1|[Generate Key and Address](#generate-key-and-address)|
+|1-1|[Generate Keypair](#generate-keypair)|
+|1-2|[Get Account Address from Keys](#get-account-address-from-keys)|
+|2|[Generate New Operation](#generate-new-operation)|
+|2-1|[Generate Create-Accounts](#generate-create-accounts)|
+|2-2|[Generate Key-Updater](#generate-key-updater)|
+|2-3|[Generate Transfers](#generate-transfers)|
+|2-4|[Generate Create-Documents](#generate-create-documents)|
+|2-5|[Generate Sign-Documents](#generate-sign-documents)|
+|2-6|[Generate Transfer-Documents](#generate-transfer-documents)|
+|3|[Generate New Seal](#generate-new-seal)|
+|4|[Send Seal to Network](#send-seal-to-network)|
+|5|[Sign Message](#sign-message)|
+|6|[Add Fact Signature to Operation](#add-fact-signature-to-operation)|
+|7|[Hash Functions](#hash-functions)|
+
+<br />
+
+|Class|
+|---|
+|[Generator](#generator)|
+|[JSONParser](#jsonparser)|
+|[Signer](#sign-operation)|
+
+<br />
+
+|Appendix|
+|---|
+|[About Time Stamp](#about-time-stamp)|
+
+## Generate Key and Address
+
+### Type Suffixes
+
+There are type suffixes for each key and address.
+
+`private key -> mpr`
+<br>
+`public key -> mpu`
+<br>
+`address -> mca`
+
+### Generate Keypair
+
+You can get a new keypair by `getNewKeypair`. Also, it is available to get a keypair from already known private key or seed, either.
+
+```python
+getNewKeypair()
+getKeypairFromPrivateKey(key)
+getKeypairFromSeed(seed)
+```
+
+#### Usage
+
+```python
+from mitumc.key import getNewKeypair, getKeypairFromPrivateKey, getKeypairFromSeed
+
+# get new Keypair
+kp = getNewKeypair() # returns BTCKeyPair
+kp.privateKey # KzafpyGojcN44yme25UMGvZvKWdMuFv1SwEhsZn8iF8szUz16jskmpr
+kp.publicKey # 24TbbrNYVngpPEdq6Zc5rD1PQSTGQpqwabB9nVmmonXjqmpu
+
+# get Keypair from your private key
+pkp = getKeypairFromPrivateKey("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZDmpr")
+
+# get Keypair from your seed
+skp = getKeypairFromSeed("Thisisaseedforthisexample.len(seed)>=36.")
+```
+
+The length of string seed must be longer than or equal to 36.
+
+### Get Account Address from Keys
+
+It is available to calculate the address of the account by its keys.
+
+In `mitum`, `account` consists of `threshold`, and `pairs of (key, weight)`.
+
+The available range of each value is, `1 <= threshold, weight <= 100`.
+
+Note that the sum of all weights of the account should be bigger than or equal to threshold.
+
+To get address, use `mitumc.Generator.currency`.
+
+#### Usage
+
+```python
+from mitumc import Generator
+
+gn = Generator('mitum').currency
+
+pub1 = "21nHZiHxhjwXtXXhPFzMvGyAAdCobmZeCC1bT1yLXAaw2mpu"
+pub2 = "mZKEkm4BnFq6ynq98q4bCEcE4kZhzLSViPbCx8LDBXk2mpu"
+pub3 = "dPBms4cH4t8tiH6uNbq37HrEWwgrrEZqHQwSbvqEBJ85mpu"
+
+key1 = gn.key(pub1, 40)
+key2 = gn.key(pub2, 40)
+key3 = gn.key(pub3, 40)
+
+keys = gn.createKeys([key1, key2, key3], 80)
+address = keys.address # your address
+```
+
+In this example, it is available to sign an operation with only 2 keys because the sum of 2 keys is bigger than or equal to the account's threshold.
+
 ## Generate New Operation
 
 ### Operations
@@ -63,68 +171,65 @@ Note that the package name of 'mitum-py-util' is `mitumc` for python codes.
 
 * Every key, address, and keypair must be that of mitum-currency.
 
-### Generate Keypair
-
-You can get a new keypair by `getNewKeypair`. Also, it is available to get a keypair from already known private key or seed, either.
-
-```python
-getNewKeypair()
-getKeypairFromPrivateKey(key)
-getKeypairFromSeed(seed)
-```
-
-There are type suffixes for each key and address
-
-`private key -> mpr`
-<br>
-`public key -> mpu`
-<br>
-`address -> mca`
-
-#### Usage
-
-1. Get New Keypair
-
-```python
-from mitumc.key import getNewKeypair
-
-# get new Keypair
-kp = getNewKeypair() # returns BTCKeyPair
-kp.privateKey # KzafpyGojcN44yme25UMGvZvKWdMuFv1SwEhsZn8iF8szUz16jskmpr
-kp.publicKey # 24TbbrNYVngpPEdq6Zc5rD1PQSTGQpqwabB9nVmmonXjqmpu
-
-# get Keypair from your private key
-pkp = getKeypairFromPrivateKey("L2ddEkdgYVBkhtdN8HVXLZk5eAcdqXxecd17FDTobVeFfZNPk2ZDmpr")
-
-# get Keypair from your seed
-skp = getKeypairFromSeed("This is a seed for this example. len(seed) >= 36.")
-```
-
-The length of string seed must be longer than or equal to 36.
-
 ### Generator
 
-`mitumc` package provides 'Generator' class to generate operations.
+`mitumc` package provides `Generator` class to generate operations.
 
-Modules that `Generator` supports are,
+1. Set `network id` for Generator.
 
 ```python
-Generator.set_id(net_id) 
-Generator.key(key, weight)
-Generator.amount(amount, currencyId)
-Generator.createKeys(keys, threshold)
-Generator.createAmounts(amounts) 
-Generator.createCreateAccountsItem(keys, amounts)
-Generator.createTransfersItem(receiver, amoutns)
-Generator.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
-Generator.createSignDocumentsItem(owner, documentid, cid)
-Generator.createTransferDocumentsItem(owner, receiver, documentid, cid)
-Generator.createCreateAccountsFact(sender, items)
-Generator.createKeyUpdaterFact(target, cid, keys)
-Generator.createTransfersFact(sender, items)
-Generator.createCreateDocumentsFact(sender, items)
-Generator.createSignDocumentsFact(sender, items)
-Generator.createTransferDocumentsFact(sender, items)
+from mitumc import Generator
+
+id = 'mitum'
+generator = Generator(id)
+```
+
+2. For `mitum-currency`, use `Generator.currency`
+
+```python
+from mitumc import Generator
+
+generator = Generator('mitum')
+currencyGenerator = generator.currency
+```
+
+What `Generator.currency` supports are, 
+
+```python
+Generator.currency.key(key, weight)
+Generator.currency.amount(amount, currencyId)
+Generator.currency.createKeys(keys, threshold)
+Generator.currency.createAmounts(amounts) 
+Generator.currency.createCreateAccountsItem(keys, amounts)
+Generator.currency.createTransfersItem(receiver, amoutns)
+Generator.currency.createCreateAccountsFact(sender, items)
+Generator.currency.createKeyUpdaterFact(target, cid, keys)
+Generator.currency.createTransfersFact(sender, items)
+```
+
+3. For `mitum-data-blocksign`, use `Generator.blockSign`
+
+```python
+from mitumc import Generator
+
+generator = Generator('mitum')
+blockSignGenerator = generator.blockSign
+```
+
+What `Generator.blockSign` supports are,
+
+```python
+Generator.blockSign.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
+Generator.blockSign.createSignDocumentsItem(owner, documentid, cid)
+Generator.blockSign.createTransferDocumentsItem(owner, receiver, documentid, cid)
+Generator.blockSign.createCreateDocumentsFact(sender, items)
+Generator.blockSign.createSignDocumentsFact(sender, items)
+Generator.blockSign.createTransferDocumentsFact(sender, items)
+```
+
+4. To create `Operation` and `Seal`, use `Generator.createOperation(fact, memo)` and `Generator.createSeal(signKey, operations)`
+
+```python
 Generator.createOperation(fact, memo)
 Generator.createSeal(signKey, operations)
 ```
@@ -146,10 +251,11 @@ srcPriv = "L1V19fBjhnxNyfuXLWw6Y5mjFSixzdsZP4obkXEERskGQNwSgdm1mpr"
 srcAddr = "5fbQg8K856KfvzPiGhzmBMb6WaL5AsugUnfutgmWECPbmca"
 targetPub = "2177RF13ZZXpdE1wf7wu5f9CHKaA2zSyLW5dk18ExyJ84mpu"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.currency
 
 key = gn.key(targetPub, 100)
-keys = generator.createKeys([key], 100)
+keys = gn.createKeys([key], 100)
 
 amount = gn.amount(100, 'MCC')
 amounts = gn.createAmounts([amount])
@@ -157,7 +263,7 @@ amounts = gn.createAmounts([amount])
 createAccountsItem = gn.createCreateAccountsItem(keys, amounts)
 createAccountsFact = gn.createCreateAccountsFact(srcAddr, [createAccountsItem])
 
-createAccounts = gn.createOperation(createAccountsFact, "")
+createAccounts = generator.createOperation(createAccountsFact, "")
 createAccounts.addFactSign(srcPriv)
 ```
 
@@ -166,8 +272,8 @@ You must add new fact signature by addFactSign before creating seal or json file
 Then `Operation.dict()` and `Operation.json(file_name)` methods work correctly.
 
 ```python
-createAccounts.dict()
-createAccounts.json("create_account.json")
+Operation.dict()
+Operation.json("create_account.json")
 ```
 
 Then the result format will be like [this](example/create_accounts.json). (Each value is up to input arguments and time)
@@ -186,14 +292,15 @@ srcPriv = "L1V19fBjhnxNyfuXLWw6Y5mjFSixzdsZP4obkXEERskGQNwSgdm1mpr"
 srcAddr = "5fbQg8K856KfvzPiGhzmBMb6WaL5AsugUnfutgmWECPbmca"
 desPub = "2BqW3iy3bb9Z1fS21opL3z4da69K25d9zR5DM2CnSuNYxmpu"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.currency
 
 key = gn.key(desPub, 100)
 keys = gn.createKeys([key], 100)
 
 keyUpdaterFact = gn.createKeyUpdaterFact(srcAddr, keys, "MCC")
 
-keyUpdater = gn.createOperation(keyUpdaterFact, "")
+keyUpdater = generator.createOperation(keyUpdaterFact, "")
 keyUpdater.addFactSign(srcPriv)
 ```
 
@@ -210,7 +317,8 @@ srcPriv = "L1V19fBjhnxNyfuXLWw6Y5mjFSixzdsZP4obkXEERskGQNwSgdm1mpr"
 srcAddr = "5fbQg8K856KfvzPiGhzmBMb6WaL5AsugUnfutgmWECPbmca"
 desAddr = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.currency
 
 amount = gn.amount(100, 'MCC')
 amounts = gn.createAmounts([amount])
@@ -218,7 +326,7 @@ amounts = gn.createAmounts([amount])
 transfersItem = gn.createTransfersItem(desAddr, amounts)
 transfersFact = gn.createTransfersFact(srcAddr, [transfersItem])
 
-transfers = gn.createOperation(transfersFact, "")
+transfers = generator.createOperation(transfersFact, "")
 transfers.addFactSign(srcPriv)
 ```
 
@@ -234,12 +342,13 @@ from mitumc import Generator
 srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.blockSign
 
 createDocumentsItem = gn.createCreateDocumentsItem("abcdddd~mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
 createDocumentsFact = gn.createCreateDocumentsFact(sourceAddr, [createDocumentsItem])
 
-createDocuments = gn.createOperation(createDocumentsFact, "")
+createDocuments = generator.createOperation(createDocumentsFact, "")
 createDocuments.addFactSign(srcPriv)
 ```
 
@@ -255,12 +364,13 @@ from mitumc import Generator
 srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.blockSign
 
 signDocumentsItem = gn.createSignDocumentsItem(srcAddr, 0, "MCC")
 signDocumentsFact = gn.createSignDocumentsFact(srcAddr, [signDocumentsItem])
 
-signDocuments = gn.createOperation(signDocumentsFact, "")
+signDocuments = generator.createOperation(signDocumentsFact, "")
 signDocuments.addFactSign(srcPriv)
 ```
 
@@ -279,12 +389,13 @@ srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
 desAddr = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
 
-gn = Generator('mitum')
+generator = Generator('mitum')
+gn = generator.blockSign
 
 transferDocumentsItem = gn.createTransferDocumentsItem(srcAddr, desAddr, 0, "MCC")
 transferDocumentsFact = gn.createTransferDocumentsFact(srcAddr, [transferDocumentsItem])
 
-transferDocuments = gn.createOperation(transferDocumentsFact, "")
+transferDocuments = generator.createOperation(transferDocumentsFact, "")
 transferDocuments.addFactSign(srcPriv)
 ```
 
@@ -321,7 +432,7 @@ First of all, suppose that every operation is that generated by `Generator`.
 ```python
 from mitumc import Generator, JSONParser
 
-gn = Generator('mitum')
+generator = Generator('mitum')
 
 ... omitted
 ''' Create each operation [createAccounts, keyUpdater, transfers] with generator. See above sections.
@@ -331,13 +442,13 @@ gn = Generator('mitum')
 signKey = "L1V19fBjhnxNyfuXLWw6Y5mjFSixzdsZP4obkXEERskGQNwSgdm1mpr"
 
 operations = [createAccounts, keyUpdater, transfers]
-seal = gn.createSeal(signKey, operations)
+seal = generator.createSeal(signKey, operations)
 
 JSONParser.toJSONString(seal)
 JSONParser.generateFile(seal, 'seal.json')
 ```
 
-Then the result format of `generateFile()` will be like [this](example/seal.json).
+Then the result format of `JSONParser.generateFile()` will be like [this](example/seal.json).
 
 ## Send Seal to Network
 
@@ -505,3 +616,47 @@ Hdu7PqjA1p55GAcBiULmCAfzoksdwW1oSxaMH83kw9BJ
 b'jf\x10J>\xb9O]\x14\xab}d,r\x88(B\xab\x9a\xb1x\x18\x04\xeb\x10!\x9f\xebY\xa5v"'
 8ALUvxZ5Q1qQEsPUcHsoAzuzEp8Bm4HQpYqNNSafjDAR
 ```
+
+## Appendix
+
+### __About Time Stamp__
+
+#### __Expression of Time Stamp__
+
+For blocks, seals, signatures and etc, mitum uses `yyyy-MM-dd HH:mm:ss.* +0000 UTC` expression and `yyyy-MM-ddTHH:mm:ss.*Z` as standard.
+
+All other timezones are not allowed! You must use only +0000 timezone for mitum.
+
+For example,
+
+1. When converting timestamp to byte format for generating block/seal/fact_sign hash
+    - converting the string `2021-11-16 01:53:30.518 +0000 UTC` to bytes format
+
+2. When putting timestamp in block, seal, fact_sign or etc
+    - converting the timestamp to `2021-11-16T01:53:30.518Z` and put it in json
+
+To generate operation hash, mitum concatenates byte arrays of network id, fact hash and byte arrays of fact_signs.
+
+And to generate the byte array of a fact_sign, mitum concatenates byte arrays of signer, signature digest and signed_at.
+
+Be careful that the format of `signed_at` when converted to bytes is like `yyyy-MM-dd HH:mm:ss.* +0000 UTC` but it will be expressed as `yyyy-MM-ddTHH:mm:ss.*Z` when putted in json.
+
+#### __How many decimal places to be expressed?__
+
+There is one more thing to note.
+
+First at all, you don't have to care about decimal points of second(ss.*) in timestamp.
+
+Moreover, you can write timestamp without `.` and any number under `.`.
+
+However, you should not put any unnecessary zeros(0) in the float expression of second(ss.*) when converting timestamp to bytes format.
+
+For example,
+
+1. `2021-11-16T01:53:30.518Z` is converted to `2021-11-16 01:53:30.518 +0000 UTC` without any change of the time itself.
+
+2. `2021-11-16T01:53:30.510Z` must be converted to `2021-11-16 01:53:30.51 +0000 UTC` when generating hash.
+
+3. `2021-11-16T01:53:30.000Z` must be converted to `2021-11-16T01:53:30 +0000 UTC` when generating hash.
+
+Any timestamp with some unnecessary zeros putted in json doesn't affect to effectiveness of the block, seal, or operation. Just pay attention when convert the format.
