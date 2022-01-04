@@ -2,9 +2,10 @@ import datetime
 
 import base58
 import pytz
-from mitumc.constant import VERSION
 
-from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
+from mitumc.constant import VERSION
+from mitumc.key.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
+
 
 class Int(object):
     def __init__(self, value):
@@ -79,7 +80,7 @@ def getNewToken(iso):
 def parseISOtoUTC(iso):
     t = iso.find('T')
     z = iso.find('Z')
-    rtime = ""
+    parsedTime = ""
 
     if z < 0:
         z = iso.find('+')
@@ -92,12 +93,12 @@ def parseISOtoUTC(iso):
 
     dot = _time.find('.')
     if dot < 0:
-        rtime = _time
+        parsedTime = _time
     else:
         decimal = _time[9: len(_time)]
         idx = decimal.rfind('0')
         if idx < 0 or idx != len(decimal) - 1:
-            rtime = _time
+            parsedTime = _time
         else:
             startIdx = len(decimal) - 1
             for i in range(len(decimal) - 1, -1, -1):
@@ -106,24 +107,25 @@ def parseISOtoUTC(iso):
                 else:
                     break
             if startIdx == 0:
-                rtime = _time[0: dot]
+                parsedTime = _time[0: dot]
             else:
-                rtime = _time[0: dot] + '.' + decimal[0: startIdx]
-    
+                parsedTime = _time[0: dot] + '.' + decimal[0: startIdx]
+
     date, z = iso[:t], "+0000 UTC"
 
-    return date + " " + rtime + " " + z
+    return date + " " + parsedTime + " " + z
 
 
-def bconcat(*blist):
-    concated = bytearray()
+def concat(*bList):
+    concatenated = bytearray()
 
-    for i in blist:
+    for i in bList:
         assert isinstance(i, bytes) or isinstance(
-            i, bytearray), 'Arguments must be provided in bytes or bytearray format; bconcat'
-        concated += bytearray(i)
+            i, bytearray), 'Arguments must be provided in bytes or bytearray format; concat'
+        concatenated += bytearray(i)
+    
+    return bytes(concatenated)
 
-    return bytes(concated)
 
 def parseType(typed):
     assert len(typed) > 3, 'Invalid typed string; parseType'
@@ -134,6 +136,7 @@ def parseType(typed):
     assert type == MC_ADDRESS or type == KEY_PRIVATE or type == KEY_PUBLIC, 'Invalid type of typed string; parseType'
 
     return raw, type
+
 
 def _hint(hint):
     return Hint(hint, VERSION)
