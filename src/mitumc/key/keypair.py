@@ -16,7 +16,7 @@ from ecdsa.util import sigencode_der_canonize
 from mitumc.hash import sha256, sha3
 from mitumc.common import parseType
 
-from mitumc.key.hint import KEY_PRIVATE, KEY_PUBLIC
+from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC
 from mitumc.key.base import BaseKey
 
 

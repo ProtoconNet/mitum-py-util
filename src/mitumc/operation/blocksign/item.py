@@ -1,8 +1,7 @@
-from mitumc.common import _hint, concat, Int
+from mitumc.common import _hint, concatBytes, Int
 from mitumc.key import Address
 
-from mitumc.operation.blocksign.hint import (
-    MBS_CREATE_DOCUMENTS_SINGLE_FILE, MBS_TRANSFER_ITEM_SINGLE_DOCUMENT, MBS_SIGN_ITEM_SINGLE_DOCUMENT)
+from mitumc.hint import (MBS_CREATE_DOCUMENTS_SINGLE_FILE, MBS_TRANSFER_ITEM_SINGLE_DOCUMENT, MBS_SIGN_ITEM_SINGLE_DOCUMENT)
 
 
 class CreateDocumentsItem(object):
@@ -35,7 +34,7 @@ class CreateDocumentsItem(object):
             bSignCodes += bytearray(sc.encode())
         bSignCodes = bytes(bSignCodes)
 
-        return concat(bfh, bDid, bSignCode, bTitle, bSize, bCid, bSigners, bSignCodes)
+        return concatBytes(bfh, bDid, bSignCode, bTitle, bSize, bCid, bSigners, bSignCodes)
 
     def dict(self):
         item = {}
@@ -64,7 +63,7 @@ class TransferDocumentsItem(object):
         bOwner = self.owner.bytes()
         bReceiver = self.receiver.bytes()
         bCid = self.cid.encode()
-        return concat(bDid, bOwner, bReceiver, bCid)
+        return concatBytes(bDid, bOwner, bReceiver, bCid)
 
     def dict(self):
         item = {}
@@ -87,7 +86,7 @@ class SignDocumentsItem(object):
         bDid = self.did.tight()
         bOwner = self.owner.bytes()
         bCid = self.cid.encode()
-        return concat(bDid, bOwner, bCid)
+        return concatBytes(bDid, bOwner, bCid)
 
     def dict(self):
         item = {}

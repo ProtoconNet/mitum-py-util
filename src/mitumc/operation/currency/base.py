@@ -1,6 +1,6 @@
-from mitumc.common import _hint, concat, Int
+from mitumc.common import _hint, concatBytes, Int
 
-from mitumc.operation.currency.hint import MC_AMOUNT
+from mitumc.hint import MC_AMOUNT
 
 
 class Amount(object):
@@ -13,7 +13,7 @@ class Amount(object):
         bBig = self.big.tight()
         bCid = self.cid.encode()
 
-        return concat(bBig, bCid)
+        return concatBytes(bBig, bCid)
 
     def dict(self):
         amount = {}

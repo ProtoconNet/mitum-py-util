@@ -1,9 +1,8 @@
-from mitumc.common import _hint, concat
+from mitumc.common import _hint, concatBytes
 from mitumc.key import Address
 
-from mitumc.operation.currency.hint import (
-    MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS,
-    MC_TRANSFERS_ITEM_SINGLE_AMOUNT, MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
+from mitumc.hint import (MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS,
+                         MC_TRANSFERS_ITEM_SINGLE_AMOUNT, MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
 
 
 class CreateAccountsItem(object):
@@ -25,7 +24,7 @@ class CreateAccountsItem(object):
         bKeys = self.keys.bytes()
         bAmounts = bytes(bAmounts)
 
-        return concat(bKeys, bAmounts)
+        return concatBytes(bKeys, bAmounts)
 
     def dict(self):
         item = {}
@@ -60,7 +59,7 @@ class TransfersItem(object):
         bReceiver = self.receiver.bytes()
         bAmounts = bytes(bAmounts)
 
-        return concat(bReceiver, bAmounts)
+        return concatBytes(bReceiver, bAmounts)
 
     def dict(self):
         item = {}

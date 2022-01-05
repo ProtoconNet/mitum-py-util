@@ -2,18 +2,17 @@ import base58
 
 from mitumc.hash import sha3
 from mitumc.common import (
-    iso8601TimeStamp, parseISOtoUTC, getNewToken, concat, _hint)
+    iso8601TimeStamp, parseISOtoUTC, getNewToken, concatBytes, _hint)
 from mitumc.key import getKeypairFromPrivateKey
 
 from mitumc.operation import Operation
 from mitumc.operation.currency import CurrencyGenerator
 from mitumc.operation.blocksign import BlockSignGenerator
-from mitumc.operation.currency.hint import (MC_CREATE_ACCOUNTS_OP_FACT, MC_CREATE_ACCOUNTS_OP,
-                                            MC_KEYUPDATER_OP_FACT, MC_KEYUPDATER_OP, MC_TRANSFERS_OP_FACT, MC_TRANSFERS_OP)
-from mitumc.operation.blocksign.hint import (MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
-                                             MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP)
+from mitumc.hint import (MC_CREATE_ACCOUNTS_OP_FACT, MC_CREATE_ACCOUNTS_OP, MC_KEYUPDATER_OP_FACT, MC_KEYUPDATER_OP,
+                         MC_TRANSFERS_OP_FACT, MC_TRANSFERS_OP, MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
+                         MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP,
+                         SEAL)
 
-from mitumc.generator.hint import SEAL
 
 class Generator(object):
     def __init__(self, id):
@@ -63,9 +62,9 @@ class Generator(object):
         for op in operations:
             bopers += op.hash.digest
 
-        bodyHash = sha3(concat(bSigner, bSignedAt, bopers))
-        signature = kp.sign(concat(bodyHash.digest, self.id.encode()))
-        hash = sha3(concat(bodyHash.digest, signature))
+        bodyHash = sha3(concatBytes(bSigner, bSignedAt, bopers))
+        signature = kp.sign(concatBytes(bodyHash.digest, self.id.encode()))
+        hash = sha3(concatBytes(bodyHash.digest, signature))
 
         seal = {}
         seal['_hint'] = _hint(SEAL).hint

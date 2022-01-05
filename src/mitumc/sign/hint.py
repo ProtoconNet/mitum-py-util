@@ -1,1 +1,0 @@
-BASE_FACT_SIGN = "base-fact-sign"

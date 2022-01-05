@@ -1,7 +1,7 @@
 import base64
 
 from mitumc.hash import sha3
-from mitumc.common import concat
+from mitumc.common import concatBytes
 from mitumc.key import Address
 
 from mitumc.operation.base import OperationFact
@@ -23,7 +23,7 @@ class BlockSignFact(OperationFact):
         bSender = self.sender.bytes()
         bitems = bytes(bitems)
 
-        return concat(bToken, bSender, bitems)
+        return concatBytes(bToken, bSender, bitems)
 
     def dict(self):
         fact = {}

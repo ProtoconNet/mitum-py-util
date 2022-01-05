@@ -2,7 +2,7 @@ import json
 import base58
 
 from mitumc.hash import sha3
-from mitumc.common import parseISOtoUTC, concat
+from mitumc.common import parseISOtoUTC, concatBytes
 
 from mitumc.sign.sign import newFactSign
 
@@ -12,7 +12,7 @@ def _factSignToBuffer(fs):
     bSign = base58.b58decode(fs['signature'].encode())
     bat = parseISOtoUTC(fs['signed_at']).encode()
 
-    return concat(bSigner, bSign, bat)
+    return concatBytes(bSigner, bSign, bat)
 
 
 def _factSignsToBuffer(_factSigns):
@@ -63,7 +63,7 @@ class Signer(object):
         bMemo = before['memo'].encode()
         after['hash'] = base58.b58encode(
             sha3(
-                concat(bFactHash, bFactSign, bMemo)
+                concatBytes(bFactHash, bFactSign, bMemo)
             ).digest
         ).decode()
         return after

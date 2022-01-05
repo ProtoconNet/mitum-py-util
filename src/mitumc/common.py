@@ -4,7 +4,7 @@ import base58
 import pytz
 
 from mitumc.constant import VERSION
-from mitumc.key.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
+from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
 
 
 class Int(object):
@@ -116,12 +116,12 @@ def parseISOtoUTC(iso):
     return date + " " + parsedTime + " " + z
 
 
-def concat(*bList):
+def concatBytes(*bList):
     concatenated = bytearray()
 
     for i in bList:
         assert isinstance(i, bytes) or isinstance(
-            i, bytearray), 'Arguments must be provided in bytes or bytearray format; concat'
+            i, bytearray), 'Arguments must be provided in bytes or bytearray format; concatBytes'
         concatenated += bytearray(i)
     
     return bytes(concatenated)

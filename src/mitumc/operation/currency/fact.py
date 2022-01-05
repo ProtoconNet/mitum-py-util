@@ -1,10 +1,10 @@
 import base64
 
 from mitumc.hash import sha3
-from mitumc.common import concat
+from mitumc.common import concatBytes
 from mitumc.key import Address
 
-from mitumc.operation.currency.hint import MC_CREATE_ACCOUNTS_OP_FACT, MC_KEYUPDATER_OP_FACT, MC_TRANSFERS_OP_FACT
+from mitumc.hint import MC_CREATE_ACCOUNTS_OP_FACT, MC_KEYUPDATER_OP_FACT, MC_TRANSFERS_OP_FACT
 from mitumc.operation.base import OperationFact
 
 
@@ -24,7 +24,7 @@ class CreateAccountsFact(OperationFact):
         bSender = self.sender.bytes()
         bitems = bytes(bitems)
 
-        return concat(bToken, bSender, bitems)
+        return concatBytes(bToken, bSender, bitems)
 
     def dict(self):
         fact = {}
@@ -55,7 +55,7 @@ class KeyUpdaterFact(OperationFact):
         bKeys = self.keys.bytes()
         bCid = self.cid.encode()
 
-        return concat(bToken, bTarget, bKeys, bCid)
+        return concatBytes(bToken, bTarget, bKeys, bCid)
 
     def dict(self):
         fact = {}
@@ -85,7 +85,7 @@ class TransfersFact(OperationFact):
         bSender = self.sender.bytes()
         bitems = bytes(bitems)
 
-        return concat(bToken, bSender, bitems)
+        return concatBytes(bToken, bSender, bitems)
 
     def dict(self):
         fact = {}

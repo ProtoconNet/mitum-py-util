@@ -23,22 +23,22 @@ def _to_keys(keys, threshold):
 
 
 def _to_amounts(amounts):
-    amounts = []
+    _amounts = []
 
     for _amt in amounts:
-        amounts.append(
+        _amounts.append(
             Amount(
                 _amt[0],
                 _amt[1]
             )
         )
 
-    return amounts
+    return _amounts
 
 
 class CurrencyGenerator(OperationGenerator):
     def __init__(self, id):
-        super(id)
+        super(CurrencyGenerator, self).__init__(id)
 
     def key(self, key, weight):
         return (key, weight)

@@ -13,10 +13,9 @@ setup(
     install_requires = [
         'base58', 'pybase64',
         'ecdsa', 'bitcoinaddress', 'bitcoin-utils',
-        'eth-keys', 'stellar-sdk',
         'pytz', 'datetime'
     ],
     packages         = find_packages('./src', exclude=['test', 'test_run']),
-    keywords         = ['mitum', 'mitum-currency', 'mitumc', 'mitum-currency python util'],
+    keywords         = ['mitum', 'mitum-currency', 'mitumc', 'mitum-data'],
     python_requires  = '>=3.9', 
 )

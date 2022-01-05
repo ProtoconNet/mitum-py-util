@@ -1,4 +1,4 @@
-from mitumc.operation.generator import Generator, JSONParser
+from mitumc import Generator, JSONParser
 
 source_priv = "L1V19fBjhnxNyfuXLWw6Y5mjFSixzdsZP4obkXEERskGQNwSgdm1mpr"
 source_addr = "5fbQg8K856KfvzPiGhzmBMb6WaL5AsugUnfutgmWECPbmca"
@@ -17,19 +17,20 @@ ac3_pub = "tjX9kWwUJaosuGvmiLQZy5aipq2fzDZLXfn21a5iK91impu"
 ac3_addr = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
 
 generator = Generator('mitum')
+gn = generator.currency
 
-_key = (ac1_pub, 100)
+_key = gn.key(ac1_pub, 100)
 _keys = [_key]
-keys = generator.createKeys(_keys, 100)
+keys = gn.createKeys(_keys, 100)
 
-_amount = (100, 'MCC')
+_amount = gn.amount(100, 'MCC')
 _amounts = [_amount]
-amounts = generator.createAmounts(_amounts)
+amounts = gn.createAmounts(_amounts)
 
-_createAccountsItem = generator.createCreateAccountsItem(keys, amounts)
+_createAccountsItem = gn.createCreateAccountsItem(keys, amounts)
 createAccountsItems = [_createAccountsItem]
 
-createAccountsFact = generator.createCreateAccountsFact(source_addr, createAccountsItems)
+createAccountsFact = gn.createCreateAccountsFact(source_addr, createAccountsItems)
 
 createAccounts = generator.createOperation(createAccountsFact, "")
 createAccounts.addFactSign(source_priv)
@@ -37,11 +38,11 @@ createAccounts.addFactSign(source_priv)
 # print(createAccounts.to_dict())
 createAccounts.json('../example/create_accounts.json')
 
-_key2 = (ac2_pub, 100)
+_key2 = gn.key(ac2_pub, 100)
 _keys2 = [_key2]
-keys2 = generator.createKeys(_keys2, 100)
+keys2 = gn.createKeys(_keys2, 100)
 
-keyUpdaterFact = generator.createKeyUpdaterFact(source_addr, keys2, "MCC")
+keyUpdaterFact = gn.createKeyUpdaterFact(source_addr, keys2, "MCC")
 
 keyUpdater = generator.createOperation(keyUpdaterFact, "")
 keyUpdater.addFactSign(source_priv)
@@ -49,14 +50,14 @@ keyUpdater.addFactSign(source_priv)
 # print(keyUpdater.to_dict())
 keyUpdater.json('../example/key_updater.json')
 
-_amount2 = (100, 'MCC')
+_amount2 = gn.amount(100, 'MCC')
 _amounts2 = [_amount2]
-amounts2 = generator.createAmounts(_amounts2)
+amounts2 = gn.createAmounts(_amounts2)
 
-_transfersItem = generator.createTransfersItem(ac3_addr, amounts2)
+_transfersItem = gn.createTransfersItem(ac3_addr, amounts2)
 transfersItems = [_transfersItem]
 
-transfersFact = generator.createTransfersFact(source_addr, transfersItems)
+transfersFact = gn.createTransfersFact(source_addr, transfersItems)
 
 transfers = generator.createOperation(transfersFact, "")
 transfers.addFactSign(source_priv)

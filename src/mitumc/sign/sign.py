@@ -1,10 +1,8 @@
 import base58
 
 from mitumc.key import getKeypairFromPrivateKey
-from mitumc.key.hint import KEY_PRIVATE
-from mitumc.common import parseType, iso8601TimeStamp, _hint, parseISOtoUTC, concat
-
-from mitumc.sign.hint import BASE_FACT_SIGN
+from mitumc.hint import KEY_PRIVATE, BASE_FACT_SIGN
+from mitumc.common import parseType, iso8601TimeStamp, _hint, parseISOtoUTC, concatBytes
 
 
 def newFactSign(b, id, signKey):
@@ -13,7 +11,7 @@ def newFactSign(b, id, signKey):
     assert type == KEY_PRIVATE, 'Invalid sign key; newFactSign'
 
     kp = getKeypairFromPrivateKey(signKey)
-    signature = kp.sign(concat(b, id.encode()))
+    signature = kp.sign(concatBytes(b, id.encode()))
 
     return FactSign(
         kp.publicKey,
@@ -34,7 +32,7 @@ class FactSign(object):
         bSign = self.sign
         bTime = parseISOtoUTC(self.signedAt).encode()
 
-        return concat(bSigner, bSign, bTime)
+        return concatBytes(bSigner, bSign, bTime)
 
     def dict(self):
         fact_sign = {}

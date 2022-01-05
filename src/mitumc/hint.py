@@ -1,3 +1,53 @@
+# mitum hint; generator
+SEAL = "seal"
+
+# mitum currency hint; key
+MC_ADDRESS = "mca";
+MC_KEY = "mitum-currency-key";
+MC_KEYS = "mitum-currency-keys";
+
+# mitum hint; key
+KEY_PRIVATE = 'mpr';
+KEY_PUBLIC = 'mpu';
+
+# mitum blocksign hint; item; operation blocksign
+MBS_CREATE_DOCUMENTS_SINGLE_FILE = "mitum-blocksign-create-documents-single-file"
+MBS_TRANSFER_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-transfer-item-single-document"
+MBS_SIGN_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-sign-item-single-document"
+
+# mitum blocksign hint; fact; operation blocksign
+MBS_CREATE_DOCUMENTS_OP_FACT = "mitum-blocksign-create-documents-operation-fact"
+MBS_TRANSFER_DOCUMENTS_OP_FACT = "mitum-blocksign-transfer-documents-operation-fact"
+MBS_SIGN_DOCUMENTS_OP_FACT = "mitum-blocksign-sign-documents-operation-fact"
+
+# mitum blocksign hint; operation; operation blocksign
+MBS_CREATE_DOCUMENTS_OP = "mitum-blocksign-create-documents-operation"
+MBS_TRANSFER_DOCUMENTS_OP = "mitum-blocksign-transfer-documents-operation"
+MBS_SIGN_DOCUMENTS_OP = "mitum-blocksign-sign-documents-operation"
+
+# mitum currency hint; amount; operation currency
+MC_AMOUNT = "mitum-currency-amount"
+
+# mitum currency hint; fact; operaiton currency
+MC_TRANSFERS_OP_FACT = "mitum-currency-transfers-operation-fact"
+MC_CREATE_ACCOUNTS_OP_FACT = "mitum-currency-create-accounts-operation-fact"
+MC_KEYUPDATER_OP_FACT = "mitum-currency-keyupdater-operation-fact"
+
+# mitum currency hint; operation; operation currency
+MC_TRANSFERS_OP = "mitum-currency-transfers-operation"
+MC_CREATE_ACCOUNTS_OP = "mitum-currency-create-accounts-operation"
+MC_KEYUPDATER_OP = "mitum-currency-keyupdater-operation"
+
+# mitum currency hint; item; operatin currency
+MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS = "mitum-currency-create-accounts-multiple-amounts"
+MC_CREATE_ACCOUNTS_SINGLE_AMOUNT = "mitum-currency-create-accounts-single-amount"
+MC_TRANSFERS_ITEM_MULTI_AMOUNTS = "mitum-currency-transfers-item-multi-amounts"
+MC_TRANSFERS_ITEM_SINGLE_AMOUNT = "mitum-currency-transfers-item-single-amount"
+
+# mitum hint; fact sign; sign
+BASE_FACT_SIGN = "base-fact-sign"
+
+# mitum currency hint;
 MC_FEE_OP_FACT = "mitum-currency-fee-operation-fact"
 MC_FEE_OP = "mitum-currency-fee-operation"
 MC_ACCOUNT = "mitum-currency-account"
@@ -19,6 +69,7 @@ MC_CURRENCY_POLICY_UPDATER_OP_FACT = "mitum-currency-currency-policy-updater-ope
 MC_CURRENCY_POLICY_UPDATER_OP = "mitum-currency-currency-policy-updater-operation"
 MC_CURRENCY_POLICY = "mitum-currency-currency-policy"
 
+# mitum hint;
 JSON = "json-encoder"
 BSON = "bson-encoder"
 STRING_ADDRESS = "sa"

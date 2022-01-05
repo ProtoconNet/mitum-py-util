@@ -3,7 +3,5 @@ pybase64
 ecdsa
 bitcoinaddress
 bitcoin-utils
-eth-keys
-stellar-sdk
 pytz
 datetime

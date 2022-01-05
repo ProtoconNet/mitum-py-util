@@ -1,6 +1,6 @@
-from mitumc.common import concat, parseType, _hint, Int
+from mitumc.common import concatBytes, parseType, _hint, Int
 from mitumc.hash import sha3
-from mitumc.key.hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
+from mitumc.hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
 
 from mitumc.key.base import BaseKey
 
@@ -22,7 +22,7 @@ class Key(object):
         bKey = self.key.bytes()
         bWeight = self.weight.bytes()
 
-        return concat(bKey, bWeight)
+        return concatBytes(bKey, bWeight)
 
     def dict(self):
         key = {}
@@ -52,7 +52,7 @@ class Keys(object):
         bKeys = bytes(bKeys)
         bThreshold = self.threshold.bytes()
 
-        return concat(bKeys, bThreshold)
+        return concatBytes(bKeys, bThreshold)
 
     @property
     def address(self):
