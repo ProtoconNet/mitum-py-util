@@ -222,9 +222,7 @@ What `Generator.blockSign` supports are,
 Generator.blockSign.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
 Generator.blockSign.createSignDocumentsItem(owner, documentid, cid)
 Generator.blockSign.createTransferDocumentsItem(owner, receiver, documentid, cid)
-Generator.blockSign.createCreateDocumentsFact(sender, items)
-Generator.blockSign.createSignDocumentsFact(sender, items)
-Generator.blockSign.createTransferDocumentsFact(sender, items)
+Generator.blockSign.createBlockSignFact(operation_type)
 ```
 
 4. To create `Operation` and `Seal`, use `Generator.createOperation(fact, memo)` and `Generator.createSeal(signKey, operations)`
@@ -338,6 +336,7 @@ To generate an operation, you must prepare `file-hash`. `Create-Document` suppor
 
 ```python
 from mitumc import Generator
+from mitumc.operation.blocksign import BLOCKSIGN_CREATE_DOCUMENTS
 
 srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
@@ -346,7 +345,7 @@ generator = Generator('mitum')
 gn = generator.blockSign
 
 createDocumentsItem = gn.createCreateDocumentsItem("abcdddd~mbhf-v0.0.1", 100, "user01", "title100", 1234, "MCC", [], ["user02"])
-createDocumentsFact = gn.createCreateDocumentsFact(sourceAddr, [createDocumentsItem])
+createDocumentsFact = gn.createBlockSignFact(BLOCKSIGN_CREATE_DOCUMENTS, sourceAddr, [createDocumentsItem])
 
 createDocuments = generator.createOperation(createDocumentsFact, "")
 createDocuments.addFactSign(srcPriv)
@@ -360,6 +359,7 @@ To generate an operation, you must prepare `owner` and `document id`. `Sign-Docu
 
 ```python
 from mitumc import Generator
+from mitumc.operation.blocksign import BLOCKSIGN_SIGN_DOCUMENTS
 
 srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
@@ -368,7 +368,7 @@ generator = Generator('mitum')
 gn = generator.blockSign
 
 signDocumentsItem = gn.createSignDocumentsItem(srcAddr, 0, "MCC")
-signDocumentsFact = gn.createSignDocumentsFact(srcAddr, [signDocumentsItem])
+signDocumentsFact = gn.createBlockSignFact(BLOCKSIGN_SIGN_DOCUMENTS, srcAddr, [signDocumentsItem])
 
 signDocuments = generator.createOperation(signDocumentsFact, "")
 signDocuments.addFactSign(srcPriv)
@@ -384,6 +384,7 @@ __This operation is not supported anymore.__
 
 ```python
 from mitumc import Generator
+from mitumc.operation.blocksign import BLOCKSIGN_TRANSFER_DOCUMENTS
 
 srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
@@ -393,7 +394,7 @@ generator = Generator('mitum')
 gn = generator.blockSign
 
 transferDocumentsItem = gn.createTransferDocumentsItem(srcAddr, desAddr, 0, "MCC")
-transferDocumentsFact = gn.createTransferDocumentsFact(srcAddr, [transferDocumentsItem])
+transferDocumentsFact = gn.createBlockSignFact(BLOCKSIGN_TRANSFER_DOCUMENTS, srcAddr, [transferDocumentsItem])
 
 transferDocuments = generator.createOperation(transferDocumentsFact, "")
 transferDocuments.addFactSign(srcPriv)
