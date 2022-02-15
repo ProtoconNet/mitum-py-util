@@ -4,7 +4,8 @@ import base58
 import pytz
 
 from mitumc.constant import VERSION
-from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC, MC_ADDRESS
+from mitumc.hint import (KEY_PRIVATE, KEY_PUBLIC, MBC_HISTORY_DATA, MC_ADDRESS,
+                         MBC_USER_DATA, MBC_LAND_DATA, MBC_VOTE_DATA)
 
 
 class Int(object):
@@ -123,7 +124,7 @@ def concatBytes(*bList):
         assert isinstance(i, bytes) or isinstance(
             i, bytearray), 'Arguments must be provided in bytes or bytearray format; concatBytes'
         concatenated += bytearray(i)
-    
+
     return bytes(concatenated)
 
 
@@ -131,12 +132,22 @@ def parseType(typed):
     assert len(typed) > 3, 'Invalid typed string; parseType'
 
     raw = typed[:-3]
-    type = typed[-3:]
+    _type = typed[-3:]
 
-    assert type == MC_ADDRESS or type == KEY_PRIVATE or type == KEY_PUBLIC, 'Invalid type of typed string; parseType'
+    assert _type == MC_ADDRESS or _type == KEY_PRIVATE or _type == KEY_PUBLIC, 'Invalid type of typed string; parseType'
 
-    return raw, type
+    return raw, _type
 
+
+def parseDocumentId(documentId):
+    assert len(documentId) > 3, 'Invalid typed string; parseDocumentId'
+
+    _id = documentId[:-3]
+    suffix = documentId[-3:]
+
+    assert suffix == MBC_USER_DATA or suffix == MBC_LAND_DATA or suffix == MBC_VOTE_DATA or suffix == MBC_HISTORY_DATA
+
+    return _id, suffix
 
 def _hint(hint):
     return Hint(hint, VERSION)

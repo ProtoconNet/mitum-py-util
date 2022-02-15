@@ -2,27 +2,24 @@
 SEAL = "seal"
 
 # mitum currency hint; key
-MC_ADDRESS = "mca";
-MC_KEY = "mitum-currency-key";
-MC_KEYS = "mitum-currency-keys";
+MC_ADDRESS = "mca"
+MC_KEY = "mitum-currency-key"
+MC_KEYS = "mitum-currency-keys"
 
 # mitum hint; key
-KEY_PRIVATE = 'mpr';
-KEY_PUBLIC = 'mpu';
+KEY_PRIVATE = 'mpr'
+KEY_PUBLIC = 'mpu'
 
 # mitum blocksign hint; item; operation blocksign
 MBS_CREATE_DOCUMENTS_SINGLE_FILE = "mitum-blocksign-create-documents-single-file"
-MBS_TRANSFER_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-transfer-item-single-document"
 MBS_SIGN_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-sign-item-single-document"
 
 # mitum blocksign hint; fact; operation blocksign
 MBS_CREATE_DOCUMENTS_OP_FACT = "mitum-blocksign-create-documents-operation-fact"
-MBS_TRANSFER_DOCUMENTS_OP_FACT = "mitum-blocksign-transfer-documents-operation-fact"
 MBS_SIGN_DOCUMENTS_OP_FACT = "mitum-blocksign-sign-documents-operation-fact"
 
 # mitum blocksign hint; operation; operation blocksign
 MBS_CREATE_DOCUMENTS_OP = "mitum-blocksign-create-documents-operation"
-MBS_TRANSFER_DOCUMENTS_OP = "mitum-blocksign-transfer-documents-operation"
 MBS_SIGN_DOCUMENTS_OP = "mitum-blocksign-sign-documents-operation"
 
 # mitum currency hint; amount; operation currency
@@ -104,3 +101,31 @@ BASE_BLOCKDATAMAP = "base-blockdatamap"
 BLOCKDATA_WRITER = "blockdata-writer"
 
 PROBLEM = "mitum-problem"
+
+# blockcity hint
+MBC_USER_DATA = "cui"
+MBC_LAND_DATA = "cli"
+MBC_VOTE_DATA = "cvi"
+MBC_HISTORY_DATA = "chi"
+
+MBC_CREATE_DOCUMENTS_ITEM = "mitum-blockcity-create-documents-item"
+MBC_CREATE_DOCUMENTS_OP_FACT = "mitum-blockcity-create-documents-operation-fact"
+MBC_CREATE_DOCUMENTS_OP = "mitum-blockcity-create-documents-operation"
+MBC_UPDATE_DOCUMENTS_ITEM = "mitum-blockcity-update-documents-item"
+MBC_UPDATE_DOCUMENTS_OP_FACT = "mitum-blockcity-update-documents-operation-fact"
+MBC_UPDATE_DOCUMENTS_OP = "mitum-blockcity-update-documents-operation"
+
+MBC_DOCTYPE_USER_DATA = "mitum-blockcity-document-user-data"
+MBC_DOCTYPE_LAND_DATA = "mitum-blockcity-document-land-data"
+MBC_DOCTYPE_VOTE_DATA = "mitum-blockcity-document-voting-data"
+MBC_DOCTYPE_HISTORY_DATA = "mitum-blockcity-document-history-data"
+
+MBC_DOCUMENT_INFO = "mitum-blockcity-document-info"
+
+MBC_USER_DOCUMENT_ID = "mitum-blockcity-user-document-id"
+MBC_LAND_DOCUMENT_ID = "mitum-blockcity-land-document-id"
+MBC_VOTE_DOCUMENT_ID = "mitum-blockcity-voting-document-id"
+MBC_HISTORY_DOCUMENT_ID = "mitum-blockcity-history-document-id"
+
+MBC_USER_STATISTICS = "mitum-blockcity-user-statistics"
+MBC_VOTING_CANDIDATE = "mitum-blockcity-voting-candidate"

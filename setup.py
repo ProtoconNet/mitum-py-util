@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'mitumc',
-    version          = '0.3',
+    version          = '0.4',
     description      = 'mitum-currency python util',
     long_description = open('README.md').read(),
     author           = 'wyuinche',
@@ -16,6 +16,6 @@ setup(
         'pytz', 'datetime'
     ],
     packages         = find_packages('./src', exclude=['test', 'test_run']),
-    keywords         = ['mitum', 'mitum-currency', 'mitumc', 'mitum-data'],
+    keywords         = ['mitum', 'mitum-currency', 'mitumc', 'mitum-data-blocksign', 'mitum-blockcity'],
     python_requires  = '>=3.9', 
 )

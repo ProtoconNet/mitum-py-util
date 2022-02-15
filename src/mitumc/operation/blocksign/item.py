@@ -1,7 +1,7 @@
 from mitumc.common import _hint, concatBytes, Int
 from mitumc.key import Address
 
-from mitumc.hint import (MBS_CREATE_DOCUMENTS_SINGLE_FILE, MBS_TRANSFER_ITEM_SINGLE_DOCUMENT, MBS_SIGN_ITEM_SINGLE_DOCUMENT)
+from mitumc.hint import (MBS_CREATE_DOCUMENTS_SINGLE_FILE, MBS_SIGN_ITEM_SINGLE_DOCUMENT)
 
 
 class CreateDocumentsItem(object):
@@ -46,31 +46,6 @@ class CreateDocumentsItem(object):
         item['size'] = str(self.size.value)
         item['signers'] = self.signers
         item['signcodes'] = self.signcodes
-        item['currency'] = self.cid
-        return item
-
-
-class TransferDocumentsItem(object):
-    def __init__(self, owner, receiver, did, cid):
-        self.hint = _hint(MBS_TRANSFER_ITEM_SINGLE_DOCUMENT)
-        self.owner = Address(owner)
-        self.receiver = Address(receiver)
-        self.did = Int(did)
-        self.cid = cid
-
-    def bytes(self):
-        bDid = self.did.tight()
-        bOwner = self.owner.bytes()
-        bReceiver = self.receiver.bytes()
-        bCid = self.cid.encode()
-        return concatBytes(bDid, bOwner, bReceiver, bCid)
-
-    def dict(self):
-        item = {}
-        item['_hint'] = self.hint.hint
-        item['documentid'] = str(self.did.value)
-        item['owner'] = self.owner.address
-        item['receiver'] = self.receiver.address
         item['currency'] = self.cid
         return item
 

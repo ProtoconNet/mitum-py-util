@@ -6,12 +6,12 @@ from mitumc.common import (
 from mitumc.key import getKeypairFromPrivateKey
 
 from mitumc.operation import Operation
+from mitumc.operation.blockcity import BlockCityGenerator
 from mitumc.operation.currency import CurrencyGenerator
 from mitumc.operation.blocksign import BlockSignGenerator
-from mitumc.hint import (MC_CREATE_ACCOUNTS_OP_FACT, MC_CREATE_ACCOUNTS_OP, MC_KEYUPDATER_OP_FACT, MC_KEYUPDATER_OP,
-                         MC_TRANSFERS_OP_FACT, MC_TRANSFERS_OP, MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP,
-                         MBS_TRANSFER_DOCUMENTS_OP_FACT, MBS_TRANSFER_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP,
-                         SEAL)
+from mitumc.hint import (MBC_CREATE_DOCUMENTS_OP, MBC_CREATE_DOCUMENTS_OP_FACT, MBC_UPDATE_DOCUMENTS_OP, MBC_UPDATE_DOCUMENTS_OP_FACT, MC_CREATE_ACCOUNTS_OP_FACT, 
+                         MC_CREATE_ACCOUNTS_OP, MC_KEYUPDATER_OP_FACT, MC_KEYUPDATER_OP, MC_TRANSFERS_OP_FACT, MC_TRANSFERS_OP, 
+                         MBS_CREATE_DOCUMENTS_OP_FACT, MBS_CREATE_DOCUMENTS_OP, MBS_SIGN_DOCUMENTS_OP_FACT, MBS_SIGN_DOCUMENTS_OP, SEAL)
 
 
 class Generator(object):
@@ -19,11 +19,13 @@ class Generator(object):
         self.id = id
         self.currency = CurrencyGenerator(id)
         self.blockSign = BlockSignGenerator(id)
+        self.blockCity = BlockCityGenerator(id)
 
     def setId(self, id):
         self.id = id
         self.currency = CurrencyGenerator(id)
         self.blockSign = BlockSignGenerator(id)
+        self.blockCity = BlockCityGenerator(id)
 
     def createOperation(self, fact, memo):
 
@@ -37,8 +39,10 @@ class Generator(object):
             _type = MBS_CREATE_DOCUMENTS_OP
         elif fact.hint.type == MBS_SIGN_DOCUMENTS_OP_FACT:
             _type = MBS_SIGN_DOCUMENTS_OP
-        elif fact.hint.type == MBS_TRANSFER_DOCUMENTS_OP_FACT:
-            _type = MBS_TRANSFER_DOCUMENTS_OP
+        elif fact.hint.type == MBC_CREATE_DOCUMENTS_OP_FACT:
+            _type = MBC_CREATE_DOCUMENTS_OP
+        elif fact.hint.type == MBC_UPDATE_DOCUMENTS_OP_FACT:
+            _type = MBC_UPDATE_DOCUMENTS_OP
         else:
             return None
 
