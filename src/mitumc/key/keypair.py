@@ -13,11 +13,11 @@ import ecdsa
 from ecdsa.curves import SECP256k1
 from ecdsa.util import sigencode_der_canonize
 
-from mitumc.hash import sha256, sha3
-from mitumc.common import parseType
+from ..hash import sha256, sha3
+from ..common import parseType
 
-from mitumc.hint import KEY_PRIVATE, KEY_PUBLIC
-from mitumc.key.base import BaseKey
+from ..hint import KEY_PRIVATE, KEY_PUBLIC
+from .base import BaseKey
 
 
 class Keypair:

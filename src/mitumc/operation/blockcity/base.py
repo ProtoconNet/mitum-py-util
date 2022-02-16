@@ -1,7 +1,9 @@
-from mitumc.common import Int, parseDocumentId, _hint
-from mitumc.hint import MBC_DOCTYPE_LAND_DATA, MBC_DOCTYPE_USER_DATA, MBC_DOCTYPE_VOTE_DATA, MBC_DOCUMENT_INFO, MBC_LAND_DOCUMENT_ID, MBC_USER_DOCUMENT_ID, MBC_USER_STATISTICS, MBC_VOTE_DOCUMENT_ID, MBC_VOTING_CANDIDATE
-from mitumc.common import concatBytes
-from mitumc.key.key import Address
+from ...common import Int, parseDocumentId, _hint
+from ...hint import (MBC_DOCTYPE_HISTORY_DATA, MBC_DOCTYPE_LAND_DATA, MBC_DOCTYPE_USER_DATA, MBC_DOCTYPE_VOTE_DATA, 
+                         MBC_DOCUMENT_INFO, MBC_HISTORY_DOCUMENT_ID, MBC_LAND_DOCUMENT_ID, MBC_USER_DOCUMENT_ID, MBC_USER_STATISTICS,
+                         MBC_VOTE_DOCUMENT_ID, MBC_VOTING_CANDIDATE)
+from ...common import concatBytes
+from ...key import Address
 
 
 class DocumentId(object):
@@ -39,8 +41,10 @@ class Info(object):
             docId['_hint'] = _hint(MBC_USER_DOCUMENT_ID)
         elif self.docType == MBC_DOCTYPE_LAND_DATA:
             docId['_hint'] = _hint(MBC_LAND_DOCUMENT_ID)
-        elif self.docTye == MBC_DOCTYPE_VOTE_DATA:
+        elif self.docType == MBC_DOCTYPE_VOTE_DATA:
             docId['_hint'] = _hint(MBC_VOTE_DOCUMENT_ID)
+        elif self.docType == MBC_DOCTYPE_HISTORY_DATA:
+            docId['_hint'] = _hint(MBC_HISTORY_DOCUMENT_ID)
         else:
             raise Exception("Invalid document type; Info.dict()")
         
@@ -56,19 +60,21 @@ class Info(object):
         
         
 class Candidate(object):
-    def __init__(self, address, nickname, manifest):
+    def __init__(self, address, nickname, manifest, count):
         assert len(manifest) <= 100, 'manifest length is over 100! (len(manifest) <= 100); Candidate.__init__(address, manifest)'
         
         self.hint = _hint(MBC_VOTING_CANDIDATE)
         self.address = Address(address)
         self.nickname = nickname
         self.manifest = manifest
+        self.count = Int(count)
         
     def bytes(self):
         bAddress = self.address.bytes()
         bNickname = self.nickname.encode()
         bManifest = self.manifest.encode()
-        return concatBytes(bAddress, bNickname, bManifest)
+        bCount = self.count.bytes()
+        return concatBytes(bAddress, bNickname, bManifest, bCount)
     
     def dict(self):
         candidate = {}
@@ -77,6 +83,7 @@ class Candidate(object):
         candidate['address'] = self.address.address
         candidate['nickname'] = self.nickname
         candidate['manifest'] = self.manifest
+        candidate['count'] = self.count.value
         
         return candidate
     

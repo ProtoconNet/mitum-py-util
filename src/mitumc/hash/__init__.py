@@ -1,1 +1,1 @@
-from mitumc.hash.sha import sha256, sha3
+from .sha import sha256, sha3

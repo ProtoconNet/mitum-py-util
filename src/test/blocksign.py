@@ -1,5 +1,5 @@
 from mitumc import Generator, JSONParser
-from mitumc.operation.blocksign import BLOCKSIGN_CREATE_DOCUMENTS, BLOCKSIGN_SIGN_DOCUMENTS, BLOCKSIGN_TRANSFER_DOCUMENTS
+from mitumc.operation.blocksign import BLOCKSIGN_CREATE_DOCUMENTS, BLOCKSIGN_SIGN_DOCUMENTS
 
 source_prv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
 source_pub = "buSmGvywmR6TgRXaH2gy3WWvHPTiWDYZsJu1VMnY3gaYmpu"
@@ -23,18 +23,6 @@ createDocuments = generator.createOperation(createDocumentsFact, "")
 createDocuments.addFactSign(source_prv)
 
 JSONParser.generateFile(createDocuments.dict(), "../example/create_documents.json")
-
-# TransferDocumentsItem
-transferDocumentsItem = gn.createTransferDocumentsItem(source_addr, addr1, 0, "MCC")
-
-# TransferDocumentsFact
-transferDocumentsFact = gn.createBlockSignFact(BLOCKSIGN_TRANSFER_DOCUMENTS, source_addr, [transferDocumentsItem])
-
-# TransferDocuments
-transferDocuments = generator.createOperation(transferDocumentsFact, "")
-transferDocuments.addFactSign(source_prv)
-
-JSONParser.generateFile(transferDocuments.dict(), "../example/transfer_documents.json")
 
 # SignDocumentsItem
 signDocumentsItem = gn.createSignDocumentsItem(source_addr, 0, "MCC")

@@ -1,2 +1,2 @@
-from mitumc.generator.generator import Generator
-from mitumc.generator.parser import JSONParser
+from .generator import Generator
+from .parser import JSONParser

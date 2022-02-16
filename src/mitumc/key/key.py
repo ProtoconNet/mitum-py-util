@@ -1,8 +1,8 @@
-from mitumc.common import concatBytes, parseType, _hint, Int
-from mitumc.hash import sha3
-from mitumc.hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
+from ..common import concatBytes, parseType, _hint, Int
+from ..hash import sha3
+from ..hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
 
-from mitumc.key.base import BaseKey
+from .base import BaseKey
 
 
 class Key(object):

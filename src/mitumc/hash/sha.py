@@ -1,6 +1,6 @@
 import hashlib
 
-from mitumc.common import Hash
+from ..common import Hash
 
 
 def sha256(b):

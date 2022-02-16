@@ -1,6 +1,6 @@
-from mitumc.common import _hint, concatBytes, Int
+from ...common import _hint, concatBytes, Int
 
-from mitumc.hint import MC_AMOUNT
+from ...hint import MC_AMOUNT
 
 
 class Amount(object):

@@ -31,21 +31,29 @@ $ pip install -r requirements.txt
 
 ||Title|
 |---|---|
-|1|[Generate Key and Address](#generate-key-and-address)|
-|1-1|[Generate Keypair](#generate-keypair)|
-|1-2|[Get Account Address from Keys](#get-account-address-from-keys)|
-|2|[Generate New Operation](#generate-new-operation)|
-|2-1|[Generate Create-Accounts](#generate-create-accounts)|
-|2-2|[Generate Key-Updater](#generate-key-updater)|
-|2-3|[Generate Transfers](#generate-transfers)|
-|2-4|[Generate Create-Documents](#generate-create-documents)|
-|2-5|[Generate Sign-Documents](#generate-sign-documents)|
-|2-6|[Generate Transfer-Documents](#generate-transfer-documents)|
-|3|[Generate New Seal](#generate-new-seal)|
-|4|[Send Seal to Network](#send-seal-to-network)|
-|5|[Sign Message](#sign-message)|
-|6|[Add Fact Signature to Operation](#add-fact-signature-to-operation)|
-|7|[Hash Functions](#hash-functions)|
+|1|[Generate Keypair](#generate-keypair)|
+|2|[How to Use Generator](#how-to-use-generator)|
+|2-1|[Support Operations](#support-operations)|
+|2-2|[Get Account Address from Keys](#get-account-address-from-keys)|
+|3|[Generate Currency Operations](#generate-currency-operations)|
+|3-1|[Generate Create-Accounts](#generate-create-accounts)|
+|3-2|[Generate Key-Updater](#generate-key-updater)|
+|3-3|[Generate Transfers](#generate-transfers)|
+|4|[Generate BlockSign Operations](#generate-blocksign-operations)|
+|4-1|[Generate BlockSign Create-Documents](#generate-blocksign-create-documents)|
+|4-2|[Generate BlockSign Sign-Documents](#generate-blocksign-sign-documents)|
+|5|[Generate BlockCity Operations](#generate-blockcity-operations)|
+|5-1|[Generate User Document](#generate-user-document)|
+|5-2|[Generate Land Document](#generate-land-document)|
+|5-3|[Generate Vote Document](#generate-vote-document)|
+|5-4|[Generate History Document](#generate-history-document)|
+|5-5|[Generate BlockCity Create-Documents](#generate-blockcity-create-documents)|
+|5-6|[Generate BlockCity Update-Documents](#generate-blockCity-update-documents)|
+|6|[Generate New Seal](#generate-new-seal)|
+|7|[Send Seal to Network](#send-seal-to-network)|
+|8|[Sign Message](#sign-message)|
+|9|[Add Fact Signature to Operation](#add-fact-signature-to-operation)|
+|10|[Hash Functions](#hash-functions)|
 
 <br />
 
@@ -61,9 +69,7 @@ $ pip install -r requirements.txt
 |---|
 |[About Time Stamp](#about-time-stamp)|
 
-## Generate Key and Address
-
-### Type Suffixes
+## Generate Keypair
 
 There are type suffixes for each key and address.
 
@@ -72,8 +78,6 @@ There are type suffixes for each key and address.
 `public key -> mpu`
 <br>
 `address -> mca`
-
-### Generate Keypair
 
 You can get a new keypair by `getNewKeypair`. Also, it is available to get a keypair from already known private key or seed, either.
 
@@ -102,42 +106,9 @@ skp = getKeypairFromSeed("Thisisaseedforthisexample.len(seed)>=36.")
 
 The length of string seed must be longer than or equal to 36.
 
-### Get Account Address from Keys
+## How to Use Generator
 
-It is available to calculate the address of the account by its keys.
-
-In `mitum`, `account` consists of `threshold`, and `pairs of (key, weight)`.
-
-The available range of each value is, `1 <= threshold, weight <= 100`.
-
-Note that the sum of all weights of the account should be bigger than or equal to threshold.
-
-To get address, use `mitumc.Generator.currency`.
-
-#### Usage
-
-```python
-from mitumc import Generator
-
-gn = Generator('mitum').currency
-
-pub1 = "21nHZiHxhjwXtXXhPFzMvGyAAdCobmZeCC1bT1yLXAaw2mpu"
-pub2 = "mZKEkm4BnFq6ynq98q4bCEcE4kZhzLSViPbCx8LDBXk2mpu"
-pub3 = "dPBms4cH4t8tiH6uNbq37HrEWwgrrEZqHQwSbvqEBJ85mpu"
-
-key1 = gn.key(pub1, 40)
-key2 = gn.key(pub2, 40)
-key3 = gn.key(pub3, 40)
-
-keys = gn.createKeys([key1, key2, key3], 80)
-address = keys.address # your address
-```
-
-In this example, it is available to sign an operation with only 2 keys because the sum of 2 keys is bigger than or equal to the account's threshold.
-
-## Generate New Operation
-
-### Operations
+### Support Operations
 
 'mitum-py-util' provides three operations of 'mitum-currency',
 
@@ -147,29 +118,20 @@ In this example, it is available to sign an operation with only 2 keys because t
 
 'mitum-currency' supports various kinds of operations, but 'mitum-py-util' will provide these frequently used operations.
 
-In addition, 'mitum-py-util' provides three operations of 'mitum-data-blocksign',
+In addition, 'mitum-py-util' provides two operations of 'mitum-data-blocksign',
 
 * `Create-Documents` creates an document with filehash.
 * `Sign-Documents` signs the document.
-* `Transfer-Documents` transfers documents from the account to another account.
 
-### Prerequisite
+And it supports 4 document types and two operations of 'mitum-blockcity',
 
-Before generating new operation, you should check below for 'mitum-currency',
+* `User Document` about user data.
+* `Land Document` about renting.
+* `Vote Document` about voting.
+* `History Document` about document histories.
 
-* `private key` of source account to generate signatures (a.k.a signing key)
-* `public address` of source account
-* `public key` of target account
-* `network id`
-
-Additionally, you should check below for 'mitum-data-blocksign',
-
-* `filehash` for Create-Documents
-* `owner` and `documentid` for Sign-Documents and Transfer-Documents
-
-Note that the package name of 'mitum-py-util' is `mitumc` for python codes.
-
-* Every key, address, and keypair must be that of mitum-currency.
+* `Create-Documents` creates an document with id.
+* `Update-Documents` updates the state of documents.
 
 ### Generator
 
@@ -221,11 +183,37 @@ What `Generator.blockSign` supports are,
 ```python
 Generator.blockSign.createCreateDocumentsItem(filehash, did, signcode, title, size, cid, signers, signcodes)
 Generator.blockSign.createSignDocumentsItem(owner, documentid, cid)
-Generator.blockSign.createTransferDocumentsItem(owner, receiver, documentid, cid)
 Generator.blockSign.createBlockSignFact(operation_type)
 ```
 
-4. To create `Operation` and `Seal`, use `Generator.createOperation(fact, memo)` and `Generator.createSeal(signKey, operations)`
+4. For `mitum-blockcity`, user `Generator.blockCity`
+
+```python
+from mitumc import Generator
+
+generator = Generator('mitum')
+blockCityGenerator = generator.blockCity
+```
+
+What `Generator.blockCity` supports are,
+
+```python
+Generator.blockCity.candidate(address, nickname, manifest, count)
+Generator.blockCity.info(docType, documentId)
+Generator.blockCity.userStatistics(hp, strength, agility, dexterity, charisma, intelligence, vital)
+
+Generator.blockCity.userDocument(info, owner, gold, bankGold, userStatistics)
+Generator.blockCity.landDocument(info, owner, address, area, renter, account, rentDate, period)
+Generator.blockCity.voteDocument(info, owner, round, endVoteTime, candidates, bossName, account, termofoffice)
+Generator.blockCity.historyDocument(info, owner, name, account, date, usage, application)
+
+Generator.blockCity.createDocumentsItem(document, currencyId)
+Generator.blockCity.updateDocumentsItem(document, currencyId)
+Generator.blockCity.createCreateDocumentsFact(sender, items)
+Generator.blockCity.createUpdateDocumentsFact(sender, items)
+```
+
+5. To create `Operation` and `Seal`, use `Generator.createOperation(fact, memo)` and `Generator.createSeal(signKey, operations)`
 
 ```python
 Generator.createOperation(fact, memo)
@@ -233,6 +221,45 @@ Generator.createSeal(signKey, operations)
 ```
 
 You can check use-cases of Generator in the next part.
+
+### Get Account Address from Keys
+
+It is available to calculate the address of the account by its keys.
+
+In `mitum`, `account` consists of `threshold`, and `pairs of (key, weight)`.
+
+The available range of each value is, `1 <= threshold, weight <= 100`.
+
+Note that the sum of all weights of the account should be bigger than or equal to threshold.
+
+To get address, use `mitumc.Generator.currency`.
+
+#### Usage
+
+```python
+from mitumc import Generator
+
+gn = Generator('mitum').currency
+
+pub1 = "21nHZiHxhjwXtXXhPFzMvGyAAdCobmZeCC1bT1yLXAaw2mpu"
+pub2 = "mZKEkm4BnFq6ynq98q4bCEcE4kZhzLSViPbCx8LDBXk2mpu"
+pub3 = "dPBms4cH4t8tiH6uNbq37HrEWwgrrEZqHQwSbvqEBJ85mpu"
+
+key1 = gn.key(pub1, 40)
+key2 = gn.key(pub2, 40)
+key3 = gn.key(pub3, 40)
+
+keys = gn.createKeys([key1, key2, key3], 80)
+address = keys.address # your address
+```
+
+In this example, it is available to sign an operation with only 2 keys because the sum of 2 keys is bigger than or equal to the account's threshold.
+
+## Generate Currency Operations
+
+* Create-Accounts
+* Key-Update
+* Transfers
 
 ### Generate Create-Accounts 
 
@@ -328,7 +355,12 @@ transfers = generator.createOperation(transfersFact, "")
 transfers.addFactSign(srcPriv)
 ```
 
-### Generate Create-Documents
+## Generate BlockSign Operations
+
+* Create-Documents
+* Sign-Documents
+
+### Generate BlockSign Create-Documents
 
 To generate an operation, you must prepare `file-hash`. `Create-Document` supports to create documents with setting signers who must sign them.
 
@@ -351,7 +383,7 @@ createDocuments = generator.createOperation(createDocumentsFact, "")
 createDocuments.addFactSign(srcPriv)
 ```
 
-### Generate Sign-Documents
+### Generate BlockSign Sign-Documents
 
 To generate an operation, you must prepare `owner` and `document id`. `Sign-Document` supports to sign documents registered by 'mitum-data-blocksign'
 
@@ -374,31 +406,172 @@ signDocuments = generator.createOperation(signDocumentsFact, "")
 signDocuments.addFactSign(srcPriv)
 ```
 
-### ~~Generate Transfer-Documents~~
+## Generate BlockCity Operations
 
-__This operation is not supported anymore.__
+* User Document
+* Land Document
+* Vote Document
+* History Document
 
-~~To generate an operation, you must prepare `owner` and `document id`. `Transfer-Document` supports to transfer documents to other account.~~
+* Create-Documents
+* Update-Documents
+
+### Generate User Document
+
+What you must prepare before generate a user document are,
+
+* document id
+* Each value in a user statistics
+* document owner
+* user's gold and bank gold
 
 #### Usage
 
-```python
+```py
 from mitumc import Generator
-from mitumc.operation.blocksign import BLOCKSIGN_TRANSFER_DOCUMENTS
+from mitumc.operation.blockcity import DOCTYPE_USER_DATA
 
-srcPriv = "KwsWqjb6stDe5x6cdN6Xz4aNiina5HK8SmWXSCc1LMXE252gTD39mpr"
-srcAddr = "FB3m9zS9DWYLgRETYr5j5A8WCTk5QY6dHAjTpzkjyPvzmca"
-desAddr = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
+id = 'mitum'
+generator = Generator(id)
+gn = generator.blockCity
+
+info = gn.info(DOCTYPE_USER_DATA, "4cui")
+statistics = gn.userStatistics(1, 1, 1, 1, 1, 1, 1)
+userDocument = gn.userDocument(info, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 10, 10, statistics)
+```
+
+If you wonder what value needs for each parameter, see [Generator](#generator).
+
+### Generate Land Document
+
+What you must prepare are,
+
+* document id
+* document owner
+* address to rent
+* area to rent
+* renter who rent
+* account who rent
+* rent date and period
+
+#### Usage
+
+```py
+from mitumc.operation.blockcity import DOCTYPE_LAND_DATA
+
+# Omit steps to generate Generator.. same with user document
+info = gn.info(DOCTYPE_LAND_DATA, "4cli")
+landDocument = gn.landDocument(info, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", "abcd", "city1", "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2021-10-22", 10)
+```
+
+If you wonder what value needs for each parameter, see [Generator](#generator).
+
+### Generate Vote Document
+
+What you must prepare are,
+
+* voting round
+* end time of voting
+* candidates - address, manifest, nickname and count
+* boss name
+* account address
+* termofoffice
+
+#### Usage
+
+```py
+from mitumc.operation.blockcity import DOCTYPE_VOTE_DATA
+
+# Omit steps to generate Generator.. same with user document
+info = gn.info(DOCTYPE_VOTE_DATA, "4cvi")
+c1 = gn.candidate("8sXvbEaGh1vfpSWSib7qiJQQeqxVJ5YQRPpceaa5rd9Ymca", "foo1", "", 1)
+c2 = gn.candidate("Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "foo2", "", 2)
+voteDocument = gn.voteDocument(info, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 1, "2022-02-22", [c1, c2], "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2022")
+```
+
+If you wonder what value needs for each parameter, see [Generator](#generator).
+
+### Generate History Document
+
+What you must prepare are,
+
+* document id
+* document owner
+* name
+* account
+* date
+* usage
+* application
+
+#### Usage
+
+```py
+from mitumc.operation.blockcity import DOCTYPE_HISTORY_DATA
+
+# Omit steps to generate Generator.. same with user document
+info = gn.info(DOCTYPE_HISTORY_DATA, "1000chi")
+historyDocument = gn.historyDocument(info, "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "abcd", "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "2022-02-01T00:00:00.000+09:00", "bob", "foo")
+```
+
+If you wonder what value needs for each parameter, see [Generator](#generator).
+
+### Generate BlockCity Create-Documents
+
+To generate create-documents operation, you have to prepare,
+
+* currency id for fees
+* document object generated along the above instructions.
+* sender's address and private key
+
+#### Usage
+
+```py
+from mitumc import Generator
 
 generator = Generator('mitum')
-gn = generator.blockSign
+gn = generator.blockCity
 
-transferDocumentsItem = gn.createTransferDocumentsItem(srcAddr, desAddr, 0, "MCC")
-transferDocumentsFact = gn.createBlockSignFact(BLOCKSIGN_TRANSFER_DOCUMENTS, srcAddr, [transferDocumentsItem])
+# .. generate document
 
-transferDocuments = generator.createOperation(transferDocumentsFact, "")
-transferDocuments.addFactSign(srcPriv)
+item = gn.createCreateDocumentsItem(document, "PEN")
+fact = gn.createCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [item])
+
+oper = generator.createOperation(fact, "")
+oper.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
 ```
+
+See the start of [Generate BlockCity Operations](#generate-blockcity-operations) for `Document`.
+
+See [Generator](#generator) for details.
+
+### Generate BlockCity Update-Documents
+
+To generate create-documents operation, you have to prepare,
+
+* currency id for fees
+* document object generated along the above instructions.
+* sender's address and private key
+
+#### Usage
+
+```py
+from mitumc import Generator
+
+generator = Generator('mitum')
+gn = generator.blockCity
+
+# .. generate document
+
+item = gn.createUpdateDocumentsItem(document, "PEN")
+fact = gn.createUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [item])
+
+oper = generator.createOperation(fact, "")
+oper.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+```
+
+See the start of [Generate BlockCity Operations](#generate-blockcity-operations) for `Document`.
+
+See [Generator](#generator) for details.
 
 ## Generate New Seal
 
@@ -453,12 +626,10 @@ Then the result format of `JSONParser.generateFile()` will be like [this](exampl
 
 ## Send Seal to Network
 
-Created seal json files will be used to send seals by 'mitum-currency'.
+Use `curl` to send operations and seal to the network.
 
-Use below command to send them to the target network. (See [mitum-currency](https://github.com/ProtoconNet/mitum-currency) for details)
-
-```sh
-$ ./mc seal send --network-id=$NETWORK_ID $SIGNING_KEY --seal=seal.json
+```shell
+~$ curl -X POST -H "Content-Type: application/json" -d @seal.json https://{mitum network address}/builder/send
 ```
 
 * `seal.json` is your seal file.
@@ -469,13 +640,13 @@ Sign message with mitum keypair.
 
 `mitumc.key` module supports generate and get keypairs. You can get signature digest which contains a signature by signing with keypairs.
 
-### Usage
-
-#### Sign Message
+### Sign Message with Keypair
 
 Each keypair supports `sign` method that generates bytes format signature by signing bytes format message.
 
 If you want to get signature for 'mitum-currency', use `base58` to encode the signature.
+
+#### Usage
 
 ```python
 from mitumc.key import getNewKeypair
@@ -495,7 +666,7 @@ With `Signer` object in 'mitum-py-util', you can add new fact signature to opera
 
 To add signatures, you must prepare `network id` and `signing key`.
 
-### Usage
+### Sign Operation
 
 For example, suppose that you already have an implemented operation json file like below.
 
@@ -528,8 +699,6 @@ operation.json
     }]
 }
 ```
-
-#### Sign Operation
 
 Use `Signer.signOperation(filePath)` to add new fact signature to "fact_signs" key.
 

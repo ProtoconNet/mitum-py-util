@@ -1,4 +1,4 @@
-from mitumc.common import _hint, concatBytes
+from ...common import _hint, concatBytes
 
 class BlockCityItem(object):
     def __init__(self, type, docType, document, currencyId):

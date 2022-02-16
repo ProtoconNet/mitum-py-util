@@ -1,6 +1,6 @@
-from mitumc.hint import MBC_DOCTYPE_HISTORY_DATA, MBC_DOCTYPE_LAND_DATA, MBC_DOCTYPE_USER_DATA, MBC_DOCTYPE_VOTE_DATA
-from mitumc.common import _hint, Int, concatBytes
-from mitumc.key.key import Address
+from ...hint import MBC_DOCTYPE_HISTORY_DATA, MBC_DOCTYPE_LAND_DATA, MBC_DOCTYPE_USER_DATA, MBC_DOCTYPE_VOTE_DATA
+from ...common import _hint, Int, concatBytes
+from ...key import Address
 
 DOCTYPE_USER_DATA = MBC_DOCTYPE_USER_DATA
 DOCTYPE_LAND_DATA = MBC_DOCTYPE_LAND_DATA

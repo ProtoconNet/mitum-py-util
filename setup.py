@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'mitumc',
-    version          = '0.4',
-    description      = 'mitum-currency python util',
+    version          = '0.4.0',
+    description      = 'mitum model python util',
     long_description = open('README.md').read(),
     author           = 'wyuinche',
     author_email     = 'wyuinche.mido@gmail.com',
