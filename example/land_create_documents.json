@@ -1,0 +1,44 @@
+{
+    "memo": "",
+    "_hint": "mitum-create-documents-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-create-documents-operation-fact-v0.0.1",
+        "hash": "A2NjN1i9BcgGVWru2xWG7tQavezFzCnF9KA2BNPDZmeM",
+        "token": "MjAyMi0wMi0xN1QwMzowNDoyOS40NjU0NTIrMDA6MDA=",
+        "sender": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+        "items": [
+            {
+                "_hint": "mitum-create-documents-item-v0.0.1",
+                "doctype": "mitum-blockcity-document-land-data",
+                "doc": {
+                    "_hint": "mitum-blockcity-document-land-data-v0.0.1",
+                    "info": {
+                        "_hint": "mitum-document-info-v0.0.1",
+                        "docid": {
+                            "_hint": "mitum-blockcity-land-document-id-v0.0.1",
+                            "id": "4cli"
+                        },
+                        "doctype": "mitum-blockcity-document-land-data"
+                    },
+                    "owner": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+                    "address": "abcd",
+                    "area": "city1",
+                    "renter": "foo",
+                    "account": "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca",
+                    "rentdate": "2021-10-22",
+                    "periodday": 10
+                },
+                "currency": "PEN"
+            }
+        ]
+    },
+    "hash": "C6KiVFtJZiMgpaNQRY7iqRoP3imCuC6Uj8wbES3grKYG",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "26GcmkJUmg9YmDyeyRmwkkCffdiLrkdbMNST1ZBJPhPY1mpu",
+            "signature": "381yXZ9jpySbwtfdffxUoA6EoBPSrNAgowoSZKdFFPtg1r5xdUteaNAjiuMnzcGwyWd41QcUeWoxbbCbPHwMMVmnxb8qTJm1",
+            "signed_at": "2022-02-17T03:04:29.498285Z"
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+{
+    "memo": "",
+    "_hint": "mitum-create-documents-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-create-documents-operation-fact-v0.0.1",
+        "hash": "8SsCabFYFzPgyS6wkdKDrzooWJKyXLtiXnkSsgxWj9RB",
+        "token": "MjAyMi0wMi0xN1QwMzowNDoyOS40NjU0ODQrMDA6MDA=",
+        "sender": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+        "items": [
+            {
+                "_hint": "mitum-create-documents-item-v0.0.1",
+                "doctype": "mitum-blockcity-document-voting-data",
+                "doc": {
+                    "_hint": "mitum-blockcity-document-voting-data-v0.0.1",
+                    "info": {
+                        "_hint": "mitum-document-info-v0.0.1",
+                        "docid": {
+                            "_hint": "mitum-blockcity-voting-document-id-v0.0.1",
+                            "id": "4cvi"
+                        },
+                        "doctype": "mitum-blockcity-document-voting-data"
+                    },
+                    "owner": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+                    "round": 1,
+                    "endvotetime": "2022-02-22",
+                    "candidates": [
+                        {
+                            "_hint": "mitum-blockcity-voting-candidate-v0.0.1",
+                            "address": "8sXvbEaGh1vfpSWSib7qiJQQeqxVJ5YQRPpceaa5rd9Ymca",
+                            "nickname": "foo1",
+                            "manifest": "",
+                            "count": 1
+                        },
+                        {
+                            "_hint": "mitum-blockcity-voting-candidate-v0.0.1",
+                            "address": "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca",
+                            "nickname": "foo2",
+                            "manifest": "",
+                            "count": 2
+                        }
+                    ],
+                    "bossname": "foo",
+                    "account": "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca",
+                    "termofoffice": "2022"
+                },
+                "currency": "PEN"
+            }
+        ]
+    },
+    "hash": "3JewvLvYZ3HstdYjnpVQvGQuHsiBKTWeTkvqBPMVVztD",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "26GcmkJUmg9YmDyeyRmwkkCffdiLrkdbMNST1ZBJPhPY1mpu",
+            "signature": "381yXZTebLvn8hr2k98LSYEc7VYBnAisRPJgteNye2WEYjsab84rtPQcamvmy9ocLTFQ18bALmZ6EqDfsNqkrrXnSjrJYSY6",
+            "signed_at": "2022-02-17T03:04:29.507750Z"
+        }
+    ]
+}

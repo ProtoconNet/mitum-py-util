@@ -1,0 +1,43 @@
+{
+    "memo": "",
+    "_hint": "mitum-create-documents-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-create-documents-operation-fact-v0.0.1",
+        "hash": "Ag5us41kCtZtRgSJd283eqTF889znPp9pv3AJgjcAD3L",
+        "token": "MjAyMi0wMi0xN1QwMzowNDoyOS40NjU1MzYrMDA6MDA=",
+        "sender": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+        "items": [
+            {
+                "_hint": "mitum-create-documents-item-v0.0.1",
+                "doctype": "mitum-blockcity-document-history-data",
+                "doc": {
+                    "_hint": "mitum-blockcity-document-history-data-v0.0.1",
+                    "info": {
+                        "_hint": "mitum-document-info-v0.0.1",
+                        "docid": {
+                            "_hint": "mitum-blockcity-history-document-id-v0.0.1",
+                            "id": "1000chi"
+                        },
+                        "doctype": "mitum-blockcity-document-history-data"
+                    },
+                    "owner": "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca",
+                    "name": "abcd",
+                    "account": "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca",
+                    "date": "2022-02-01T00:00:00.000+09:00",
+                    "usage": "bob",
+                    "application": "foo"
+                },
+                "currency": "PEN"
+            }
+        ]
+    },
+    "hash": "GmCrkfYw1JEweP9S52JoJZXaFAyMuFejucefqdSquot7",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "26GcmkJUmg9YmDyeyRmwkkCffdiLrkdbMNST1ZBJPhPY1mpu",
+            "signature": "381yXZQFjjXKV7uPwsBUnRV9gwHfPXGTJqrhHtGbzscLDEeWsHUmy1xfAgKWrmSiqyVGfmnhguKQaBWNFcgAVkeDYm94NCyw",
+            "signed_at": "2022-02-17T03:04:29.518527Z"
+        }
+    ]
+}

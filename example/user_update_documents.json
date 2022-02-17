@@ -1,0 +1,50 @@
+{
+    "memo": "",
+    "_hint": "mitum-update-documents-operation-v0.0.1",
+    "fact": {
+        "_hint": "mitum-update-documents-operation-fact-v0.0.1",
+        "hash": "7ZauvYmpHqXpyUojXLSTLmLhKW16k1KDxgYcQcto86KJ",
+        "token": "MjAyMi0wMi0xN1QwMzowNDoyOS40NjU1NjMrMDA6MDA=",
+        "sender": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+        "items": [
+            {
+                "_hint": "mitum-update-documents-item-v0.0.1",
+                "doctype": "mitum-blockcity-document-user-data",
+                "doc": {
+                    "_hint": "mitum-blockcity-document-user-data-v0.0.1",
+                    "info": {
+                        "_hint": "mitum-document-info-v0.0.1",
+                        "docid": {
+                            "_hint": "mitum-blockcity-user-document-id-v0.0.1",
+                            "id": "4cui"
+                        },
+                        "doctype": "mitum-blockcity-document-user-data"
+                    },
+                    "owner": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
+                    "gold": 10,
+                    "bankgold": 10,
+                    "statistics": {
+                        "_hint": "mitum-blockcity-user-statistics-v0.0.1",
+                        "hp": 1,
+                        "strength": 1,
+                        "agility": 1,
+                        "dexterity": 1,
+                        "charisma": 1,
+                        "intelligence": 1,
+                        "vital": 1
+                    }
+                },
+                "currency": "PEN"
+            }
+        ]
+    },
+    "hash": "AedpFMc3KQDh4hcBbnZxZwHH58XvvCdcT5m2tfBQGgF3",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "26GcmkJUmg9YmDyeyRmwkkCffdiLrkdbMNST1ZBJPhPY1mpu",
+            "signature": "AN1rKvsxDxTo96DvgLVWSjwoknJmjjMxnXdQyzVm62aSsWQhXfigCkRnDXReWB3yqEFroCqkdukXWYAjrAjvrzTRHhTxs4Gsv",
+            "signed_at": "2022-02-17T03:04:29.529296Z"
+        }
+    ]
+}
