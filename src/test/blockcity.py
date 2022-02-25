@@ -1,68 +1,71 @@
-from mitumc import Generator, JSONParser
-from mitumc.operation.blockcity import DOCTYPE_USER_DATA, DOCTYPE_LAND_DATA, DOCTYPE_VOTE_DATA, DOCTYPE_HISTORY_DATA
+from mitumc import Generator, JSONParser\
 
-generator = Generator('mitum')
-gn = generator.blockCity
+gn = Generator('mitum')
 
 # user document
-userInfo = gn.info(DOCTYPE_USER_DATA, "4cui")
-statistics = gn.userStatistics(1, 1, 1, 1, 1, 1, 1)
-userDocument = gn.userDocument(userInfo, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 10, 10, statistics)
+statistics = gn.md.bc.userStatistics(1, 1, 1, 1, 1, 1, 1)
+userDocument = gn.md.bc.userDocument("4cui", "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 10, 10, statistics)
 
 # land document
-landInfo = gn.info(DOCTYPE_LAND_DATA, "4cli")
-landDocument = gn.landDocument(landInfo, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", "abcd", "city1", "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2021-10-22", 10)
+landDocument = gn.md.bc.landDocument("4cli", "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", "abcd", "city1", "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2021-10-22", 10)
 
 # vote document
-voteInfo = gn.info(DOCTYPE_VOTE_DATA, "4cvi")
-c1 = gn.candidate("8sXvbEaGh1vfpSWSib7qiJQQeqxVJ5YQRPpceaa5rd9Ymca", "foo1", "", 1)
-c2 = gn.candidate("Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "foo2", "", 2)
-voteDocument = gn.voteDocument(voteInfo, "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 1, "2022-02-22", [c1, c2], "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2022")
+c1 = gn.md.bc.candidate("8sXvbEaGh1vfpSWSib7qiJQQeqxVJ5YQRPpceaa5rd9Ymca", "foo1", "", 1)
+c2 = gn.md.bc.candidate("Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "foo2", "", 2)
+voteDocument = gn.md.bc.voteDocument("4cvi", "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", 1, "2022-02-22", [c1, c2], "foo", "Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", "2022")
 
 # history document
-historyInfo = gn.info(DOCTYPE_HISTORY_DATA, "1000chi")
-historyDocument = gn.historyDocument(historyInfo, "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "abcd", "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "2022-02-01T00:00:00.000+09:00", "bob", "foo")
+historyDocument = gn.md.bc.historyDocument("4chi", "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "abcd", "8iRVFAPiHKaeznfN3CmNjtFtjYSPMPKLuL6qkaJz8RLumca", "2022-02-01T00:00:00.000+09:00", "bob", "foo")
 
 # create document
-userCreateItem = gn.createCreateDocumentsItem(userDocument, "PEN")
-userCreateFact = gn.createCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [userCreateItem])
+userCreateItem = gn.md.getCreateDocumentsItem(userDocument, "PEN")
+userCreateFact = gn.md.getCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [userCreateItem])
 
-landCreateItem = gn.createCreateDocumentsItem(landDocument, "PEN")
-landCreateFact = gn.createCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [landCreateItem])
+landCreateItem = gn.md.getCreateDocumentsItem(landDocument, "PEN")
+landCreateFact = gn.md.getCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [landCreateItem])
 
-voteCreateItem = gn.createCreateDocumentsItem(voteDocument, "PEN")
-voteCreateFact = gn.createCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [voteCreateItem])
+voteCreateItem = gn.md.getCreateDocumentsItem(voteDocument, "PEN")
+voteCreateFact = gn.md.getCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [voteCreateItem])
 
-historyCreateItem = gn.createCreateDocumentsItem(historyDocument, "PEN")
-historyCreateFact = gn.createCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [historyCreateItem])
+historyCreateItem = gn.md.getCreateDocumentsItem(historyDocument, "PEN")
+historyCreateFact = gn.md.getCreateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [historyCreateItem])
 
 # update document
-userUpdateItem = gn.createUpdateDocumentsItem(userDocument, "PEN")
-userUpdateFact = gn.createUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [userUpdateItem])
+userUpdateItem = gn.md.getUpdateDocumentsItem(userDocument, "PEN")
+userUpdateFact = gn.md.getUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [userUpdateItem])
 
-landUpdateItem = gn.createUpdateDocumentsItem(landDocument, "PEN")
-landUpdateFact = gn.createUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [landUpdateItem])
+landUpdateItem = gn.md.getUpdateDocumentsItem(landDocument, "PEN")
+landUpdateFact = gn.md.getUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [landUpdateItem])
 
-voteUpdateItem = gn.createUpdateDocumentsItem(voteDocument, "PEN")
-voteUpdateFact = gn.createUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [voteUpdateItem])
+voteUpdateItem = gn.md.getUpdateDocumentsItem(voteDocument, "PEN")
+voteUpdateFact = gn.md.getUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [voteUpdateItem])
 
-historyUpdateItem = gn.createUpdateDocumentsItem(historyDocument, "PEN")
-historyUpdateFact = gn.createUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [historyUpdateItem])
+historyUpdateItem = gn.md.getUpdateDocumentsItem(historyDocument, "PEN")
+historyUpdateFact = gn.md.getUpdateDocumentsFact("5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", [historyUpdateItem])
 
-o1 = generator.createOperation(userCreateFact, "")
-o2 = generator.createOperation(landCreateFact, "")
-o3 = generator.createOperation(voteCreateFact, "")
-o4 = generator.createOperation(historyCreateFact, "")
-o5 = generator.createOperation(userUpdateFact, "")
-o6 = generator.createOperation(landUpdateFact, "")
-o7 = generator.createOperation(voteUpdateFact, "")
-o8 = generator.createOperation(historyUpdateFact, "")
+o1 = gn.getOperation(userCreateFact, "")
+o2 = gn.getOperation(landCreateFact, "")
+o3 = gn.getOperation(voteCreateFact, "")
+o4 = gn.getOperation(historyCreateFact, "")
+o5 = gn.getOperation(userUpdateFact, "")
+o6 = gn.getOperation(landUpdateFact, "")
+o7 = gn.getOperation(voteUpdateFact, "")
+o8 = gn.getOperation(historyUpdateFact, "")
 
-JSONParser.generateFile(o1.dict(), "example/user_create.json")
-JSONParser.generateFile(o2.dict(), "example/land_create.json")
-JSONParser.generateFile(o3.dict(), "example/vote_create.json")
-JSONParser.generateFile(o4.dict(), "example/history_create.json")
-JSONParser.generateFile(o5.dict(), "example/user_update.json")
-JSONParser.generateFile(o6.dict(), "example/land_update.json")
-JSONParser.generateFile(o7.dict(), "example/vote_update.json")
-JSONParser.generateFile(o8.dict(), "example/history_update.json")
+o1.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o2.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o3.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o4.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o5.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o6.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o7.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+o8.addFactSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
+
+JSONParser.toFile(o1.dict(), "example/user_create_documents.json")
+JSONParser.toFile(o2.dict(), "example/land_create_documents.json")
+JSONParser.toFile(o3.dict(), "example/vote_create_documents.json")
+JSONParser.toFile(o4.dict(), "example/history_create_documents.json")
+JSONParser.toFile(o5.dict(), "example/user_update_documents.json")
+JSONParser.toFile(o6.dict(), "example/land_update_documents.json")
+JSONParser.toFile(o7.dict(), "example/vote_update_documents.json")
+JSONParser.toFile(o8.dict(), "example/history_update_documents.json")

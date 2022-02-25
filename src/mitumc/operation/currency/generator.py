@@ -1,3 +1,7 @@
+from ...hint import (
+    MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS, MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, 
+    MC_TRANSFERS_ITEM_MULTI_AMOUNTS, MC_TRANSFERS_ITEM_SINGLE_AMOUNT
+)
 from ...key import Key, Keys
 
 from ..base import OperationGenerator
@@ -43,26 +47,32 @@ class CurrencyGenerator(OperationGenerator):
     def key(self, key, weight):
         return (key, weight)
 
-    def amount(self, big, cid):
-        return (big, cid)
+    def amount(self, cid, big):
+        return (cid, big)
 
-    def createKeys(self, keys, threshold):
+    def keys(self, keys, threshold):
         return _to_keys(keys, threshold)
 
-    def createAmounts(self, amounts):
+    def amounts(self, amounts):
         return _to_amounts(amounts)
 
-    def createCreateAccountsItem(self, keys, amounts):
-        return CreateAccountsItem(keys, amounts)
+    def getCreateAccountsItem(self, keys, amounts):
+        if len(amounts) > 1:
+            return CreateAccountsItem(MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS, keys, amounts)
+        else:
+            return CreateAccountsItem(MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, keys, amounts)
 
-    def createTransfersItem(self, receiver, amounts):
-        return TransfersItem(receiver, amounts)
+    def getTransfersItem(self, receiver, amounts):
+        if len(amounts) > 1:
+            return TransfersItem(MC_TRANSFERS_ITEM_MULTI_AMOUNTS, receiver, amounts)
+        else:
+            return TransfersItem(MC_TRANSFERS_ITEM_SINGLE_AMOUNT, receiver, amounts)
 
-    def createCreateAccountsFact(self, sender, items):
+    def getCreateAccountsFact(self, sender, items):
         return CreateAccountsFact(sender, items)
 
-    def createKeyUpdaterFact(self, target, keys, cid):
+    def getKeyUpdaterFact(self, target, keys, cid):
         return KeyUpdaterFact(target, keys, cid)
 
-    def createTransfersFact(self, sender, items):
+    def getTransfersFact(self, sender, items):
         return TransfersFact(sender, items)

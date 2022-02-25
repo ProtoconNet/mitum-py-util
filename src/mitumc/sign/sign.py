@@ -2,11 +2,11 @@ import base58
 
 from ..key import getKeypairFromPrivateKey
 from ..hint import KEY_PRIVATE, BASE_FACT_SIGN
-from ..common import parseType, iso8601TimeStamp, _hint, parseISOtoUTC, concatBytes
+from ..common import MitumFactor, parseType, iso8601TimeStamp, _hint, parseISOtoUTC, concatBytes
 
 
 def newFactSign(b, id, signKey):
-    assert isinstance(b, bytes), 'Invalid target b; newFactSign'
+    assert isinstance(b, bytes), 'Target must be bytes object; newFactSign'
     _, type = parseType(signKey)
     assert type == KEY_PRIVATE, 'Invalid sign key; newFactSign'
 
@@ -20,7 +20,7 @@ def newFactSign(b, id, signKey):
     )
 
 
-class FactSign(object):
+class FactSign(MitumFactor):
     def __init__(self, signer, sign, signedAt):
         self.hint = _hint(BASE_FACT_SIGN)
         self.signer = signer

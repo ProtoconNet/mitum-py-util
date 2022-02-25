@@ -1,10 +1,10 @@
-from ...common import _hint, concatBytes, Int
+from ...common import MitumFactor, _hint, concatBytes, Int
 
 from ...hint import MC_AMOUNT
 
 
-class Amount(object):
-    def __init__(self, big, cid):
+class Amount(MitumFactor):
+    def __init__(self, cid, big):
         self.hint = _hint(MC_AMOUNT)
         self.big = Int(big)
         self.cid = cid

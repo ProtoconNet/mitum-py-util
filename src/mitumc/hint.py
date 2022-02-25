@@ -10,18 +10,6 @@ MC_KEYS = "mitum-currency-keys"
 KEY_PRIVATE = 'mpr'
 KEY_PUBLIC = 'mpu'
 
-# mitum blocksign hint; item; operation blocksign
-MBS_CREATE_DOCUMENTS_SINGLE_FILE = "mitum-blocksign-create-documents-single-file"
-MBS_SIGN_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-sign-item-single-document"
-
-# mitum blocksign hint; fact; operation blocksign
-MBS_CREATE_DOCUMENTS_OP_FACT = "mitum-blocksign-create-documents-operation-fact"
-MBS_SIGN_DOCUMENTS_OP_FACT = "mitum-blocksign-sign-documents-operation-fact"
-
-# mitum blocksign hint; operation; operation blocksign
-MBS_CREATE_DOCUMENTS_OP = "mitum-blocksign-create-documents-operation"
-MBS_SIGN_DOCUMENTS_OP = "mitum-blocksign-sign-documents-operation"
-
 # mitum currency hint; amount; operation currency
 MC_AMOUNT = "mitum-currency-amount"
 
@@ -102,25 +90,32 @@ BLOCKDATA_WRITER = "blockdata-writer"
 
 PROBLEM = "mitum-problem"
 
-# blockcity hint
+MD_CREATE_DOCUMENTS_ITEM = "mitum-create-documents-item"
+MD_CREATE_DOCUMENTS_OP_FACT = "mitum-create-documents-operation-fact"
+MD_CREATE_DOCUMENTS_OP = "mitum-create-documents-operation"
+MD_UPDATE_DOCUMENTS_ITEM = "mitum-update-documents-item"
+MD_UPDATE_DOCUMENTS_OP_FACT = "mitum-update-documents-operation-fact"
+MD_UPDATE_DOCUMENTS_OP = "mitum-update-documents-operation"
+MD_DOCUMENT_INFO = "mitum-document-info"
+MD_DOCUMENT_ID = "mitum-document-id"
+
+MBS_DOCTYPE_DOCUMENT_DATA = "mitum-blocksign-document-data"
+MBS_USER = "mitum-blocksign-docsign"
+MBS_DOCUMENT_DATA = "sdi"
+
+MBS_SIGN_ITEM_SINGLE_DOCUMENT = "mitum-blocksign-sign-item-single-document"
+MBS_SIGN_DOCUMENTS_OP_FACT = "mitum-blocksign-sign-documents-operation-fact"
+MBS_SIGN_DOCUMENTS_OP = "mitum-blocksign-sign-documents-operation"
+
 MBC_USER_DATA = "cui"
 MBC_LAND_DATA = "cli"
 MBC_VOTE_DATA = "cvi"
 MBC_HISTORY_DATA = "chi"
 
-MBC_CREATE_DOCUMENTS_ITEM = "mitum-create-documents-item"
-MBC_CREATE_DOCUMENTS_OP_FACT = "mitum-create-documents-operation-fact"
-MBC_CREATE_DOCUMENTS_OP = "mitum-create-documents-operation"
-MBC_UPDATE_DOCUMENTS_ITEM = "mitum-update-documents-item"
-MBC_UPDATE_DOCUMENTS_OP_FACT = "mitum-update-documents-operation-fact"
-MBC_UPDATE_DOCUMENTS_OP = "mitum-update-documents-operation"
-
 MBC_DOCTYPE_USER_DATA = "mitum-blockcity-document-user-data"
 MBC_DOCTYPE_LAND_DATA = "mitum-blockcity-document-land-data"
 MBC_DOCTYPE_VOTE_DATA = "mitum-blockcity-document-voting-data"
 MBC_DOCTYPE_HISTORY_DATA = "mitum-blockcity-document-history-data"
-
-MBC_DOCUMENT_INFO = "mitum-document-info"
 
 MBC_USER_DOCUMENT_ID = "mitum-blockcity-user-document-id"
 MBC_LAND_DOCUMENT_ID = "mitum-blockcity-land-document-id"

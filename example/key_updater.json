@@ -3,26 +3,30 @@
     "_hint": "mitum-currency-keyupdater-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-currency-keyupdater-operation-fact-v0.0.1",
-        "hash": "Dqr3YyRZGo5ZCwtU7aqjZWRns8MMVSuLg5Lo8wSMKTYb",
-        "token": "MjAyMS0xMi0yOFQwNDo0MzowMy4xNjI2NjIrMDA6MDA=",
+        "hash": "7dH7NXh2eJZtp3GKKZttq7k8BW7zqF7iH2cFgQYf4qmY",
+        "token": "MjAyMi0wMi0yNVQwNjo0Mjo0Ni4xMTIwMTErMDA6MDA=",
         "target": "5fbQg8K856KfvzPiGhzmBMb6WaL5AsugUnfutgmWECPbmca",
         "keys": {
             "_hint": "mitum-currency-keys-v0.0.1",
             "hash": "DDRYUUDManRHbifHa6x2BcKj5ekTvazXDeAma6SctNtx",
-            "keys": [{
-                "_hint": "mitum-currency-key-v0.0.1",
-                "weight": 100,
-                "key": "2BqW3iy3bb9Z1fS21opL3z4da69K25d9zR5DM2CnSuNYxmpu"
-            }],
+            "keys": [
+                {
+                    "_hint": "mitum-currency-key-v0.0.1",
+                    "weight": 100,
+                    "key": "2BqW3iy3bb9Z1fS21opL3z4da69K25d9zR5DM2CnSuNYxmpu"
+                }
+            ],
             "threshold": 100
         },
         "currency": "MCC"
     },
-    "hash": "EUZ5ytmmfJfZ92kq4JAd9rgVtqXxpiQDZ29FBmE1YSLg",
-    "fact_signs": [{
-        "_hint": "base-fact-sign-v0.0.1",
-        "signer": "wAYCFysPp8bXP8YnnDJNjJGQbj6m9cvnqQUGkchMC1xfmpu",
-        "signature": "AN1rKvtFnyN8FgpQBhxfqm8xhM9ZfMjtcCrcjfodK2oz8AUAESqHhghH2PZCJPbWxtt7fXPiB1EEPPe29eGfSmjj2xRk5B53F",
-        "signed_at": "2021-12-28T04:43:03.175834Z"
-    }]
+    "hash": "7ioQGaaVGXtHfQvAeoJyHqnYQEXiemohSGDoeM4QRMu4",
+    "fact_signs": [
+        {
+            "_hint": "base-fact-sign-v0.0.1",
+            "signer": "wAYCFysPp8bXP8YnnDJNjJGQbj6m9cvnqQUGkchMC1xfmpu",
+            "signature": "AN1rKvtKo7jhyeBGyqj3Rh1VhdvbBGrLwKMjNA7fhdxNjgcr2eQp4ZLYjpgDoVHm7gKxPDTDYoNymDDSxhd5pTBMkd9ct7prc",
+            "signed_at": "2022-02-25T06:42:46.126361Z"
+        }
+    ]
 }

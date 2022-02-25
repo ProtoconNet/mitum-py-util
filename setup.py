@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'mitumc',
-    version          = '0.4.0',
+    version          = '1.0.0',
     description      = 'mitum model python util',
     long_description = open('README.md').read(),
     author           = 'wyuinche',

@@ -3,13 +3,12 @@
     "_hint": "mitum-update-documents-operation-v0.0.1",
     "fact": {
         "_hint": "mitum-update-documents-operation-fact-v0.0.1",
-        "hash": "3MC1N1eB6Q3wbz9JC8xxrEd39ECABFgyMpmKZtzpbze6",
-        "token": "MjAyMi0wMi0xN1QwMzowNDoyOS40NjU2OTYrMDA6MDA=",
+        "hash": "E5Dvom3dQQ7X9nPZJGp3CCcWRDra8xgoWSTkaSgHU6Zx",
+        "token": "MjAyMi0wMi0yNVQwNzowNjoyMS4xNTg1MjIrMDA6MDA=",
         "sender": "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca",
         "items": [
             {
                 "_hint": "mitum-update-documents-item-v0.0.1",
-                "doctype": "mitum-blockcity-document-voting-data",
                 "doc": {
                     "_hint": "mitum-blockcity-document-voting-data-v0.0.1",
                     "info": {
@@ -47,13 +46,13 @@
             }
         ]
     },
-    "hash": "A7781pL5FdeZX1DS4RRBT25XW1NJJb6wPRRiSBd8vFG5",
+    "hash": "2WcjAPRr9pjQyn1AU1JC3yDeMja5mgrmsKTzutv7rQWJ",
     "fact_signs": [
         {
             "_hint": "base-fact-sign-v0.0.1",
             "signer": "26GcmkJUmg9YmDyeyRmwkkCffdiLrkdbMNST1ZBJPhPY1mpu",
-            "signature": "AN1rKvtZtQLqSsj7fDjDh5V2K5QcPQQ5MU2H5tqGaBy88xb8LbpGFkps32jssgvHtZCmimLKG9Kv7S36xkZCahEgnTfgN9eqA",
-            "signed_at": "2022-02-17T03:04:29.544858Z"
+            "signature": "AN1rKvtijbujLm7Qu8aL1jLV6jqxmgfTNdJVEh97Uuv6yqMv6aqGZbCxFtF9xKe1JtGLC4thWTcJz1YtFtoHJrc8CAzWCmVsC",
+            "signed_at": "2022-02-25T07:06:21.278329Z"
         }
     ]
 }

@@ -1,27 +1,12 @@
-from ...hint import MBC_DOCTYPE_HISTORY_DATA, MBC_DOCTYPE_LAND_DATA, MBC_DOCTYPE_USER_DATA, MBC_DOCTYPE_VOTE_DATA
-from ...common import _hint, Int, concatBytes
-from ...key import Address
+from .info import BlockCityHistoryInfo, BlockCityLandInfo, BlockCityUserInfo, BlockCityVoteInfo
+from ....key import Address
+from ....common import Int, concatBytes
+from ..base import Document
 
-DOCTYPE_USER_DATA = MBC_DOCTYPE_USER_DATA
-DOCTYPE_LAND_DATA = MBC_DOCTYPE_LAND_DATA
-DOCTYPE_VOTE_DATA = MBC_DOCTYPE_VOTE_DATA
-DOCTYPE_HISTORY_DATA = MBC_DOCTYPE_HISTORY_DATA
-
-
-class Document(object):
-    def __init__(self, docType, info, owner):
-        self.hint = _hint(docType)
-        self.info = info
-        self.owner = Address(owner)
-        
-    @property
-    def docType(self):
-        return self.info.docType
-    
 
 class UserDocument(Document):
-    def __init__(self, info, owner, gold, bankGold, userStatistics):
-        super(UserDocument, self).__init__(MBC_DOCTYPE_USER_DATA, info, owner)
+    def __init__(self, did, owner, gold, bankGold, userStatistics):
+        super(UserDocument, self).__init__(BlockCityUserInfo(did), owner)
         
         self.gold = Int(gold)
         self.bankGold = Int(bankGold)
@@ -49,8 +34,8 @@ class UserDocument(Document):
     
 
 class LandDocument(Document):
-    def __init__(self, info, owner, address, area, renter, account, rentDate, period):
-        super(LandDocument, self).__init__(MBC_DOCTYPE_LAND_DATA, info, owner)
+    def __init__(self, did, owner, address, area, renter, account, rentDate, period):
+        super(LandDocument, self).__init__(BlockCityLandInfo(did), owner)
         self.address = address
         self.area = area
         self.renter = renter
@@ -82,10 +67,12 @@ class LandDocument(Document):
         doc['rentdate'] = self.rentDate
         doc['periodday'] = self.period.value
         
+        return doc
+        
 
 class VoteDocument(Document):
-    def __init__(self, info, owner, round, endTime, candidates, bossName, account, office):
-        super(VoteDocument, self).__init__(MBC_DOCTYPE_VOTE_DATA, info, owner)
+    def __init__(self, did, owner, round, endTime, candidates, bossName, account, office):
+        super(VoteDocument, self).__init__(BlockCityVoteInfo(did), owner)
         self.round = Int(round)
         self.endTime = endTime
         self.candidates = candidates
@@ -134,8 +121,8 @@ class VoteDocument(Document):
     
     
 class HistoryDocument(Document):
-    def __init__(self, info, owner, name, account, date, usage, app):
-        super(HistoryDocument, self).__init__(MBC_DOCTYPE_HISTORY_DATA, info, owner)
+    def __init__(self, did, owner, name, account, date, usage, app):
+        super(HistoryDocument, self).__init__(BlockCityHistoryInfo(did), owner)
         self.name = name
         self.account = Address(account)
         self.date = date

@@ -1,18 +1,19 @@
+from ..base import Item
 from ...common import _hint, concatBytes
 from ...key import Address
-
-from ...hint import (MC_CREATE_ACCOUNTS_SINGLE_AMOUNT, MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS,
-                         MC_TRANSFERS_ITEM_SINGLE_AMOUNT, MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
+from ...hint import MC_TRANSFERS_ITEM_SINGLE_AMOUNT, MC_TRANSFERS_ITEM_MULTI_AMOUNTS
 
 
-class CreateAccountsItem(object):
-    def __init__(self, keys, amounts):
-        if len(amounts) > 1:
-            self.hint = _hint(MC_CREATE_ACCOUNTS_MULTIPLE_AMOUNTS)
-        else:
-            self.hint = _hint(MC_CREATE_ACCOUNTS_SINGLE_AMOUNT)
-        self.keys = keys
+class CurrencyItem(Item):
+    def __init__(self, itemType, amounts):
+        super(CurrencyItem, self).__init__(itemType)
         self.amounts = amounts
+
+
+class CreateAccountsItem(CurrencyItem):
+    def __init__(self, itemType, keys, amounts):
+        super(CreateAccountsItem, self).__init__(itemType, amounts)
+        self.keys = keys
 
     def bytes(self):
         amounts = self.amounts
@@ -40,14 +41,10 @@ class CreateAccountsItem(object):
         return item
 
 
-class TransfersItem(object):
-    def __init__(self, receiver, amounts):
-        if len(amounts) > 1:
-            self.hint = _hint(MC_TRANSFERS_ITEM_MULTI_AMOUNTS)
-        else:
-            self.hint = _hint(MC_TRANSFERS_ITEM_SINGLE_AMOUNT)
+class TransfersItem(CurrencyItem):
+    def __init__(self, itemType, receiver, amounts):
+        super(TransfersItem, self).__init__(itemType, amounts)
         self.receiver = Address(receiver)
-        self.amounts = amounts
 
     def bytes(self):
         amounts = self.amounts

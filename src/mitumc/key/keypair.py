@@ -20,7 +20,7 @@ from ..hint import KEY_PRIVATE, KEY_PUBLIC
 from .base import BaseKey
 
 
-class Keypair:
+class Keypair(object):
     def __init__(self, priv, useSeed):
         if not useSeed:
             raw, _ = parseType(priv)
@@ -35,10 +35,10 @@ class Keypair:
     def generatePrivateKey(self):
         if self.priv != None:
             assert isinstance(
-                self.priv, BaseKey), 'Wrong private key or seed; Keypair'
+                self.priv, BaseKey), 'Wrong private key or seed; Keypair.generatePrivateKey'
         elif self.seed != None:
             assert len(
-                self.seed) >= 36, 'Seed is too short to create Keypair; Keypair'
+                self.seed) >= 36, 'Seed is too short to create Keypair; Keypair.generatePrivateKey'
             sh = sha3(self.seed.encode())
             shb = base58.b58encode(sh.digest)[:-4]
             k = str(hex((int.from_bytes(shb, "big") % (SECP256k1.order - 1)) + 1))[2:]
@@ -60,7 +60,7 @@ class Keypair:
         return self.pub.typed
 
     def sign(self, b):
-        assert isinstance(b, bytes), 'Input must be provided in byte format'
+        assert isinstance(b, bytes), 'Input must be bytes object; Keypair.sign'
         setup('mainnet')
 
         hs = sha256(b).digest

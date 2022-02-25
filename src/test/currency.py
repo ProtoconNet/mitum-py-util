@@ -17,56 +17,56 @@ ac3_pub = "tjX9kWwUJaosuGvmiLQZy5aipq2fzDZLXfn21a5iK91impu"
 ac3_addr = "D2KjoTG6yhE64jGQu7y2hUYPzRoJ2RDcnPsWrtLBDaPTmca"
 
 generator = Generator('mitum')
-gn = generator.currency
+gn = generator.mc
 
 _key = gn.key(ac1_pub, 100)
 _keys = [_key]
-keys = gn.createKeys(_keys, 100)
+keys = gn.keys(_keys, 100)
 
-_amount = gn.amount(100, 'MCC')
+_amount = gn.amount('MCC', 100)
 _amounts = [_amount]
-amounts = gn.createAmounts(_amounts)
+amounts = gn.amounts(_amounts)
 
-_createAccountsItem = gn.createCreateAccountsItem(keys, amounts)
+_createAccountsItem = gn.getCreateAccountsItem(keys, amounts)
 createAccountsItems = [_createAccountsItem]
 
-createAccountsFact = gn.createCreateAccountsFact(source_addr, createAccountsItems)
+createAccountsFact = gn.getCreateAccountsFact(source_addr, createAccountsItems)
 
-createAccounts = generator.createOperation(createAccountsFact, "")
+createAccounts = generator.getOperation(createAccountsFact, "")
 createAccounts.addFactSign(source_priv)
 
 # print(createAccounts.to_dict())
-createAccounts.json('../example/create_accounts.json')
+createAccounts.json('example/create_accounts.json')
 
 _key2 = gn.key(ac2_pub, 100)
 _keys2 = [_key2]
-keys2 = gn.createKeys(_keys2, 100)
+keys2 = gn.keys(_keys2, 100)
 
-keyUpdaterFact = gn.createKeyUpdaterFact(source_addr, keys2, "MCC")
+keyUpdaterFact = gn.getKeyUpdaterFact(source_addr, keys2, "MCC")
 
-keyUpdater = generator.createOperation(keyUpdaterFact, "")
+keyUpdater = generator.getOperation(keyUpdaterFact, "")
 keyUpdater.addFactSign(source_priv)
 
 # print(keyUpdater.to_dict())
-keyUpdater.json('../example/key_updater.json')
+keyUpdater.json('example/key_updater.json')
 
-_amount2 = gn.amount(100, 'MCC')
+_amount2 = gn.amount('MCC', 100)
 _amounts2 = [_amount2]
-amounts2 = gn.createAmounts(_amounts2)
+amounts2 = gn.amounts(_amounts2)
 
-_transfersItem = gn.createTransfersItem(ac3_addr, amounts2)
+_transfersItem = gn.getTransfersItem(ac3_addr, amounts2)
 transfersItems = [_transfersItem]
 
-transfersFact = gn.createTransfersFact(source_addr, transfersItems)
+transfersFact = gn.getTransfersFact(source_addr, transfersItems)
 
-transfers = generator.createOperation(transfersFact, "")
+transfers = generator.getOperation(transfersFact, "")
 transfers.addFactSign(source_priv)
 
 # print(transfers.to_dict())
-transfers.json('../example/transfers.json')
+transfers.json('example/transfers.json')
 
 operations = [createAccounts, keyUpdater, transfers]
-seal = generator.createSeal(source_priv, operations)
+seal = generator.getSeal(source_priv, operations)
 
 # print(JSONParser.toJSONString(seal))
-JSONParser.generateFile(seal, '../example/seal.json')
+JSONParser.toFile(seal, 'example/seal.json')

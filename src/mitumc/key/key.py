@@ -8,8 +8,8 @@ from .base import BaseKey
 class Key(object):
     def __init__(self, key, weight):
         raw, type = parseType(key)
-        assert type == KEY_PUBLIC, 'Not public key; Key'
-        assert weight > 0 and weight <= 100, "Weight should be in range 0 < weight <= 100; Key"
+        assert type == KEY_PUBLIC, 'Not public key; Key.__init__'
+        assert weight > 0 and weight <= 100, "Weight should be in range 0 < weight <= 100; Key.__init__"
 
         self.hint = _hint(MC_KEY)
         self.key = BaseKey(KEY_PUBLIC, raw)
@@ -40,9 +40,7 @@ class Keys(object):
         self.hash = sha3(self.bytes())
 
     def bytes(self):
-        keys = self.keys
-
-        listKeys = list(keys)
+        listKeys = list(self.keys)
         listKeys.sort(key=lambda x: x.bytesKey())
 
         bKeys = bytearray()
@@ -75,7 +73,7 @@ class Keys(object):
 class Address(object):
     def __init__(self, addr):
         _, type = parseType(addr)
-        assert type == MC_ADDRESS, 'Invalid address; Address'
+        assert type == MC_ADDRESS, 'Invalid address; Address.__init__'
         self.addr = addr
 
     @property

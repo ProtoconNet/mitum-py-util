@@ -4,11 +4,29 @@ import base58
 import pytz
 
 from .constant import VERSION
-from .hint import (KEY_PRIVATE, KEY_PUBLIC, MBC_HISTORY_DATA, MC_ADDRESS,
+from .hint import (KEY_PRIVATE, KEY_PUBLIC, MBC_HISTORY_DATA, MBS_DOCUMENT_DATA, MC_ADDRESS,
                          MBC_USER_DATA, MBC_LAND_DATA, MBC_VOTE_DATA)
 
 
-class Int(object):
+class BytesFactor(object):
+    def bytes(self):
+        assert False, "Unimplemented function bytes; BytesFactor"
+        
+        
+class DictFactor(object):
+    def dict(self):
+        assert False, "Unimplemented function dict; DictFactor"
+        
+        
+class MitumFactor(BytesFactor, DictFactor):
+    def bytes(self):
+        assert False, "Unimplemented function bytes; MitumFactor"
+
+    def dict(self):
+        assert False, "Unimplemented function dict; MitumFactor"
+
+
+class Int(BytesFactor):
     def __init__(self, value):
         self.value = value
 
@@ -22,6 +40,7 @@ class Int(object):
 
         return bytes(result[::-1])
 
+    
     def bytes(self):
         n = int(self.value)
         count = 0
@@ -129,7 +148,7 @@ def concatBytes(*bList):
 
 
 def parseType(typed):
-    assert len(typed) > 3, 'Invalid typed string; parseType'
+    assert len(typed) > 3, 'Invalid typed string, too short; parseType'
 
     raw = typed[:-3]
     _type = typed[-3:]
@@ -138,15 +157,30 @@ def parseType(typed):
 
     return raw, _type
 
+def isBlockCityDocId(suffix):
+    if suffix == MBC_USER_DATA:
+        return True
+    if suffix == MBC_LAND_DATA:
+        return True
+    if suffix == MBC_VOTE_DATA:
+        return True
+    if suffix == MBC_HISTORY_DATA:
+        return True
+    return False
 
-def parseDocumentId(documentId):
-    assert len(documentId) > 3, 'Invalid typed string; parseDocumentId'
+def isBlockSignDocId(suffix):
+    if suffix == MBS_DOCUMENT_DATA:
+        return True
+    return False
 
-    _id = documentId[:-3]
-    suffix = documentId[-3:]
+def parseDocumentId(did):
+    assert len(did) > 3, 'Invalid typed string, too short; parseDocumentId'
 
-    assert suffix == MBC_USER_DATA or suffix == MBC_LAND_DATA or suffix == MBC_VOTE_DATA or suffix == MBC_HISTORY_DATA
-
+    _id = did[:-3]
+    suffix = did[-3:]
+    
+    assert isBlockCityDocId(suffix) or isBlockSignDocId(suffix), 'Invalid typed string; parseDocumentId'
+    
     return _id, suffix
 
 def _hint(hint):
