@@ -7,13 +7,13 @@ from .blockcity import BlockCityGenerator
 class DocumentGenerator(OperationGenerator):
     def __init__(self, id):
         super(DocumentGenerator, self).__init__(id)
-        self.bs = BlockSignGenerator(id)
-        self.bc = BlockCityGenerator(id)
+        self.blocksign = BlockSignGenerator(id)
+        self.blockcity = BlockCityGenerator(id)
         
     def setId(self, id):
         super().setId(id)
-        self.bs = BlockSignGenerator(id)
-        self.bc = BlockCityGenerator(id)
+        self.blocksign = BlockSignGenerator(id)
+        self.blockcity = BlockCityGenerator(id)
         
     def getCreateDocumentsItem(self, document, cid):
         return CreateDocumentsItem(document, cid)

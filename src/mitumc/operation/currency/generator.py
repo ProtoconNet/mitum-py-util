@@ -8,6 +8,7 @@ from ..base import OperationGenerator
 from .base import Amount
 from .item import CreateAccountsItem, TransfersItem
 from .fact import CreateAccountsFact, KeyUpdaterFact, TransfersFact
+from .extension import CurrencyExtensionGenerator
 
 
 def _to_keys(keys, threshold):
@@ -43,6 +44,11 @@ def _to_amounts(amounts):
 class CurrencyGenerator(OperationGenerator):
     def __init__(self, id):
         super(CurrencyGenerator, self).__init__(id)
+        self.extension = CurrencyExtensionGenerator(id)
+
+    def setId(self, id):
+        super(CurrencyGenerator, self).setId(id)
+        self.extension = CurrencyExtensionGenerator(id)
 
     def key(self, key, weight):
         return (key, weight)

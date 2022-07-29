@@ -15,13 +15,13 @@ from ..operation.document import DocumentGenerator
 class Generator(object):
     def __init__(self, id):
         self.id = id
-        self.mc = CurrencyGenerator(id)
-        self.md = DocumentGenerator(id)
+        self.currency = CurrencyGenerator(id)
+        self.document = DocumentGenerator(id)
 
     def setId(self, id):
         self.id = id
-        self.mc = CurrencyGenerator(id)
-        self.md = DocumentGenerator(id)
+        self.currency = CurrencyGenerator(id)
+        self.document = DocumentGenerator(id)
 
     def getOperation(self, fact, memo):
         return Operation(fact, memo, self.id)

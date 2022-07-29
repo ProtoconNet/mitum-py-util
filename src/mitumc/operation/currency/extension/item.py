@@ -1,17 +1,11 @@
-from ..base import Item
-from ...common import concatBytes
-from ...key import Address
+from ..item import CurrencyItem
+from ....common import concatBytes
+from ....key import Address
 
 
-class CurrencyItem(Item):
-    def __init__(self, itemType, amounts):
-        super(CurrencyItem, self).__init__(itemType)
-        self.amounts = amounts
-
-
-class CreateAccountsItem(CurrencyItem):
+class CreateContractAccountsItem(CurrencyItem):
     def __init__(self, itemType, keys, amounts):
-        super(CreateAccountsItem, self).__init__(itemType, amounts)
+        super(CreateContractAccountsItem, self).__init__(itemType, amounts)
         self.keys = keys
 
     def bytes(self):
@@ -40,10 +34,10 @@ class CreateAccountsItem(CurrencyItem):
         return item
 
 
-class TransfersItem(CurrencyItem):
-    def __init__(self, itemType, receiver, amounts):
-        super(TransfersItem, self).__init__(itemType, amounts)
-        self.receiver = Address(receiver)
+class WithdrawsItem(CurrencyItem):
+    def __init__(self, itemType, target, amounts):
+        super(WithdrawsItem, self).__init__(itemType, amounts)
+        self.target = Address(target)
 
     def bytes(self):
         amounts = self.amounts
@@ -52,19 +46,20 @@ class TransfersItem(CurrencyItem):
         for amount in amounts:
             bAmounts += bytearray(amount.bytes())
 
-        bReceiver = self.receiver.bytes()
+        bTarget = self.target.bytes()
         bAmounts = bytes(bAmounts)
 
-        return concatBytes(bReceiver, bAmounts)
+        return concatBytes(bTarget, bAmounts)
 
     def dict(self):
         item = {}
         item['_hint'] = self.hint.hint
-        item['receiver'] = self.receiver.address
+        item['target'] = self.target.address
 
-        _amounts = list()
-        for _amount in self.amounts:
-            _amounts.append(_amount.dict())
-        item['amounts'] = _amounts
+        _amounts = self.amounts
+        amounts = list()
+        for _amount in _amounts:
+            amounts.append(_amount.dict())
+        item['amounts'] = amounts
 
-        return item
+        return item;

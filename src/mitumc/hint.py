@@ -54,6 +54,15 @@ MC_CURRENCY_POLICY_UPDATER_OP_FACT = "mitum-currency-currency-policy-updater-ope
 MC_CURRENCY_POLICY_UPDATER_OP = "mitum-currency-currency-policy-updater-operation"
 MC_CURRENCY_POLICY = "mitum-currency-currency-policy"
 
+MC_EXT_CREATE_CONTRACT_ACCOUNTS_OP_FACT = "mitum-currency-create-contract-accounts-operation-fact"
+MC_EXT_CREATE_CONTRACT_ACCOUNTS_OP = "mitum-currency-create-contract-accounts-operation"
+MC_EXT_CREATE_CONTRACT_ACCOUNTS_SINGLE_AMOUNT = "mitum-currency-create-contract-accounts-single-amount"
+MC_EXT_CREATE_CONTRACT_ACCOUNTS_MULTIPLE_AMOUNTS = "mitum-currency-create-contract-accounts-multiple-amounts"
+MC_EXT_WITHDRAWS_OP_FACT = "mitum-currency-contract-account-withdraw-operation-fact"
+MC_EXT_WITHDRAWS_OP = "mitum-currency-contract-account-withdraw-operation"
+MC_EXT_WITHDRAWS_SINGLE_AMOUNT = "mitum-currency-withdraws-item-single-amount"
+MC_EXT_WITHDRAWS_MULTIPLE_AMOUNTS = "mitum-currency-withdraws-item-multi-amounts"
+
 # mitum hint;
 JSON = "json-encoder"
 BSON = "bson-encoder"

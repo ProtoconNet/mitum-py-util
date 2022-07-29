@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'mitumc',
-    version          = '1.0.0',
+    version          = '2.0.0-beta1',
     description      = 'mitum model python util',
     long_description = open('README.md').read(),
-    author           = 'wyuinche',
-    author_email     = 'wyuinche.mido@gmail.com',
+    author           = 'protocon',
+    author_email     = 'contact@protocon.io',
     license          = "GPLv3",
     package_dir      = {'':'./src'},
     url              = "https://github.com/ProtoconNet/mitum-py-util",
