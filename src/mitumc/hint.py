@@ -134,7 +134,6 @@ MBC_HISTORY_DOCUMENT_ID = "mitum-blockcity-history-document-id"
 MBC_USER_STATISTICS = "mitum-blockcity-user-statistics"
 MBC_VOTING_CANDIDATE = "mitum-blockcity-voting-candidate"
 
-
 MF_POOL_REGISTER_OP_FACT = "mitum-feefi-pool-register-operation-fact"
 MF_POOL_REGISTER_OP = "mitum-feefi-pool-register-operation"
 MF_POOL_POLICY_UPDATER_OP_FACT = "mitum-feefi-pool-policy-updater-operation-fact"
@@ -143,3 +142,40 @@ MF_POOL_DEPOSITS_OP_FACT = "mitum-feefi-pool-deposits-operation-fact"
 MF_POOL_DEPOSITS_OP = "mitum-feefi-pool-deposits-operation"
 MF_POOL_WITHDRAW_OP_FACT = "mitum-feefi-pool-withdraw-operation-fact"
 MF_POOL_WITHDRAW_OP = "mitum-feefi-pool-withdraw-operation"
+
+MNFT_SIGNER = "mitum-nft-signer";
+MNFT_SIGNERS = "mitum-nft-signers";
+MNFT_NFT_ID = "mitum-nft-nft-id";
+
+MNFT_COLLECTION_REGISTER_FORM = "mitum-nft-collection-register-form";
+MNFT_COLLECTION_REGISTER_OP_FACT = "mitum-nft-collection-register-operation-fact";
+MNFT_COLLECTION_REGISTER_OP = "mitum-nft-collection-register-operation";
+
+MNFT_COLLECTION_POLICY = "mitum-nft-collection-policy"
+MNFT_COLLECTION_POLICY_UPDATER_OP_FACT = "mitum-nft-collection-policy-updater-operation-fact";
+MNFT_COLLECTION_POLICY_UPDATER_OP = "mitum-nft-collection-policy-updater-operation";
+
+MNFT_MINT_FORM = "mitum-nft-mint-form";
+MNFT_MINT_ITEM = "mitum-nft-mint-item";
+MNFT_MINT_OP_FACT = "mitum-nft-mint-operation-fact";
+MNFT_MINT_OP = "mitum-nft-mint-operation";
+
+MNFT_TRANSFER_ITEM = "mitum-nft-transfer-item";
+MNFT_TRANSFER_OP_FACT = "mitum-nft-transfer-operation-fact";
+MNFT_TRANSFER_OP = "mitum-nft-transfer-operation";
+
+MNFT_BURN_ITEM = "mitum-nft-burn-item";
+MNFT_BURN_OP_FACT = "mitum-nft-burn-operation-fact";
+MNFT_BURN_OP = "mitum-nft-burn-operation";
+
+MNFT_APPROVE_ITEM = "mitum-nft-approve-item";
+MNFT_APPROVE_OP_FACT = "mitum-nft-approve-operation-fact";
+MNFT_APPROVE_OP = "mitum-nft-approve-operation";
+
+MNFT_DELEGATE_ITEM = "mitum-nft-delegate-item";
+MNFT_DELEGATE_OP_FACT = "mitum-nft-delegate-operation-fact";
+MNFT_DELEGATE_OP = "mitum-nft-delegate-operation";
+
+MNFT_SIGN_ITEM = "mitum-nft-sign-item";
+MNFT_SIGN_OP_FACT = "mitum-nft-sign-operation-fact";
+MNFT_SIGN_OP = "mitum-nft-sign-operation";

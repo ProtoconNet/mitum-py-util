@@ -11,6 +11,7 @@ from ..operation import Operation
 from ..operation.currency import CurrencyGenerator
 from ..operation.document import DocumentGenerator
 from ..operation.feefi import FeefiGenerator
+from ..operation.nft import NFTGenerator
 
 
 class Generator(object):
@@ -19,12 +20,14 @@ class Generator(object):
         self.currency = CurrencyGenerator(id)
         self.document = DocumentGenerator(id)
         self.feefi = FeefiGenerator(id)
+        self.nft = NFTGenerator(id)
 
     def setId(self, id):
         self.id = id
         self.currency = CurrencyGenerator(id)
         self.document = DocumentGenerator(id)
         self.feefi = FeefiGenerator(id)
+        self.nft = NFTGenerator(id)
 
     def getOperation(self, fact, memo):
         return Operation(fact, memo, self.id)

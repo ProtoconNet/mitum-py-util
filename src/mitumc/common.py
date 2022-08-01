@@ -187,3 +187,13 @@ def parseDocumentId(did):
 
 def _hint(hint):
     return Hint(hint, VERSION)
+
+def parseNFTId(nid):
+    i = nid.index('-')
+    assert i >= 1 and i + 1 < len(nid), 'Invalid nft id; parseNFTId'
+
+    collection = nid[:i]
+
+    for j in range(len(nid)):
+        if nid[j] != '0':
+            return collection, Int(nid[j:])
