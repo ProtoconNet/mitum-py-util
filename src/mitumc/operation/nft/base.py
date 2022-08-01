@@ -182,3 +182,12 @@ class NFTID:
         id['collection'] = self.collection
         id['idx'] = self.idx.value
         return id
+
+
+DELEGATE_MODE = {}
+DELEGATE_MODE['allow'] = "allow"
+DELEGATE_MODE['cancel'] = "cancel"
+
+SIGN_QUALIFICATION = {}
+SIGN_QUALIFICATION['creator'] = "creator"
+SIGN_QUALIFICATION['copyrighter'] = "copyrighter"

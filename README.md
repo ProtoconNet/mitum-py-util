@@ -50,11 +50,25 @@ $ pip install -r requirements.txt
 |4-3|[Generate Create-Documents](#generate-create-documents)|
 |4-4|[Generate Update-Documents](#generate-update-documents)|
 |4-5|[Generate BlockSign Sign-Documents](#generate-blocksign-sign-documents)|
-|5|[Generate New Seal](#generate-new-seal)|
-|6|[Send Seal to Network](#send-seal-to-network)|
-|7|[Sign Message](#sign-message)|
-|8|[Add Fact Signature to Operation](#add-fact-signature-to-operation)|
-|9|[Hash Functions](#hash-functions)|
+|5|[Generate Feefi Operations](#generate-feefi-operations)|
+|5-1|[Generate Pool-Register](#generate-pool-register)|
+|5-2|[Generate Pool-Policy-Updater](#generate-pool-policy-updater)|
+|5-3|[Generate Pool-Deposits](#generate-pool-deposits)|
+|5-4|[Generate Pool-Withdraw](#generate-pool-withdraw)|
+|6|[Generate NFT Operations](#generate-nft-operations)|
+|6-1|[Generate Collection-Reister](#generate-collection-register)|
+|6-2|[Generate Collection-Policy-Updater](#generate-collection-policy-updater)|
+|6-3|[Generate NFT Mint](#generate-nft-mint)|
+|6-4|[Generate NFT Transfer](#generate-nft-transfer)|
+|6-5|[Generate NFT Burn](#generate-nft-burn)|
+|6-6|[Generate Approve](#generate-approve)|
+|6-7|[Geneate Delegate](#generate-delegate)|
+|6-8|[Generate NFT Sign](#generate-nft-sign)|
+|7|[Generate New Seal](#generate-new-seal)|
+|8|[Send Seal to Network](#send-seal-to-network)|
+|9|[Sign Message](#sign-message)|
+|10|[Add Fact Signature to Operation](#add-fact-signature-to-operation)|
+|11|[Hash Functions](#hash-functions)|
 
 <br />
 
@@ -584,7 +598,7 @@ This section will show you how to create documents and update documents for docu
 
 Go to the previous part for document creation.
 
-To create a `create-documents` operation, you must prepare the following:
+To create a __create-documents__ operation, you must prepare the following:
 
 * currency id for fees
 * document
@@ -613,7 +627,7 @@ For more information, see [Generator](#generator).
 
 ### Generate Update-Documents
 
-To create a __create-documents__ operation, you must prepare the following:
+To create a __update-documents__ operation, you must prepare the following:
 
 * currency id for fees
 * document
@@ -669,6 +683,163 @@ operation.addSign("Kz5gif6kskQA8HD6GeEjPse1LuqF8d3WFEauTSAuCwD1h94vboyAmpr")
 ```
 
 See [Generator](#generator) for details.
+
+## Generate Feefi Operations
+
+This part shows how to generate operations for __mitum-feefi__.
+
+### Generate Pool-Register
+
+__pool-register__ supports registering `pool` in a contract account.
+
+#### Usage
+
+```py
+from mitumc import Generator
+
+gn = Generator('mitum'); # Generator({networkId})
+
+fee = gn.currency.amount("MCC", 1)
+fact = gn.feefi.getPoolRegisterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "AAA", "MCC")
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
+```
+
+### Generate Pool-Policy-Updater
+
+__pool-policy-updater__ supports updating registered pool policies.
+
+#### Usage
+
+```py
+from mitumc import Generator
+
+gn = Generator('mitum'); # Generator({networkId})
+
+fee = gn.currency.amount("MCC", 10)
+fact = gn.feefi.getPoolPolicyUpdaterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "MCC")
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
+```
+
+### Generate Pool-Deposits
+
+__pool-deposits__ supports depositing amounts into the pool.
+
+#### Usage
+
+```py
+from mitumc import Generator
+
+gn = Generator('mitum'); # Generator({networkId})
+
+amount = gn.currency.amount("PEN", 10)
+fact = gn.feefi.getPoolDepositsFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amount)
+
+operation = gn.getOperation(fact, "")
+operationaddFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
+```
+
+### Generate Pool-Withdraw
+
+__pool-withdraw__ supports withdrawing amounts from the pool.
+
+#### Usage
+
+```py
+from mitumc import Generator
+
+gn = Generator('mitum'); # Generator({networkId})
+
+amounts = [gn.currency.amount("PEN", 1)]
+fact = gn.feefi.getPoolWithdrawFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amounts)
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
+```
+
+## Generate NFT Operations
+
+This part shows how to generate operations for __mitum-nft__.
+
+### Generate Collection-Register
+
+__collection-register__ supports the registration of `collection` in the contract account.
+
+#### Usage
+
+```py
+```
+
+### Generate Collection-Policy-Updater
+
+__collection-policy-updater__ supports updating collection policies.
+
+
+#### Usage
+
+```py
+
+```
+
+### Generate NFT Mint
+
+__mint__ supports the registration of a new nft in the collection.
+
+#### Usage
+
+This example shows how to create an operation when both the creator and copyrighter are the same account as minting nft.
+Actually, any general account can be a creator and a copyrighter.
+
+```py
+```
+
+### Generate NFT Transfer
+
+__transfer__ supports the transfer of nft.
+
+#### Usage
+
+```py
+```
+
+### Generate NFT Burn
+
+__burn__ supports nft burning.
+
+#### Usage
+
+```py
+```
+
+### Generate Approve
+
+__approve__ supports delegation of authority for specific nft ownership changes.
+
+#### Usage
+
+```py
+```
+
+### Generate Delegate
+
+__delegation__ supports delegating the authority to change ownership of all nfts held by one general account for a collection.
+
+#### Usage
+
+```py
+```
+
+### Generate NFT Sign
+
+__sign__ supports signing in nft as a creator or copyrighter.
+
+#### Usage
+
+```py
+```
 
 ## Generate New Seal
 

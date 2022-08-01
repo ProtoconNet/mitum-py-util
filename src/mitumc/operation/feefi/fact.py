@@ -1,10 +1,12 @@
 import base64
 
+from ..currency import Amount
 from ..base import PurposedOperationFact
 from ...hint import (
-    MF_POOL_DEPOSITS_OP, MF_POOL_DEPOSITS_OP_FACT, MF_POOL_POLICY_UPDATER_OP, MF_POOL_POLICY_UPDATER_OP_FACT, 
+    MF_POOL_DEPOSITS_OP, MF_POOL_DEPOSITS_OP_FACT, MF_POOL_POLICY_UPDATER_OP, MF_POOL_POLICY_UPDATER_OP_FACT,
     MF_POOL_REGISTER_OP, MF_POOL_REGISTER_OP_FACT, MF_POOL_WITHDRAW_OP, MF_POOL_WITHDRAW_OP_FACT
 )
+from ...hash import sha3
 from ...key import Address
 from ...common import _hint, concatBytes
 
@@ -14,12 +16,13 @@ class PoolRegisterFact(PurposedOperationFact):
         super(PoolRegisterFact, self).__init__(MF_POOL_REGISTER_OP_FACT)
         self.sender = Address(sender)
         self.target = Address(target)
-        self.initFee = initFee
+        self.initFee = Amount(initFee[0], initFee[1])
         self.incomeCid = incomeCid
         self.outgoCid = outgoCid
         self.cid = cid
+        self.hash = sha3(self.bytes())
 
-    @property    
+    @property
     def operationHint(self):
         return _hint(MF_POOL_REGISTER_OP)
 
@@ -51,14 +54,16 @@ class PoolRegisterFact(PurposedOperationFact):
 
 class PoolPolicyUpdaterFact(PurposedOperationFact):
     def __init__(self, sender, target, fee, poolId, cid):
-        super(PoolPolicyUpdaterFact, self).__init__(MF_POOL_POLICY_UPDATER_OP_FACT)
+        super(PoolPolicyUpdaterFact, self).__init__(
+            MF_POOL_POLICY_UPDATER_OP_FACT)
         self.sender = Address(sender)
         self.target = Address(target)
-        self.fee = fee
+        self.fee = Amount(fee[0], fee[1])
         self.poolId = poolId
         self.cid = cid
+        self.hash = sha3(self.bytes())
 
-    @property    
+    @property
     def operationHint(self):
         return _hint(MF_POOL_POLICY_UPDATER_OP)
 
@@ -92,9 +97,10 @@ class PoolDepositsFact(PurposedOperationFact):
         self.sender = Address(sender)
         self.pool = Address(pool)
         self.poolId = poolId
-        self.amount = amount
+        self.amount = Amount(amount[0], amount[1])
+        self.hash = sha3(self.bytes())
 
-    @property    
+    @property
     def operationHint(self):
         return _hint(MF_POOL_DEPOSITS_OP)
 
@@ -126,9 +132,12 @@ class PoolWithdrawFact(PurposedOperationFact):
         self.sender = Address(sender)
         self.pool = Address(pool)
         self.poolId = poolId
-        self.amounts = amounts
+        self.amounts = []
+        for amt in amounts:
+            self.amounts.append(Amount(amt[0], amt[1]))
+        self.hash = sha3(self.bytes())
 
-    @property    
+    @property
     def operationHint(self):
         return _hint(MF_POOL_WITHDRAW_OP)
 
