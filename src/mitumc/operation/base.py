@@ -2,8 +2,7 @@ import base64
 import json
 
 from ..key import Address
-
-from ..common import (MitumFactor, _hint, concatBytes, iso8601TimeStamp)
+from ..common import MitumFactor, _hint, concatBytes, iso8601TimeStamp
 from ..hash import sha3
 from ..sign import newFactSign
 

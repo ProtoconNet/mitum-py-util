@@ -1,8 +1,8 @@
+from .base import BaseKey
+
 from ..common import concatBytes, parseType, _hint, Int
 from ..hash import sha3
 from ..hint import (KEY_PUBLIC, MC_ADDRESS, MC_KEY, MC_KEYS)
-
-from .base import BaseKey
 
 
 class Key(object):

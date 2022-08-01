@@ -1,6 +1,6 @@
 from ..item import CurrencyItem
-from ....common import concatBytes
 from ....key import Address
+from ....common import concatBytes
 
 
 class CreateContractAccountsItem(CurrencyItem):

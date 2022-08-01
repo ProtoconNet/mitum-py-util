@@ -1,6 +1,6 @@
-from mitumc.hint import MD_CREATE_DOCUMENTS_ITEM, MD_UPDATE_DOCUMENTS_ITEM
-from ...common import concatBytes
 from ..base import Item
+from ...hint import MD_CREATE_DOCUMENTS_ITEM, MD_UPDATE_DOCUMENTS_ITEM
+from ...common import concatBytes
 
 
 class DocumentsItem(Item):

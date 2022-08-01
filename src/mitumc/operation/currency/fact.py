@@ -1,11 +1,13 @@
 import base64
 
+from ..base import GeneralOperationFact, PurposedOperationFact
 from ...hash import sha3
 from ...common import concatBytes, _hint
 from ...key import Address
-
-from ...hint import MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT, MC_KEYUPDATER_OP, MC_KEYUPDATER_OP_FACT, MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT
-from ..base import GeneralOperationFact, PurposedOperationFact
+from ...hint import (
+    MC_CREATE_ACCOUNTS_OP, MC_CREATE_ACCOUNTS_OP_FACT, MC_KEYUPDATER_OP, 
+    MC_KEYUPDATER_OP_FACT, MC_TRANSFERS_OP, MC_TRANSFERS_OP_FACT
+)
 
 
 class CreateAccountsFact(GeneralOperationFact):
@@ -24,7 +26,7 @@ class KeyUpdaterFact(PurposedOperationFact):
         self.cid = cid
         self.keys = keys
         self.hash = sha3(self.bytes())
-      
+
     @property    
     def operationHint(self):
         return _hint(MC_KEYUPDATER_OP)

@@ -1,7 +1,7 @@
 from .info import BlockCityHistoryInfo, BlockCityLandInfo, BlockCityUserInfo, BlockCityVoteInfo
+from ..base import Document
 from ....key import Address
 from ....common import Int, concatBytes
-from ..base import Document
 
 
 class UserDocument(Document):

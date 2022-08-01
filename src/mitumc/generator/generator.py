@@ -10,6 +10,7 @@ from ..key import getKeypairFromPrivateKey
 from ..operation import Operation
 from ..operation.currency import CurrencyGenerator
 from ..operation.document import DocumentGenerator
+from ..operation.feefi import FeefiGenerator
 
 
 class Generator(object):
@@ -17,11 +18,13 @@ class Generator(object):
         self.id = id
         self.currency = CurrencyGenerator(id)
         self.document = DocumentGenerator(id)
+        self.feefi = FeefiGenerator(id)
 
     def setId(self, id):
         self.id = id
         self.currency = CurrencyGenerator(id)
         self.document = DocumentGenerator(id)
+        self.feefi = FeefiGenerator(id)
 
     def getOperation(self, fact, memo):
         return Operation(fact, memo, self.id)

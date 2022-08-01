@@ -1,9 +1,9 @@
+from ..base import GeneralOperationFact, PurposedOperationFact
+from ...common import _hint
 from ...hint import (
     MD_CREATE_DOCUMENTS_OP, MD_CREATE_DOCUMENTS_OP_FACT,
     MD_UPDATE_DOCUMENTS_OP, MD_UPDATE_DOCUMENTS_OP_FACT
 )
-from ..base import GeneralOperationFact, PurposedOperationFact
-from ...common import _hint
 
 
 class GeneralDocumentsFact(GeneralOperationFact):

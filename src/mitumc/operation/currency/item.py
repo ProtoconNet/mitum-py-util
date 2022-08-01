@@ -1,6 +1,6 @@
 from ..base import Item
-from ...common import concatBytes
 from ...key import Address
+from ...common import concatBytes
 
 
 class CurrencyItem(Item):

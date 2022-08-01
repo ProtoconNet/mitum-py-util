@@ -133,3 +133,13 @@ MBC_HISTORY_DOCUMENT_ID = "mitum-blockcity-history-document-id"
 
 MBC_USER_STATISTICS = "mitum-blockcity-user-statistics"
 MBC_VOTING_CANDIDATE = "mitum-blockcity-voting-candidate"
+
+
+MF_POOL_REGISTER_OP_FACT = "mitum-feefi-pool-register-operation-fact"
+MF_POOL_REGISTER_OP = "mitum-feefi-pool-register-operation"
+MF_POOL_POLICY_UPDATER_OP_FACT = "mitum-feefi-pool-policy-updater-operation-fact"
+MF_POOL_POLICY_UPDATER_OP = "mitum-feefi-pool-policy-updater-operation"
+MF_POOL_DEPOSITS_OP_FACT = "mitum-feefi-pool-deposits-operation-fact"
+MF_POOL_DEPOSITS_OP = "mitum-feefi-pool-deposits-operation"
+MF_POOL_WITHDRAW_OP_FACT = "mitum-feefi-pool-withdraw-operation-fact"
+MF_POOL_WITHDRAW_OP = "mitum-feefi-pool-withdraw-operation"

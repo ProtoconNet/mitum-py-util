@@ -1,5 +1,5 @@
-from ....hint import MBS_DOCTYPE_DOCUMENT_DATA, MD_DOCUMENT_ID
 from ..base import Info
+from ....hint import MBS_DOCTYPE_DOCUMENT_DATA, MD_DOCUMENT_ID
 from ....common import _hint
 
 class BlockSignInfo(Info):

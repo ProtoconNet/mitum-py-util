@@ -1,8 +1,8 @@
+from ..base import DocumentId
+from ..item import PurposedDocumentsItem
 from ....common import concatBytes
 from ....hint import MBS_SIGN_ITEM_SINGLE_DOCUMENT
 from ....key import Address
-from ..base import DocumentId
-from ..item import PurposedDocumentsItem
 
 
 class SignDocumentsItem(PurposedDocumentsItem):

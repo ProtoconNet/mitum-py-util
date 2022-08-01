@@ -1,9 +1,9 @@
+from ...base import GeneralOperationFact
 from ....common import _hint
 from ....hint import (
     MC_EXT_CREATE_CONTRACT_ACCOUNTS_OP, MC_EXT_CREATE_CONTRACT_ACCOUNTS_OP_FACT, 
     MC_EXT_WITHDRAWS_OP, MC_EXT_WITHDRAWS_OP_FACT
 )
-from ...base import GeneralOperationFact
 
 
 class CreateContractAccountsFact(GeneralOperationFact):

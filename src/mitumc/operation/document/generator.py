@@ -1,8 +1,9 @@
 from .fact import CreateDocumentsFact, UpdateDocumentsFact
 from .item import CreateDocumentsItem, UpdateDocumentsItem
-from ..base import OperationGenerator
 from .blocksign import BlockSignGenerator
 from .blockcity import BlockCityGenerator
+from ..base import OperationGenerator
+
 
 class DocumentGenerator(OperationGenerator):
     def __init__(self, id):

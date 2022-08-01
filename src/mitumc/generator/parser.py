@@ -1,5 +1,6 @@
 import json
 
+
 class JSONParser(object):
     def toString(seal):
         return json.dumps(seal)

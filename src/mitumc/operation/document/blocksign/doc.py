@@ -1,6 +1,6 @@
-from ....common import Int, concatBytes
 from .info import BlockSignGeneralInfo
 from ..base import Document
+from ....common import Int, concatBytes
 
 
 class BlockSignDocument(Document):

@@ -1,7 +1,7 @@
-from ....hint import MC_EXT_CREATE_CONTRACT_ACCOUNTS_MULTIPLE_AMOUNTS, MC_EXT_WITHDRAWS_MULTIPLE_AMOUNTS
-from ...base import OperationGenerator
 from .fact import CreateContractAccountsFact, WithdrawsFact
 from .item import CreateContractAccountsItem, WithdrawsItem
+from ...base import OperationGenerator
+from ....hint import MC_EXT_CREATE_CONTRACT_ACCOUNTS_MULTIPLE_AMOUNTS, MC_EXT_WITHDRAWS_MULTIPLE_AMOUNTS
 
 
 class CurrencyExtensionGenerator(OperationGenerator):

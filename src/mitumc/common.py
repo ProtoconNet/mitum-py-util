@@ -4,8 +4,10 @@ import base58
 import pytz
 
 from .constant import VERSION
-from .hint import (KEY_PRIVATE, KEY_PUBLIC, MBC_HISTORY_DATA, MBS_DOCUMENT_DATA, MC_ADDRESS,
-                         MBC_USER_DATA, MBC_LAND_DATA, MBC_VOTE_DATA)
+from .hint import (
+    KEY_PRIVATE, KEY_PUBLIC, MBC_HISTORY_DATA, MBS_DOCUMENT_DATA, 
+    MC_ADDRESS, MBC_USER_DATA, MBC_LAND_DATA, MBC_VOTE_DATA
+)
 
 
 class BytesFactor(object):

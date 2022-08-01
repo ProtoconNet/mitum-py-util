@@ -1,5 +1,4 @@
 from ...common import MitumFactor, _hint, concatBytes, Int
-
 from ...hint import MC_AMOUNT
 
 

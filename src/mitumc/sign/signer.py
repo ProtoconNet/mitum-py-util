@@ -1,10 +1,9 @@
 import json
 import base58
 
+from .sign import newFactSign
 from ..hash import sha3
 from ..common import parseISOtoUTC, concatBytes
-
-from .sign import newFactSign
 
 
 def _factSignToBuffer(fs):
