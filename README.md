@@ -239,7 +239,40 @@ Generator.document.blockcity.voteDocument(documentId, owner, round, endTime, can
 Generator.document.blockcity.historyDocument(documentId, owner, name, account, date, usage, application)
 ```
 
-6. To create `Operation` and `Seal`, use `Generator.getOperation(fact, memo)` and `Generator.getSeal(signKey, operations)`
+6. For __mitum-feefi__, use `Generator.feefi`.
+
+```py
+Generator.feefi.getPoolRegisterFact(sender, target, initFee, incomeCid, outgoCid, cid)
+Generator.feefi.getPoolPolicyUpdaterFact(sender, target, fee, poolId, cid)
+Generator.feefi.getPoolDepositsFact(sender, pool, poolId, amount)
+Generator.feefi.getPoolWithdrawFact(sender, pool, poolId, amounts)
+```
+
+7. For __mitum-nft__, use `Generator.nft`.
+
+```py
+Generator.nft.signer(account, share, signed)
+Generator.nft.signers(total, _signers)
+Generator.nft.collectionRegisterForm(target, symbol, name, royalty, uri, whites)
+Generator.nft.collectionPolicy(name, royalty, uri, whites)
+Generator.nft.mintForm(hash, uri, creators, copyrighters)
+Generator.nft.getMintItem(collection, form, cid)
+Generator.nft.getTransferItem(receiver, nid, cid)
+Generator.nft.getBurnItem(nid, cid)
+Generator.nft.getApproveItem(approved, nid, cid)
+Generator.nft.getDelegateItem(collection, agent, mode, cid) # mode: ["allow" || "cancel"]
+Generator.nft.getSignItem(qualification, nid, cid) # qualification: ["creator" || "copyrighter"]
+Generator.nft.getCollectionRegisgerFact(sender, form, cid)
+Generator.nft.getCollectioPolicyUpdaterFact(sender, collection, policy, cid)
+Generator.nft.getMintFact(sender, items)
+Generator.nft.getTransferFact(sender, items)
+Generator.nft.getBurnFact(sender, items)
+Generator.nft.getApproveFact(sender, items)
+Generator.nft.getDelegateFact(sender, items)
+Generator.nft.getSignFact(sender, items)
+```
+
+8. To create `Operation` and `Seal`, use `Generator.getOperation(fact, memo)` and `Generator.getSeal(signKey, operations)`.
 
 ```python
 Generator.getOperation(fact, memo)
@@ -673,7 +706,7 @@ You do not need to prepare a document for __sign-document__. Only `document id` 
 ```python
 from mitumc import Generator
 
-gn = Generator('mitum'); # Generator({networkId})
+gn = Generator('mitum') # Generator({networkId})
 
 item = gn.document.blocksign.getSignDocumentsItem("4000sdi", "5KGBDDsmNXCa69kVAgRxDovu7JWxdsUxtAz7GncKxRfqmca", "PEN")
 fact = gn.document.blocksign.getSignDocumentsFact("Gu5xHjhos5WkjGo9jKmYMY7dwWWzbEGdQCs11QkyAhh8mca", [item])
@@ -697,7 +730,7 @@ __pool-register__ supports registering `pool` in a contract account.
 ```py
 from mitumc import Generator
 
-gn = Generator('mitum'); # Generator({networkId})
+gn = Generator('mitum') # Generator({networkId})
 
 fee = gn.currency.amount("MCC", 1)
 fact = gn.feefi.getPoolRegisterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "AAA", "MCC")
@@ -715,7 +748,7 @@ __pool-policy-updater__ supports updating registered pool policies.
 ```py
 from mitumc import Generator
 
-gn = Generator('mitum'); # Generator({networkId})
+gn = Generator('mitum') # Generator({networkId})
 
 fee = gn.currency.amount("MCC", 10)
 fact = gn.feefi.getPoolPolicyUpdaterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "MCC")
@@ -733,7 +766,7 @@ __pool-deposits__ supports depositing amounts into the pool.
 ```py
 from mitumc import Generator
 
-gn = Generator('mitum'); # Generator({networkId})
+gn = Generator('mitum') # Generator({networkId})
 
 amount = gn.currency.amount("PEN", 10)
 fact = gn.feefi.getPoolDepositsFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amount)
@@ -751,7 +784,7 @@ __pool-withdraw__ supports withdrawing amounts from the pool.
 ```py
 from mitumc import Generator
 
-gn = Generator('mitum'); # Generator({networkId})
+gn = Generator('mitum') # Generator({networkId})
 
 amounts = [gn.currency.amount("PEN", 1)]
 fact = gn.feefi.getPoolWithdrawFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amounts)
@@ -771,6 +804,15 @@ __collection-register__ supports the registration of `collection` in the contrac
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+form = gn.nft.collectionRegisterForm("4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "FSTCOL", "First Collection", 1, "https://localhost:5000/collection/FSTCOL", ["9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca"])
+fact = gn.nft.getCollectionRegisgerFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", form, "MCC")
+
+operation = gn.getOperation(fact, "")
+opoperation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ### Generate Collection-Policy-Updater
@@ -781,7 +823,15 @@ __collection-policy-updater__ supports updating collection policies.
 #### Usage
 
 ```py
+from mitumc import Generator
 
+gn = Generator('mitum') # Generator({networkId})
+
+policy = gn.nft.collectionPolicy("Updated Collection", 2, "https://localhost:5000/collection/FSTCOL", ["9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca"])
+fact = gn.nft.getCollectioPolicyUpdaterFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", "FSTCOL", policy, "MCC")
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ### Generate NFT Mint
@@ -794,6 +844,23 @@ This example shows how to create an operation when both the creator and copyrigh
 Actually, any general account can be a creator and a copyrighter.
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+creator1 = gn.nft.signer("5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", 50, False)
+creator2 = gn.nft.signer("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", 50, False)
+creators = gn.nft.signers(100, [creator1, creator2])
+
+copyrighter1 = gn.nft.signer("5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", 100, False)
+copyrighters = gn.nft.signers(100, [copyrighter1])
+
+form = gn.nft.mintForm("fill nft hash here", "https://localhost:5000/FSTCOL/1", creators, copyrighters)
+item = gn.nft.getMintItem("FSTCOL", form, "MCC")
+fact = gn.nft.getMintFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ### Generate NFT Transfer
@@ -803,6 +870,15 @@ __transfer__ supports the transfer of nft.
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+item = gn.nft.getTransferItem("5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", "FSTCOL-00001", "MCC")
+fact = gn.nft.getTransferFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ### Generate NFT Burn
@@ -812,6 +888,15 @@ __burn__ supports nft burning.
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+item = gn.nft.getBurnItem("FSTCOL-00001", "MCC")
+fact = gn.nft.getBurnFact("5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KydyTuc5kstBSWD3RzXLbuyZ9PyLi4EWAT6BwWx7MruBsmKPUW8zmpr")
 ```
 
 ### Generate Approve
@@ -821,6 +906,15 @@ __approve__ supports delegation of authority for specific nft ownership changes.
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+item = gn.nft.getApproveItem("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", "FSTCOL-00001", "MCC")
+fact = gn.nft.getApproveFact("5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KydyTuc5kstBSWD3RzXLbuyZ9PyLi4EWAT6BwWx7MruBsmKPUW8zmpr")
 ```
 
 ### Generate Delegate
@@ -830,6 +924,15 @@ __delegation__ supports delegating the authority to change ownership of all nfts
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+item = gn.nft.getDelegateItem("FSTCOL", "5deA8UKm3bZoHSoua3JGuZWMAniUA4TybLHyWnvnFoYPmca", "allow", "MCC")
+fact = gn.nft.getDelegateFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ### Generate NFT Sign
@@ -839,6 +942,15 @@ __sign__ supports signing in nft as a creator or copyrighter.
 #### Usage
 
 ```py
+from mitumc import Generator
+
+gn = Generator('mitum') # Generator({networkId})
+
+item = gn.nft.getSignItem("creator", "FSTCOL-00001", "MCC")
+fact = gn.nft.getSignFact("9MBW3xRBbkPSa5JVv2kMgnsXvGj9scSupZcSZ99cNPbwmca", [item])
+
+operation = gn.getOperation(fact, "")
+operation.addFactSign("KxzpnyJ1PEfQ53aFhdEEUAxgzad3n9NHFgsByvcWYfsbaHtv3gPLmpr")
 ```
 
 ## Generate New Seal

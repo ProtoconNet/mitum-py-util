@@ -193,7 +193,8 @@ def parseNFTId(nid):
     assert i >= 1 and i + 1 < len(nid), 'Invalid nft id; parseNFTId'
 
     collection = nid[:i]
+    nid = nid[i + 1:]
 
     for j in range(len(nid)):
         if nid[j] != '0':
-            return collection, Int(nid[j:])
+            return collection, Int(int(nid[j:]))

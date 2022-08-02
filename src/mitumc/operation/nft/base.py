@@ -99,7 +99,6 @@ class NFTSigner:
         bSigned = bytes([0])
         if self.signed:
             bSigned = bytes([1])
-
         return concatBytes(bAccount, bShare, bSigned)
 
     def dict(self):
@@ -108,6 +107,7 @@ class NFTSigner:
         signer['account'] = self.account.address
         signer['share'] = self.share.value
         signer['signed'] = self.signed
+        return signer
 
 
 class NFTSigners:
@@ -121,7 +121,7 @@ class NFTSigners:
         bTotal = self.total.bytes()
         _signers = bytearray()
         for s in self.signers:
-            _signers += s.byts()
+            _signers += s.bytes()
         bSigners = _signers
 
         return concatBytes(bTotal, bSigners)
@@ -132,7 +132,7 @@ class NFTSigners:
         signers['total'] = self.total.value
         _signers = []
         for s in self.signers:
-            _signers.push(s.dict())
+            _signers.append(s.dict())
         signers['signers'] = _signers
 
         return signers
@@ -166,7 +166,7 @@ class MintForm:
 
 class NFTID:
     def __init__(self, collection, idx):
-        assert idx > 0, 'idx must be over zero; NFTID'
+        assert idx.value > 0, 'idx must be over zero; NFTID'
         self.hint = _hint(MNFT_NFT_ID)
         self.collection = collection
         self.idx = idx
@@ -182,12 +182,3 @@ class NFTID:
         id['collection'] = self.collection
         id['idx'] = self.idx.value
         return id
-
-
-DELEGATE_MODE = {}
-DELEGATE_MODE['allow'] = "allow"
-DELEGATE_MODE['cancel'] = "cancel"
-
-SIGN_QUALIFICATION = {}
-SIGN_QUALIFICATION['creator'] = "creator"
-SIGN_QUALIFICATION['copyrighter'] = "copyrighter"

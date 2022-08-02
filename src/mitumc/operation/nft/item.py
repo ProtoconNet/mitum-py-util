@@ -44,7 +44,7 @@ class NFTTransferItem(NFTItem):
 
     def bytes(self):
         bReceiver = self.receiver.bytes()
-        bNid = self.nid.bytse()
+        bNid = self.nid.bytes()
         bCid = self.cid.encode()
         return concatBytes(bReceiver, bNid, bCid)
 

@@ -2,6 +2,7 @@ import base64
 from ..base import GeneralOperationFact, PurposedOperationFact
 from ...common import _hint, concatBytes
 from ...key import Address
+from ...hash import sha3
 from ...hint import (
     MNFT_APPROVE_OP, MNFT_APPROVE_OP_FACT, MNFT_BURN_OP, MNFT_BURN_OP_FACT, MNFT_COLLECTION_POLICY_UPDATER_OP, 
     MNFT_COLLECTION_POLICY_UPDATER_OP_FACT, MNFT_COLLECTION_REGISTER_OP, MNFT_COLLECTION_REGISTER_OP_FACT, 
@@ -17,6 +18,7 @@ class CollectionRegisterFact(PurposedOperationFact):
         self.sender = Address(sender)
         self.form = form
         self.cid = cid
+        self.hash = sha3(self.bytes())
 
     @property
     def operationHint(self):
@@ -49,6 +51,7 @@ class CollectionPolicyUpdaterFact(PurposedOperationFact):
         self.collection = collection
         self.policy = policy
         self.cid = cid
+        self.hash = sha3(self.bytes())
 
     @property
     def operationHint(self):
@@ -72,6 +75,7 @@ class CollectionPolicyUpdaterFact(PurposedOperationFact):
         fact['collection'] = self.collection
         fact['policy'] = self.policy.dict()
         fact['currency'] = self.cid
+        return fact
 
 
 class MintFact(GeneralOperationFact):
