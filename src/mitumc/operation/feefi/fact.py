@@ -8,17 +8,17 @@ from ...hint import (
 )
 from ...hash import sha3
 from ...key import Address
-from ...common import _hint, concatBytes
+from ...common import Int, _hint, concatBytes
 
 
 class PoolRegisterFact(PurposedOperationFact):
-    def __init__(self, sender, target, initFee, incomeCid, outgoCid, cid):
+    def __init__(self, sender, target, initFee, incomeCid, outlayCid, cid):
         super(PoolRegisterFact, self).__init__(MF_POOL_REGISTER_OP_FACT)
         self.sender = Address(sender)
         self.target = Address(target)
-        self.initFee = Amount(initFee[0], initFee[1])
+        self.initFee = Int(initFee)
         self.incomeCid = incomeCid
-        self.outgoCid = outgoCid
+        self.outlayCid = outlayCid
         self.cid = cid
         self.hash = sha3(self.bytes())
 
@@ -30,12 +30,12 @@ class PoolRegisterFact(PurposedOperationFact):
         bToken = self.token.encode()
         bSender = self.sender.bytes()
         bTarget = self.target.bytes()
-        bInitFee = self.initFee.bytes()
+        bInitFee = self.initFee.tight()
         bIncomeCid = self.incomeCid.encode()
-        bOutgoCid = self.outgoCid.encode()
+        bOutlayCid = self.outlayCid.encode()
         bCid = self.cid.encode()
 
-        return concatBytes(bToken, bSender, bTarget, bInitFee, bIncomeCid, bOutgoCid, bCid)
+        return concatBytes(bToken, bSender, bTarget, bInitFee, bIncomeCid, bOutlayCid, bCid)
 
     def dict(self):
         fact = {}
@@ -45,21 +45,22 @@ class PoolRegisterFact(PurposedOperationFact):
             self.token.encode('ascii')).decode('ascii')
         fact['sender'] = self.sender.address
         fact['target'] = self.target.address
-        fact['initialfee'] = self.initFee.dict()
-        fact['incomingcid'] = self.incomeCid
-        fact['outgoingcid'] = self.outgoCid
+        fact['initialfee'] = str(self.initFee.value)
+        fact['incomecid'] = self.incomeCid
+        fact['outlaycid'] = self.outlayCid
         fact['currency'] = self.cid
         return fact
 
 
 class PoolPolicyUpdaterFact(PurposedOperationFact):
-    def __init__(self, sender, target, fee, poolId, cid):
+    def __init__(self, sender, target, fee, incomeCid, outlayCid, cid):
         super(PoolPolicyUpdaterFact, self).__init__(
             MF_POOL_POLICY_UPDATER_OP_FACT)
         self.sender = Address(sender)
         self.target = Address(target)
-        self.fee = Amount(fee[0], fee[1])
-        self.poolId = poolId
+        self.fee = Int(fee)
+        self.incomeCid = incomeCid
+        self.outlayCid = outlayCid
         self.cid = cid
         self.hash = sha3(self.bytes())
 
@@ -71,11 +72,12 @@ class PoolPolicyUpdaterFact(PurposedOperationFact):
         bToken = self.token.encode()
         bSender = self.sender.bytes()
         bTarget = self.target.bytes()
-        bFee = self.fee.bytes()
-        bPoolId = self.poolId.encode()
+        bFee = self.fee.tight()
+        bIncomeCid = self.incomeCid.encode()
+        bOutlayCid = self.outlayCid.encode()
         bCid = self.cid.encode()
 
-        return concatBytes(bToken, bSender, bTarget, bFee, bPoolId, bCid)
+        return concatBytes(bToken, bSender, bTarget, bFee, bIncomeCid, bOutlayCid, bCid)
 
     def dict(self):
         fact = {}
@@ -85,19 +87,21 @@ class PoolPolicyUpdaterFact(PurposedOperationFact):
             self.token.encode('ascii')).decode('ascii')
         fact['sender'] = self.sender.address
         fact['target'] = self.target.address
-        fact['fee'] = self.fee.dict()
-        fact['poolid'] = self.poolId
+        fact['fee'] = str(self.fee.value)
+        fact['incomecid'] = self.incomeCid
+        fact['outlaycid'] = self.outlayCid
         fact['currency'] = self.cid
         return fact
 
 
 class PoolDepositsFact(PurposedOperationFact):
-    def __init__(self, sender, pool, poolId, amount):
+    def __init__(self, sender, pool, incomeCid, outlayCid, amount):
         super(PoolDepositsFact, self).__init__(MF_POOL_DEPOSITS_OP_FACT)
         self.sender = Address(sender)
         self.pool = Address(pool)
-        self.poolId = poolId
-        self.amount = Amount(amount[0], amount[1])
+        self.incomeCid = incomeCid
+        self.outlayCid = outlayCid
+        self.amount = Int(amount)
         self.hash = sha3(self.bytes())
 
     @property
@@ -108,10 +112,11 @@ class PoolDepositsFact(PurposedOperationFact):
         bToken = self.token.encode()
         bSender = self.sender.bytes()
         bPool = self.pool.bytes()
-        bPoolId = self.poolId.encode()
-        bAmount = self.amount.bytes()
+        bIncomeCid = self.incomeCid.encode()
+        bOutlayCid = self.outlayCid.encode()
+        bAmount = self.amount.tight()
 
-        return concatBytes(bToken, bSender, bPool, bPoolId, bAmount)
+        return concatBytes(bToken, bSender, bPool, bIncomeCid, bOutlayCid, bAmount)
 
     def dict(self):
         fact = {}
@@ -121,20 +126,20 @@ class PoolDepositsFact(PurposedOperationFact):
             self.token.encode('ascii')).decode('ascii')
         fact['sender'] = self.sender.address
         fact['pool'] = self.pool.address
-        fact['poolid'] = self.poolId
-        fact['amount'] = self.amount.dict()
+        fact['amount'] = str(self.amount.value)
+        fact['incomecid'] = self.incomeCid
+        fact['outlaycid'] = self.outlayCid
         return fact
 
 
 class PoolWithdrawFact(PurposedOperationFact):
-    def __init__(self, sender, pool, poolId, amounts):
+    def __init__(self, sender, pool, incomeCid, outlayCid, amounts):
         super(PoolWithdrawFact, self).__init__(MF_POOL_WITHDRAW_OP_FACT)
         self.sender = Address(sender)
         self.pool = Address(pool)
-        self.poolId = poolId
-        self.amounts = []
-        for amt in amounts:
-            self.amounts.append(Amount(amt[0], amt[1]))
+        self.incomeCid = incomeCid
+        self.outlayCid = outlayCid
+        self.amounts = amounts
         self.hash = sha3(self.bytes())
 
     @property
@@ -149,10 +154,11 @@ class PoolWithdrawFact(PurposedOperationFact):
         bToken = self.token.encode()
         bSender = self.sender.bytes()
         bPool = self.pool.bytes()
-        bPoolId = self.poolId.encode()
+        bIncomeCid = self.incomeCid.encode()
+        bOutlayCid = self.outlayCid.encode()
         bAmounts = bytes(bAmounts)
 
-        return concatBytes(bToken, bSender, bPool, bPoolId, bAmounts)
+        return concatBytes(bToken, bSender, bPool, bIncomeCid, bOutlayCid, bAmounts)
 
     def dict(self):
         fact = {}
@@ -162,7 +168,8 @@ class PoolWithdrawFact(PurposedOperationFact):
             self.token.encode('ascii')).decode('ascii')
         fact['sender'] = self.sender.address
         fact['pool'] = self.pool.address
-        fact['poolid'] = self.poolId
+        fact['incomecid'] = self.incomeCid
+        fact['outlaycid'] = self.outlayCid
 
         _amounts = list()
         for amount in self.amounts:

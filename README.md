@@ -243,9 +243,9 @@ Generator.document.blockcity.historyDocument(documentId, owner, name, account, d
 
 ```py
 Generator.feefi.getPoolRegisterFact(sender, target, initFee, incomeCid, outgoCid, cid)
-Generator.feefi.getPoolPolicyUpdaterFact(sender, target, fee, poolId, cid)
-Generator.feefi.getPoolDepositsFact(sender, pool, poolId, amount)
-Generator.feefi.getPoolWithdrawFact(sender, pool, poolId, amounts)
+Generator.feefi.getPoolPolicyUpdaterFact(sender, target, fee, incomeCid, outgoCid, cid)
+Generator.feefi.getPoolDepositsFact(sender, pool, incomeCid, outgoCid, amount)
+Generator.feefi.getPoolWithdrawFact(sender, pool, incomeCid, outgoCid, amounts)
 ```
 
 7. For __mitum-nft__, use `Generator.nft`.
@@ -732,8 +732,7 @@ from mitumc import Generator
 
 gn = Generator('mitum') # Generator({networkId})
 
-fee = gn.currency.amount("MCC", 1)
-fact = gn.feefi.getPoolRegisterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "AAA", "MCC")
+fact = gn.feefi.getPoolRegisterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", 100, "PEN", "AAA", "MCC")
 
 operation = gn.getOperation(fact, "")
 operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
@@ -750,8 +749,7 @@ from mitumc import Generator
 
 gn = Generator('mitum') # Generator({networkId})
 
-fee = gn.currency.amount("MCC", 10)
-fact = gn.feefi.getPoolPolicyUpdaterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", fee, "PEN", "MCC")
+fact = gn.feefi.getPoolPolicyUpdaterFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", 100, "PEN", "AAA", "MCC")
 
 operation = gn.getOperation(fact, "")
 operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
@@ -768,8 +766,7 @@ from mitumc import Generator
 
 gn = Generator('mitum') # Generator({networkId})
 
-amount = gn.currency.amount("PEN", 10)
-fact = gn.feefi.getPoolDepositsFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amount)
+fact = gn.feefi.getPoolDepositsFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", "AAA", 100)
 
 operation = gn.getOperation(fact, "")
 operationaddFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
@@ -786,8 +783,8 @@ from mitumc import Generator
 
 gn = Generator('mitum') # Generator({networkId})
 
-amounts = [gn.currency.amount("PEN", 1)]
-fact = gn.feefi.getPoolWithdrawFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", amounts)
+amounts = gn.currency.amounts([gn.currency.amount("PEN", 1)])
+fact = gn.feefi.getPoolWithdrawFact("CkiVJAwUhnhUWmPJcFCJrFSM7Y6jjLCdPMu2smEic2dTmca", "4rRNULRfGFLPTfZrhFzGqvbQ2cweiJuEZFNqrsMA353hmca", "PEN", "AAA", amounts)
 
 operation = gn.getOperation(fact, "")
 operation.addFactSign("KxE8Mq8TFfaDZ3d68uQmYKALhzFuZYGGb2UjwjtCsrhB7eSRmtnompr")
