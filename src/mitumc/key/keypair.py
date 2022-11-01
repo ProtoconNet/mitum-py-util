@@ -38,7 +38,10 @@ class Keypair(object):
             assert len(
                 self.seed) >= 36, 'Seed is too short to create Keypair; Keypair.generatePrivateKey'
             sh = sha3(self.seed.encode())
-            shb = base58.b58encode(sh.digest)[:-4]
+            if len(sh.digest) < 44:
+                shb = base58.b58encode(sh.digest)[:-3]
+            else:
+                shb = base58.b58encode(sh.digest)[:-4]
             k = str(hex((int.from_bytes(shb, "big") % (SECP256k1.order - 1)) + 1))[2:]
             self.priv = BaseKey(KEY_PRIVATE, encodeKey(bytes.fromhex(k)))
 
